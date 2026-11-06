@@ -8,6 +8,8 @@ export interface SeqStats {
   total: number;
   /** longest sequence reproduced correctly (0 if none) */
   bestLen: number;
+  /** cells recalled in the right order across all trials (full length if correct, else the correct prefix) */
+  recalled: number;
   /** longest sequence presented */
   maxLen: number;
   /** length the next trial would use (after the last answer) */
@@ -51,7 +53,7 @@ export function useSeqSession({
   const [over, setOver] = useState(false);
   const input = useRef<number[]>([]);
   const lastTap = useRef(0);
-  const stats = useRef<SeqStats>({ correct: 0, total: 0, bestLen: 0, maxLen: startLen, finalLen: startLen, tapRts: [] });
+  const stats = useRef<SeqStats>({ correct: 0, total: 0, bestLen: 0, recalled: 0, maxLen: startLen, finalLen: startLen, tapRts: [] });
   const timers = useTimeouts();
 
   const finish = useCallback(() => {
@@ -90,6 +92,7 @@ export function useSeqSession({
   const conclude = (correct: boolean) => {
     const st = stats.current;
     st.total += 1;
+    st.recalled += correct ? len : input.current.length;
     if (correct) {
       st.correct += 1;
       st.bestLen = Math.max(st.bestLen, len);

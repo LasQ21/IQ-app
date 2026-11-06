@@ -276,7 +276,9 @@
       "whyBack": "Seeing real change is why people come back.",
       "next": "Next re-test in {n} days. Your plan now focuses on your new weak spot: {ability}.",
       "cta": "Go to today’s plan",
-      "again": "Run the re-test again (+{n} days)"
+      "again": "Run the re-test again (+{n} days)",
+      "withinNoise": "within noise",
+      "noiseNote": "The test is short, so changes up to ±{n} are within measurement noise."
     },
     "report": {
       "title": "Weekly report",

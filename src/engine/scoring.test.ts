@@ -162,3 +162,26 @@ describe('buildProfile', () => {
     expect(perfect.index).toBeLessThan(1000);
   });
 });
+
+describe('corsi partial credit (meta.recalled)', () => {
+  const corsi = (span: number, recalled: number, total = 4): GameResult => ({
+    gameId: 'corsi',
+    ability: 'memory',
+    rawScore: span,
+    form: 'A',
+    playedAt: 0,
+    meta: { correct: 2, total, accuracy: 0.5, recalled, mode: 'assessment' },
+  });
+  it('a perfect 15 s run (4+5+6) scores 80', () => {
+    expect(normalize(corsi(6, 15, 3))).toBe(80);
+  });
+  it('one slip costs points, not half the score', () => {
+    const perfect = normalize(corsi(6, 15, 3));
+    const slip = normalize(corsi(5, 4 + 3 + 5, 3));
+    expect(slip).toBeGreaterThan(perfect * 0.65);
+    expect(slip).toBeLessThan(perfect);
+  });
+  it('more recalled cells → higher score', () => {
+    expect(normalize(corsi(4, 12))).toBeGreaterThan(normalize(corsi(4, 8)));
+  });
+});

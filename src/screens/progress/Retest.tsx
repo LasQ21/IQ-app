@@ -14,6 +14,9 @@ import { daysSinceBaseline, daysUntilRetest, formatDay, signed, sortedHistory } 
 import { DeltaGrid, RadarLegend } from './parts';
 import s from './progress.module.css';
 
+/** A 15-second task moves by roughly this much between two runs at the same skill. */
+const NOISE_BAND = 12;
+
 export function Retest() {
   const t = useT();
   const { state, dispatch } = useStore();
@@ -89,10 +92,12 @@ export function Retest() {
       </div>
 
       <Card className="stack">
-        <DeltaGrid now={retest.scores} then={baseline.scores} testIdPrefix="retest-delta-" />
+        <DeltaGrid now={retest.scores} then={baseline.scores} testIdPrefix="retest-delta-" noiseBand={NOISE_BAND} />
         <Radar scores={retest.scores} compare={baseline.scores} highlight={retest.weakest} size={240} />
         <RadarLegend now={t('progress.retest.legendNow')} then={t('progress.retest.legendThen', { n: since })} />
-        <p className="small muted">{t('progress.retest.honest')}</p>
+        <p className="small muted">
+          {t('progress.retest.honest')} {t('progress.retest.noiseNote', { n: NOISE_BAND })}
+        </p>
       </Card>
 
       {values.length > 1 && (

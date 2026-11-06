@@ -4,9 +4,29 @@
 // Inject with page.addInitScript(BOT); call window.__botTick() every ~50 ms of (fake) time;
 // tune with window.__bot.skill = { acc: 0–1, rt: ms }.
 export const BOT = `
-window.__bot = { skill: { acc: 0.8, rt: 650 }, q: [], seq: [], lastLit: null, handled: null, lastStim: 'none', answering: false };
+window.__bot = { skill: { acc: 0.8, rt: 650 }, seed: 146, q: [], seq: [], lastLit: null, handled: null, lastStim: 'none', answering: false };
+// deterministic PRNG (mulberry32) so runs are reproducible; reseed with window.__bot.seed = n
+window.__botRnd = function () {
+  let t = (window.__bot.seed = (window.__bot.seed + 0x6d2b79f5) | 0);
+  t = Math.imul(t ^ (t >>> 15), t | 1);
+  t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+  return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+};
 window.__botTick = function () {
-  const b = window.__bot, now = performance.now(), rnd = Math.random;
+  const b = window.__bot, now = performance.now(), rnd = window.__botRnd;
+  // drop actions queued for a previous game (e.g. a Series answer still pending when Go/No-Go starts)
+  const kind = document.querySelector('[data-testid="stroop-word"]') ? 'stroop'
+    : document.querySelector('[data-testid="series-seq"]') ? 'series'
+    : document.querySelector('[data-testid="gonogo-stage"]') ? 'gonogo'
+    : document.querySelector('[data-input]') ? 'grid' : 'none';
+  if (kind !== b.kind) {
+    b.kind = kind;
+    b.q = [];
+    b.seq = [];
+    b.lastLit = null;
+    b.answering = false;
+    b.lastStim = 'none';
+  }
   b.q = b.q.filter((a) => (a.at <= now ? (a.fn(), false) : true));
   if (b.q.length) return;
   const click = (el) => el && el.click();

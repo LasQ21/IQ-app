@@ -54,9 +54,10 @@ const finalize = (x: number) => Math.round(clamp(num(x), 0, 100));
  * - gonogo  (speed): rawScore = mean RT of hits; acc = balanced accuracy (chance .5).
  *   100 · (0.15 + 0.85 · speed) · aboveChance(acc, .5)^0.7, speed = RT 700 → 0 … 250 → 1.
  *   Volume: 8 stimuli. No hits → 0. Typical RT 420, acc .9 → ≈ 57.
- * - corsi   (memory): rawScore = longest correct span. 100 · lin(span, 2 → 0, 7 → 1) · (0.75 + 0.25 · acc).
- *   Calibrated to what a 15 s run can reach (assessment starts at span 4): typical span 5, acc .75 → ≈ 56;
- *   span 6, acc 1 → 80; span 7 → 100.
+ * - corsi   (memory): rawScore = longest correct span. With `meta.recalled` (cells recalled in order,
+ *   incl. correct prefixes of failed trials): 100 · (0.5 · lin(span, 2 → 0, 7 → 1) + 0.5 · lin(recalled, 3 → 0, 18 → 1)),
+ *   which is much less jumpy than the best span alone (one slip in a 15 s run no longer halves the score).
+ *   Perfect 15 s run (4+5+6) → 80; one slip → ≈ 55–65. Without `recalled`: 100 · lin(span, 2, 7) · (0.75 + 0.25 · acc).
  * - flash41 (memory): effective level = (maxLevel + final level) / 2, only if ≥ 1 correct sequence
  *   (else the best is assumed one below the level played). 100 · lin(eff, 2 → 0, 8 → 1) · (0.75 + 0.25 · acc).
  *   Volume: 3 sequences. Typical training eff 5.5, acc .7 → ≈ 54.
@@ -88,6 +89,11 @@ export function normalize(result: GameResult): number {
     }
     case 'corsi': {
       const span = clamp(num(result.rawScore), 0, 9);
+      const recalled = num(m.recalled, NaN);
+      if (Number.isFinite(recalled)) {
+        if (!total) return 0;
+        return finalize(100 * (0.5 * lin(span, 2, 7) + 0.5 * lin(recalled, 3, 18)));
+      }
       if (span <= 0) return 0;
       return finalize(100 * lin(span, 2, 7) * (0.75 + 0.25 * acc));
     }

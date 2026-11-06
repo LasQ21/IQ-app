@@ -21,21 +21,26 @@ export function DeltaGrid({
   now,
   then,
   testIdPrefix,
+  noiseBand = 0,
 }: {
   now: Record<Ability, number>;
   then: Record<Ability, number>;
   testIdPrefix?: string;
+  /** |delta| ≤ noiseBand is shown neutral with a "within measurement error" note (short tests are noisy). */
+  noiseBand?: number;
 }) {
   const t = useT();
   return (
     <div className={s.deltas}>
       {ABILITIES.map((ab) => {
         const d = Math.round(now[ab]) - Math.round(then[ab]);
+        const noise = d !== 0 && Math.abs(d) <= noiseBand;
         return (
           <div
             key={ab}
             className={s.deltaCell}
-            data-tone={tone(d)}
+            data-tone={noise ? 'zero' : tone(d)}
+            data-noise={noise ? 'true' : undefined}
             data-delta={d}
             data-testid={testIdPrefix ? `${testIdPrefix}${ab}` : undefined}
           >
@@ -43,6 +48,7 @@ export function DeltaGrid({
             <b>{signed(d)}</b>
             <span className={s.deltaScore}>
               {Math.round(then[ab])} → {Math.round(now[ab])}
+              {noise && <> · {t('progress.retest.withinNoise')}</>}
             </span>
           </div>
         );

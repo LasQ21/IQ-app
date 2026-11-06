@@ -1,6 +1,7 @@
 // Deck screenshots at 1170×2532 (390×844 @3x): Paywall, TodayPlan, IndexStreak, Retest.
 // A scripted player plays every game for real (reads the games' data-* attributes) on a fake clock.
-// The re-test is played with higher accuracy / faster reactions to illustrate a user after 30 days of practice.
+// The re-test is played slightly more accurately / faster to illustrate a user after 30 days of practice.
+// The player is seeded (deterministic), so the same build gives the same screenshots.
 //
 // Usage:  npm run build && npx vite preview --port 4190 --strictPort &
 //         node scripts/screenshots.mjs http://localhost:4190 uk ja en
@@ -10,7 +11,7 @@ import { BOT, play } from '../tests/bot.js';
 
 const base = process.argv[2] ?? 'http://localhost:4190';
 const langs = process.argv.slice(3).length ? process.argv.slice(3) : ['uk'];
-const out = 'docs/demo/screens';
+const out = process.env.OUT ?? 'docs/demo/screens';
 mkdirSync(out, { recursive: true });
 
 
@@ -43,6 +44,7 @@ for (const lang of langs) {
   };
 
   await page.goto(`${base}/?lang=${lang}`);
+  await page.evaluate((seed) => (window.__bot.seed = seed), Number(process.env.SEED ?? 14));
   await page.getByTestId('landing-start').click();
   await skill(0.75, 700);
   await quiz();
@@ -61,7 +63,7 @@ for (const lang of langs) {
   await shot('2-today');
   await page.getByTestId('today-retest').click();
   await page.getByTestId('retest-advance').click();
-  await skill(0.92, 520);
+  await skill(0.78, 680); // modest practice effect: slightly more accurate and faster than at baseline
   await quiz();
   await shot('4-retest');
   await ctx.close();

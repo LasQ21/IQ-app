@@ -22,6 +22,7 @@ export interface GameResult {
     accuracy?: number; // 0–1
     meanRtMs?: number;
     maxLevel?: number;
+    recalled?: number; // sequence games: cells recalled in order (incl. correct prefixes of failed trials)
     mode?: 'assessment' | 'training';
   };
 }

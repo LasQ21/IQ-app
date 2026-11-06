@@ -51,6 +51,7 @@ export function CorsiGrid({ mode, form, onDone, durationMs, demoDayOffset = 0 }:
           total: st.total,
           accuracy: st.total ? st.correct / st.total : 0,
           meanRtMs: Math.round(mean(st.tapRts)),
+          recalled: st.recalled,
           mode,
         },
       }),
