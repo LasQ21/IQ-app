@@ -12,10 +12,10 @@
     "close": "Close",
     "start": "Start",
     "done": "Done",
-    "minutes": "{n} min",
-    "days": "{n} d",
+    "minutes": "{n}\u00a0min",
+    "days": "{n}\u00a0d",
     "illustrative": "* prices are illustrative",
-    "disclaimer": "This is not a medical device and does not guarantee higher IQ or dementia prevention.",
+    "disclaimer": "This app is not a medical device and does not guarantee higher IQ or dementia prevention.",
     "resetDemo": "Reset demo",
     "resetConfirm": "Reset the demo? All progress will be cleared.",
     "abilities": {
@@ -40,7 +40,7 @@
     "quiz": {
       "reason": "—",
       "metric": "Test completion",
-      "goal": "Done in 60 s"
+      "goal": "Done in 60\u00a0s"
     },
     "teaser": {
       "reason": "30% “got what I wanted”",
@@ -50,32 +50,32 @@
     "paywall": {
       "reason": "25% “too expensive”",
       "metric": "Sell the plan and progress, not a report",
-      "goal": "Value visible within 4 weeks"
+      "goal": "Value visible within 4\u00a0weeks"
     },
     "onboarding": {
-      "reason": "25% “didn't use it”",
+      "reason": "25% “didn’t use it”",
       "metric": "% who open the product after the result",
       "goal": "45% → 65%"
     },
     "today": {
-      "reason": "25% “didn't use it”",
+      "reason": "25% “didn’t use it”",
       "metric": "Sessions per week",
       "goal": "A 10-minute daily habit"
     },
     "flash41": {
-      "reason": "15% “it's repetitive”",
+      "reason": "15% “it’s repetitive”",
       "metric": "Difficulty grows with the user",
       "goal": "Never gets stale"
     },
     "index": {
-      "reason": "25% “didn't use it”",
+      "reason": "25% “didn’t use it”",
       "metric": "D7 / D30",
       "goal": "A reason to come back daily"
     },
     "line": {
-      "reason": "25% “didn't use it”",
+      "reason": "25% “didn’t use it”",
       "metric": "D30",
-      "goal": "5% → ≥ 10%"
+      "goal": "5% → ≥\u00a010%"
     },
     "retest": {
       "reason": "30% “got what I wanted”",
@@ -95,63 +95,63 @@
   },
   "app": {
     "progress": "{n} / {total}",
-    "seconds": "{n} s"
+    "seconds": "{n}\u00a0s"
   },
   "funnel": {
     "landing": {
       "eyebrow": "Free · 60 seconds",
-      "title": "Find your brain's {weak} and train it 10 minutes a day",
+      "title": "Find your brain’s {weak} and train it 10\u00a0minutes a day",
       "titleWeak": "“weak spot”",
-      "sub": "60-second assessment · 4 abilities · free",
+      "sub": "60-second test · 4 abilities · free",
       "chipsLabel": "Abilities we measure",
       "illoLabel": "An ability profile with a highlighted weak spot turns into a 10-minute daily plan",
-      "start": "Start the assessment",
+      "start": "Start the test",
       "continue": "Continue my plan",
       "note": "No sign-up · no payment · concept by CC-146",
       "loopLabel": "How it works",
       "loop1": "60-second test",
-      "loop2": "10 min a day",
+      "loop2": "10\u00a0min a day",
       "loop3": "Re-test on day 30"
     },
     "quiz": {
-      "title": "60-second assessment",
-      "sub": "4 short tasks · 15 s each"
+      "title": "60-second test",
+      "sub": "4 short tasks · 15\u00a0s each"
     },
     "teaser": {
       "eyebrow": "Your ability profile",
-      "title": "Your weak zone: {ability}",
+      "title": "Your weak spot: {ability}",
       "scoresLabel": "Scores by ability, 0–100",
       "startTitle": "This is the start, not the end",
-      "startBody": "We've built a 4-week plan around your weak zone — {ability}.",
+      "startBody": "We’ve built a 4-week plan around your weak spot: {ability}.",
       "next": "See my plan"
     },
     "paywall": {
-      "eyebrow": "Made for you",
-      "title": "Your personal training plan for 4 weeks",
-      "weakLabel": "Weak zone",
-      "perDay": "10 minutes a day",
-      "focus": "2 of 3 exercises target your weak zone ({ability})",
-      "retest": "Re-test in 30 days to see your progress",
+      "eyebrow": "Based on your result",
+      "title": "Your personal 4-week training plan",
+      "weakLabel": "Weak spot",
+      "perDay": "10\u00a0minutes a day",
+      "focus": "2 of 3 daily exercises target your weak spot ({ability})",
+      "retest": "Re-test on day 30 to see what has changed",
       "timelineLabel": "{ability} now: {score}. Day 30: measured by the re-test.",
       "now": "Now",
       "week": "W{n}",
       "day30": "Day 30",
-      "timelineNote": "We don't promise a number — on day 30 the re-test measures your real change.",
+      "timelineNote": "We don’t promise a number — on day 30 the re-test measures your real change.",
       "trial": "Trial",
-      "then": "then {price} / 4 weeks",
+      "then": "then {price} / 4\u00a0weeks",
       "start": "Start my plan",
       "demoNote": "Demo: no payment is taken"
     },
     "onboarding": {
       "eyebrow": "Your plan is ready",
-      "title": "First training right now — 3 minutes",
+      "title": "Your first exercise — right now, 3\u00a0minutes",
       "sub": "Start while your result is fresh.",
-      "planTitle": "Today's plan · 10 min",
+      "planTitle": "Today’s plan · 10\u00a0min",
       "now": "Now",
       "later": "Later today",
-      "weakTag": "Weak zone",
-      "start": "Start the first training",
-      "note": "About 3 minutes · stop anytime"
+      "weakTag": "Weak spot",
+      "start": "Start the first exercise",
+      "note": "About 3\u00a0minutes · stop anytime"
     }
   },
   "games": {
@@ -179,7 +179,7 @@
     },
     "corsi": {
       "name": "Flash order",
-      "howto": "Tap the squares in the same order they lit up. Each correct answer makes the next one longer.",
+      "howto": "Tap the squares in the order they lit up. Each correct answer makes the next sequence longer.",
       "span": "Span {n}"
     },
     "series": {
@@ -190,76 +190,76 @@
     },
     "gonogo": {
       "name": "Quick reaction",
-      "howto": "Green circle — tap right away. Red circle — don't tap.",
-      "avg": "Avg {n} ms",
+      "howto": "Green circle — tap right away. Red circle — don’t tap.",
+      "avg": "Avg {n}\u00a0ms",
       "stage": "Reaction area: tap when the green circle appears",
-      "ms": "{n} ms",
-      "dontTap": "Red — don't tap",
+      "ms": "{n}\u00a0ms",
+      "dontTap": "Red — don’t tap",
       "tooSlow": "A bit faster",
       "legendGo": "Green = tap",
       "legendNoGo": "Red = wait"
     },
     "flash41": {
       "name": "FlashGrid #41",
-      "howto": "Repeat the flash sequence. 2 correct in a row — level up; a mistake — level down (Lv 2–9).",
+      "howto": "Repeat the flash sequence. 2 correct in a row — level up; a mistake — level down (Lv\u00a02–9).",
       "round": "Round {n}/{total}",
       "level": "Level",
-      "lv": "Lv {n}",
-      "up": "Lv {n} ↑",
-      "down": "Lv {n} ↓"
+      "lv": "Lv\u00a0{n}",
+      "up": "Lv\u00a0{n} ↑",
+      "down": "Lv\u00a0{n} ↓"
     }
   },
   "progress": {
-    "streak": "{n} days in a row",
+    "streak": "{n}-day streak",
     "streakZero": "Start your streak today",
-    "weakZone": "weak zone",
+    "weakZone": "weak spot",
     "today": {
       "greetMorning": "Good morning",
       "greetDay": "Hello",
       "greetEvening": "Good evening",
       "dayOf": "Day {n} of your plan",
-      "title": "Today's plan · 10 min",
-      "left": "{n} left · about {m} min",
+      "title": "Today’s plan · 10\u00a0min",
+      "left": "{n} left · about {m}\u00a0min",
       "allDone": "All done for today. See you tomorrow!",
       "ringAria": "{done} of {total} exercises done",
-      "weakHint": "{n} of {total} exercises train your weak zone: {ability}.",
-      "approx": "~{n} min",
+      "weakHint": "{n} of {total} exercises train your weak spot: {ability}.",
+      "approx": "~{n}\u00a0min",
       "play": "Play",
       "again": "Again",
-      "retestIn": "Re-test in {n} days",
+      "retestIn": "Days to re-test: {n}",
       "retestDue": "Your re-test is ready",
-      "retestText": "A new parallel form shows how much you have really changed.",
+      "retestText": "A new parallel form shows what has really changed.",
       "lineLink": "Daily reminder in LINE (mock)"
     },
     "index": {
       "name": "Wittio Index",
-      "deltaNow": "for this game",
-      "deltaLast": "last game",
+      "deltaNow": "from this exercise",
+      "deltaLast": "from your last exercise",
       "scale": "Your training progress on a 0–1000 scale",
-      "todayPlan": "Today's plan",
+      "todayPlan": "Today’s plan",
       "streakLabel": "Streak",
       "history": "Index over time",
       "sparkAria": "Index history: from {from} to {to}",
       "explain": "The Index grows when you train regularly and perform well. Skipped days slow it down.",
       "ctaOnboarding": "Next: a daily reminder",
-      "ctaToday": "Back to today's plan"
+      "ctaToday": "Back to today’s plan"
     },
     "line": {
       "title": "A reminder that brings you back",
       "mockNote": "Demo of a LINE notification — nothing is sent.",
       "sender": "Wittio (CC-146 concept)",
       "now": "now",
-      "body": "Time for today's 10-minute training.",
-      "bodyStreak": "Time for today's 10-minute training. Keep your {n}-day streak going!",
+      "body": "Time for today’s 10-minute training.",
+      "bodyStreak": "Time for today’s 10-minute training. Keep your {n}-day streak going!",
       "tapHint": "Tap the notification",
       "timeLabel": "Reminder time",
       "caption": "Reminders arrive at the time you choose via LINE, the messenger most people use in Japan. This is a mock: no messages are sent and no data is collected.",
-      "cta": "Go to today's plan"
+      "cta": "Go to today’s plan"
     },
     "retest": {
       "title": "Re-test every 30 days",
-      "intro": "Every 30 days you measure again on a new parallel form (B), so you see real change — not remembered answers.",
-      "baselineCaption": "Your first test (form A). Weak zone is highlighted.",
+      "intro": "Every 30 days you take the test again on a new parallel form (B), so you see real change — not remembered answers.",
+      "baselineCaption": "Your first test (form A). Your weak spot is highlighted.",
       "simulate": "Demo: we simulate {n} days of 10-minute training. Then your abilities are measured for real on form B.",
       "dueNote": "30 days have passed. Take the 60-second re-test on form B.",
       "advance": "Demo: +{n} days",
@@ -273,21 +273,21 @@
       "honest": "These are your real form-B results — scores can also go down.",
       "indexTitle": "Index over {n} days",
       "whyBack": "Seeing real change is why people come back.",
-      "next": "Next re-test in {n} days · your plan was updated for the new weak zone: {ability}.",
-      "cta": "Go to today's plan",
+      "next": "Next re-test in {n} days. Your plan now focuses on your new weak spot: {ability}.",
+      "cta": "Go to today’s plan",
       "again": "Run the re-test again (+{n} days)"
     },
     "report": {
       "title": "Weekly report",
       "total": "this week",
-      "games": "games played",
+      "games": "exercises done",
       "indexWeek": "Index, 7 days",
       "minutesTitle": "Minutes per day",
       "activeDays": "{n}/7 active days",
       "barsAria": "Minutes per day: {list}",
-      "simulated": "Includes simulated demo days (about 10 min a day).",
-      "growthTitle": "Growth since your first test",
-      "valueTitle": "What 4 weeks give you",
+      "simulated": "Includes simulated demo days (about 10\u00a0min a day).",
+      "growthTitle": "Change since your first test",
+      "valueTitle": "What’s included in 4 weeks",
       "perSession": "About {price} per 10-minute session",
       "valueText": "{price} per 4 weeks after a {trial} trial: {n} daily sessions, a weekly report and a re-test.",
       "retestLink": "See your 30-day re-test"
