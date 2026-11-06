@@ -1,0 +1,76 @@
+.stage {
+  position: relative;
+  height: 320px;
+  display: grid;
+  place-items: center;
+  background: var(--card);
+  border: 2px solid var(--border);
+  border-radius: calc(var(--radius) + 4px);
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: border-color 0.15s;
+}
+.stageBad {
+  border-color: var(--risk);
+}
+.circle {
+  width: 168px;
+  height: 168px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  animation: appear 0.08s ease-out;
+}
+@keyframes appear {
+  from {
+    transform: scale(0.85);
+  }
+}
+.go {
+  background: var(--ok);
+}
+.nogo {
+  background: #d93a26;
+}
+.stopBar {
+  width: 56%;
+  height: 22px;
+  border-radius: 6px;
+  background: #fff;
+}
+.fix {
+  font-size: 2rem;
+  font-weight: 300;
+  color: var(--muted);
+}
+.fb {
+  font-size: 1.6rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+.fbOk {
+  color: var(--ok);
+}
+.fbBad {
+  color: #b6431b;
+}
+.legend {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+.legendItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: inline-block;
+}

@@ -1,14 +1,17 @@
 import type { GameId } from '../state/types';
 import type { GameDef } from './types';
-import { makePlaceholder } from './Placeholder';
+import { Stroop } from './Stroop';
+import { CorsiGrid } from './CorsiGrid';
+import { Series } from './Series';
+import { GoNoGo } from './GoNoGo';
+import { FlashGrid41 } from './FlashGrid41';
 
-// Subagent B replaces placeholders with real components from ./Stroop, ./CorsiGrid, ./Series, ./GoNoGo, ./FlashGrid41
 export const GAMES: Record<GameId, GameDef> = {
-  stroop: { id: 'stroop', ability: 'attention', component: makePlaceholder('stroop', 'attention'), inAssessment: true, adaptive: false },
-  corsi: { id: 'corsi', ability: 'memory', component: makePlaceholder('corsi', 'memory'), inAssessment: true, adaptive: false },
-  series: { id: 'series', ability: 'logic', component: makePlaceholder('series', 'logic'), inAssessment: true, adaptive: false },
-  gonogo: { id: 'gonogo', ability: 'speed', component: makePlaceholder('gonogo', 'speed'), inAssessment: true, adaptive: false },
-  flash41: { id: 'flash41', ability: 'memory', component: makePlaceholder('flash41', 'memory'), inAssessment: false, adaptive: true },
+  stroop: { id: 'stroop', ability: 'attention', component: Stroop, inAssessment: true, adaptive: false },
+  corsi: { id: 'corsi', ability: 'memory', component: CorsiGrid, inAssessment: true, adaptive: false },
+  series: { id: 'series', ability: 'logic', component: Series, inAssessment: true, adaptive: false },
+  gonogo: { id: 'gonogo', ability: 'speed', component: GoNoGo, inAssessment: true, adaptive: false },
+  flash41: { id: 'flash41', ability: 'memory', component: FlashGrid41, inAssessment: false, adaptive: true },
 };
 
 /** Order of the 60-second assessment (quiz and retest). */
