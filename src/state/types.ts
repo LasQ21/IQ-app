@@ -53,6 +53,8 @@ export interface AppState {
   lang: Lang;
   stage: Stage;
   results: GameResult[];
+  /** Index in `results` where the latest assessment (baseline or re-test) starts — the live profile uses results from here. */
+  profileFrom?: number;
   baseline?: Profile; // first assessment
   current?: Profile; // live profile
   retest?: Profile; // result of the +30 day re-assessment (form B)

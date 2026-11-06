@@ -32,6 +32,7 @@ export function navigate(to: string, opts: { replace?: boolean } = {}): void {
     window.history.replaceState(null, '', url);
     current = parse();
     listeners.forEach((l) => l());
+    window.scrollTo(0, 0);
   } else {
     window.location.hash = hash;
   }

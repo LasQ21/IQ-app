@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { TRAINING_MAX_MS } from '../config';
 import { pickForm } from '../engine';
 import { GAMES } from '../games';
@@ -22,19 +22,25 @@ export function Play() {
   const [phase, setPhase] = useState<'intro' | 'play'>('intro');
   const startedAt = useRef(0);
 
-  if (!def) {
-    navigate(PATHS.today, { replace: true });
-    return null;
-  }
+  useEffect(() => {
+    if (!def) navigate(PATHS.today, { replace: true });
+  }, [def]);
+
+  if (!def) return null;
   const form = pickForm(state.results, def.ability);
   const lastLevel = [...state.results].reverse().find((r) => r.gameId === gameId)?.meta?.maxLevel;
   const startLevel = def.adaptive ? Math.max(2, (lastLevel ?? 3) - 1) : undefined;
   const Game = def.component;
 
   const onDone = (result: GameResult) => {
+    if (from === 'onboarding') dispatch({ type: 'setStage', stage: 'home' });
+    // "Finish" before a single trial: nothing was measured → no index gain, no streak.
+    if (result.meta?.total === 0) {
+      navigate(PATHS.today, { replace: true });
+      return;
+    }
     const stamped = { ...result, meta: { ...result.meta, mode: 'training' as const } };
     dispatch({ type: 'trainingDone', result: stamped, durationMs: Date.now() - startedAt.current });
-    if (from === 'onboarding') dispatch({ type: 'setStage', stage: 'home' });
     navigate(`${PATHS.index}?from=${from}`, { replace: true });
   };
 

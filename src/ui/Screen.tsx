@@ -30,7 +30,7 @@ export function Screen({
       data-reason={reason}
       data-metric={metric}
     >
-      {state.juryMode && (
+      {state.juryMode && [reason, metric, goal].some((x) => x !== '—') && (
         <aside className={s.jury} aria-label={t('common.jury')}>
           <span>
             <b>{t('common.juryReason')}:</b> {reason}

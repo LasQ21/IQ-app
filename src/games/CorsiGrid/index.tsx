@@ -9,9 +9,10 @@ import { useSeqSession, type SeqStats } from '../shared/useSeqSession';
 import type { GameProps } from '../types';
 import s from './CorsiGrid.module.css';
 
-const START_SPAN = 3;
+/** Assessment starts one step higher so a 15 s run can reach span 6–7; training warms up at 3. */
+const START_SPAN = { assessment: 4, training: 3 } as const;
 const TRAINING_TRIALS = 10;
-const TIMING = { onMs: 420, stepMs: 560, leadMs: 450 };
+const TIMING = { onMs: 380, stepMs: 480, leadMs: 350 };
 
 /**
  * Corsi block span (memory) on a 3×3 grid. Starts at span 3; a correct repeat → span + 1;
@@ -58,7 +59,7 @@ export function CorsiGrid({ mode, form, onDone, durationMs, demoDayOffset = 0 }:
 
   const g = useSeqSession({
     bank: CORSI_BANK[form],
-    startLen: START_SPAN,
+    startLen: START_SPAN[mode],
     advance,
     mode,
     durationMs,

@@ -46,6 +46,9 @@
   white-space: nowrap;
   text-decoration: none;
 }
+a.chip {
+  min-height: var(--tap); /* tappable chips (e.g. Wittio Index on Today) meet the 44 px target */
+}
 .chip svg {
   width: 16px;
   height: 16px;

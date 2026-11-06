@@ -73,6 +73,9 @@ export function Landing() {
   const canContinue = Boolean(state.baseline) && state.stage === 'home';
 
   const start = () => {
+    // Taking the test again from the landing page starts a fresh demo (instead of silently
+    // overwriting the baseline of an existing plan). "Continue my plan" keeps the progress.
+    if (state.baseline) dispatch({ type: 'reset' });
     dispatch({ type: 'setStage', stage: 'quiz' });
     navigate(PATHS.quiz);
   };

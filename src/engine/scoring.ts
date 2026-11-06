@@ -54,8 +54,9 @@ const finalize = (x: number) => Math.round(clamp(num(x), 0, 100));
  * - gonogo  (speed): rawScore = mean RT of hits; acc = balanced accuracy (chance .5).
  *   100 · (0.15 + 0.85 · speed) · aboveChance(acc, .5)^0.7, speed = RT 700 → 0 … 250 → 1.
  *   Volume: 8 stimuli. No hits → 0. Typical RT 420, acc .9 → ≈ 57.
- * - corsi   (memory): rawScore = longest correct span. 100 · lin(span, 2 → 0, 8 → 1) · (0.75 + 0.25 · acc).
- *   Typical span 5, acc .75 → ≈ 47; span 6 → ≈ 63.
+ * - corsi   (memory): rawScore = longest correct span. 100 · lin(span, 2 → 0, 7 → 1) · (0.75 + 0.25 · acc).
+ *   Calibrated to what a 15 s run can reach (assessment starts at span 4): typical span 5, acc .75 → ≈ 56;
+ *   span 6, acc 1 → 80; span 7 → 100.
  * - flash41 (memory): effective level = (maxLevel + final level) / 2, only if ≥ 1 correct sequence
  *   (else the best is assumed one below the level played). 100 · lin(eff, 2 → 0, 8 → 1) · (0.75 + 0.25 · acc).
  *   Volume: 3 sequences. Typical training eff 5.5, acc .7 → ≈ 54.
@@ -88,7 +89,7 @@ export function normalize(result: GameResult): number {
     case 'corsi': {
       const span = clamp(num(result.rawScore), 0, 9);
       if (span <= 0) return 0;
-      return finalize(100 * lin(span, 2, 8) * (0.75 + 0.25 * acc));
+      return finalize(100 * lin(span, 2, 7) * (0.75 + 0.25 * acc));
     }
     case 'flash41': {
       if (!total) return 0;

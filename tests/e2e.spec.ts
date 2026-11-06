@@ -1,8 +1,9 @@
 import { expect, test, type Page } from '@playwright/test';
+import { BOT, play } from './bot.js';
 
 /**
- * Smoke test of the whole retention loop (screens 1 → 12) at 390×844.
- * Uses Playwright's fake clock to fast-forward the 15-second assessment tasks.
+ * Smoke test of the whole retention loop (screens 1 → 12) at 390×844, in ja / uk / en.
+ * A scripted player (tests/bot.js) really plays every game on Playwright's fake clock.
  */
 
 const ABILITIES = ['memory', 'attention', 'logic', 'speed'] as const;
@@ -16,9 +17,7 @@ function watchPage(page: Page) {
   page.on('pageerror', (e) => errors.push(String(e)));
   page.on('request', (r) => {
     const u = new URL(r.url());
-    if (u.hostname === 'localhost') return;
-    if (u.hostname === 'fonts.googleapis.com' || u.hostname === 'fonts.gstatic.com') return;
-    if (u.protocol === 'data:' || u.protocol === 'blob:') return;
+    if (u.hostname === 'localhost' || u.protocol === 'data:' || u.protocol === 'blob:') return;
     foreign.push(r.url());
   });
   return { errors, foreign };
@@ -27,7 +26,7 @@ function watchPage(page: Page) {
 async function runAssessment(page: Page) {
   for (let i = 0; i < 4; i++) {
     await page.getByTestId('game-start').click();
-    await page.clock.runFor(16_000);
+    await play(page, 15_600);
   }
 }
 
@@ -36,47 +35,77 @@ async function noHorizontalScroll(page: Page) {
   expect(overflow).toBeLessThanOrEqual(0);
 }
 
+/** Every visible button/link/role=button is at least 44×44 px (WCAG 2.5.5 target used by the brief). */
+async function tapTargetsOk(page: Page) {
+  const small = await page.evaluate(() =>
+    [...document.querySelectorAll<HTMLElement>('button, a[href], [role="button"]')]
+      .filter((el) => el.offsetParent !== null)
+      .map((el) => ({ el, r: el.getBoundingClientRect() }))
+      .filter(({ r }) => r.width > 0 && (r.width < 44 || r.height < 44))
+      .map(({ el, r }) => `${el.dataset.testid ?? el.textContent?.trim().slice(0, 20)} ${Math.round(r.width)}×${Math.round(r.height)}`),
+  );
+  expect(small, 'tap targets < 44 px').toEqual([]);
+}
+
 for (const lang of ['ja', 'uk', 'en'] as const) {
   test(`full loop · ${lang}`, async ({ page }) => {
     const { errors, foreign } = watchPage(page);
+    await page.addInitScript(BOT);
     await page.clock.install();
     await page.goto(`/?lang=${lang}`);
     await expect(page.locator('html')).toHaveAttribute('lang', lang);
     await expect(page.getByTestId('brand')).toContainText('CC-146');
+    await expect(page).not.toHaveURL(/lang=/); // the deep-link flag is consumed
 
     // 1 Landing
     await expect(page.locator('[data-screen="landing"]')).toBeVisible();
     await noHorizontalScroll(page);
+    await tapTargetsOk(page);
     await page.getByTestId('landing-start').click();
 
-    // 2 Quiz (4 × 15 s)
+    // 2 Quiz (4 × 15 s, played by the bot)
     await expect(page.locator('[data-screen="quiz"]')).toBeVisible();
     await runAssessment(page);
 
-    // 3 Teaser — radar, no IQ number
-    await expect(page.locator('[data-screen="teaser"]')).toBeVisible();
-    await expect(page.locator('[data-screen="teaser"]')).not.toContainText(/IQ\s*[=:＝]/);
+    // 3 Teaser — radar, weak zone, no IQ number
+    const teaser = page.locator('[data-screen="teaser"]');
+    await expect(teaser).toBeVisible();
+    await expect(teaser).not.toContainText(/IQ\s*[=:＝]/);
+    await expect(page.getByTestId('teaser-weak')).toHaveAttribute('data-ability', /memory|attention|logic|speed/);
     await noHorizontalScroll(page);
     await page.getByTestId('teaser-next').click();
 
-    // 4 Paywall — disclaimer, no payment
+    // 4 Paywall — price, disclaimer, no payment
     await expect(page.locator('[data-screen="paywall"]')).toBeVisible();
     await expect(page.getByTestId('disclaimer')).toBeVisible();
-    await expect(page.locator('[data-screen="paywall"]')).toContainText('150');
+    await expect(page.locator('[data-screen="paywall"]')).toContainText('¥150');
+    await expect(page.locator('[data-screen="paywall"]')).toContainText('¥5,250');
     await noHorizontalScroll(page);
+    await tapTargetsOk(page);
     await page.getByTestId('paywall-start').click();
 
-    // 5 Onboarding → 7 FlashGrid
+    // 5 Onboarding → 7 FlashGrid №41: the level grows while playing
     await expect(page.locator('[data-screen="onboarding"]')).toBeVisible();
     await page.getByTestId('onboarding-start').click();
     await expect(page.locator('[data-screen="flash41"]')).toBeVisible();
     await page.getByTestId('game-start').click();
-    await page.clock.runFor(1_000);
-    await page.getByTestId('game-finish').click();
+    const level = page.getByTestId('flash-level');
+    const startLevel = Number(await level.getAttribute('data-level'));
+    let maxLevel = startLevel;
+    await play(page, 46_000, async () => {
+      if ((await page.locator('[data-screen="index"]').count()) > 0) return true;
+      const l = Number((await level.getAttribute('data-level').catch(() => null)) ?? 0);
+      maxLevel = Math.max(maxLevel, l);
+      return false;
+    });
+    expect(maxLevel, 'FlashGrid level should grow').toBeGreaterThan(startLevel);
 
-    // 8 IndexStreak — index grew
+    // 8 IndexStreak — index grew, streak = 1
     await expect(page.locator('[data-screen="index"]')).toBeVisible();
+    const delta = Number(await page.getByTestId('index-delta').getAttribute('data-delta'));
+    expect(delta).toBeGreaterThan(0);
     await expect(page.getByTestId('index-delta')).toContainText('+');
+    await expect(page.getByTestId('index-streak')).toContainText('1');
     await page.clock.runFor(2_000);
     await page.getByTestId('index-continue').click();
 
@@ -90,22 +119,37 @@ for (const lang of ['ja', 'uk', 'en'] as const) {
     await expect(page.getByTestId('plan-item')).toHaveCount(3);
     await expect(page.locator('[data-testid="plan-item"][data-done="true"]')).toHaveCount(1);
     await noHorizontalScroll(page);
+    await tapTargetsOk(page);
 
-    // jury mode strip
+    // language switch on a deep screen persists across reload
+    const other = lang === 'uk' ? 'en' : 'uk';
+    await page.getByTestId(`lang-${other}`).click();
+    await expect(page.locator('html')).toHaveAttribute('lang', other);
+    await page.reload();
+    await expect(page.locator('html')).toHaveAttribute('lang', other);
+    await page.getByTestId(`lang-${lang}`).click();
+
+    // jury mode strip: reason · metric · goal
     await page.getByTestId('jury-toggle').click();
     await expect(page.locator('[data-screen="today"] aside')).toBeVisible();
+    await expect(page.locator('[data-screen="today"]')).toHaveAttribute('data-reason', /25/);
     await page.getByTestId('jury-toggle').click();
 
-    // 10 Retest on form B
+    // 10 Retest on form B, deltas vs baseline
     await page.getByTestId('today-retest').click();
     await expect(page.locator('[data-screen="retest"]')).toBeVisible();
     await page.getByTestId('retest-advance').click();
     await runAssessment(page);
-    for (const a of ABILITIES) await expect(page.getByTestId(`retest-delta-${a}`)).toBeVisible();
+    for (const a of ABILITIES) {
+      const d = page.getByTestId(`retest-delta-${a}`);
+      await expect(d).toBeVisible();
+      expect(Number.isFinite(Number(await d.getAttribute('data-delta')))).toBe(true);
+    }
     await expect(page.getByTestId('disclaimer')).toBeVisible();
+    await noHorizontalScroll(page);
 
     // 11 Weekly report
-    await page.goto(`/?lang=${lang}#/report`);
+    await page.evaluate(() => (window.location.hash = '#/report'));
     await expect(page.getByTestId('report-root')).toBeVisible();
     await noHorizontalScroll(page);
 
@@ -115,22 +159,43 @@ for (const lang of ['ja', 'uk', 'en'] as const) {
     await page.getByTestId('profile-reset').click();
     await page.getByTestId('profile-reset-confirm').click();
     await expect(page.locator('[data-screen="landing"]')).toBeVisible();
+    expect(await page.evaluate(() => JSON.parse(localStorage.getItem('cc146-wittio-v1') ?? '{}').baseline)).toBeUndefined();
 
     expect(errors, 'console errors').toEqual([]);
     expect(foreign, 'unexpected network requests').toEqual([]);
   });
 }
 
-test('works offline after first open', async ({ page, context }) => {
-  await page.goto('/?lang=uk');
-  await page.evaluate(async () => {
-    const reg = await navigator.serviceWorker.ready;
-    return !!reg.active;
+test('?jury=1 deep link shows the strip on the landing page', async ({ page }) => {
+  await page.goto('/?lang=uk&jury=1');
+  await expect(page.locator('[data-screen="landing"] aside')).toBeVisible();
+});
+
+test('works when localStorage throws', async ({ page }) => {
+  const errors: string[] = [];
+  page.on('pageerror', (e) => errors.push(String(e)));
+  await page.addInitScript(() => {
+    Storage.prototype.getItem = () => {
+      throw new Error('blocked');
+    };
+    Storage.prototype.setItem = () => {
+      throw new Error('blocked');
+    };
   });
-  await page.reload();
-  await page.waitForFunction(() => !!navigator.serviceWorker.controller);
+  await page.goto('/?lang=uk');
+  await page.getByTestId('landing-start').click();
+  await expect(page.locator('[data-screen="quiz"]')).toBeVisible();
+  expect(errors).toEqual([]);
+});
+
+test('works offline after the first open', async ({ page, context }) => {
+  await page.goto('/?lang=uk');
+  // first open only: wait until the service worker has precached and taken control (clientsClaim)
+  await page.waitForFunction(() => !!navigator.serviceWorker.controller, null, { timeout: 30_000 });
   await context.setOffline(true);
   await page.reload();
   await expect(page.locator('[data-screen="landing"]')).toBeVisible();
+  await page.getByTestId('landing-start').click();
+  await expect(page.locator('[data-screen="quiz"]')).toBeVisible();
   await context.setOffline(false);
 });

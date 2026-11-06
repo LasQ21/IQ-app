@@ -81,17 +81,3 @@
   color: #c9c2ff;
   font-weight: 700;
 }
-.toast {
-  position: fixed;
-  left: 50%;
-  bottom: calc(var(--tabbar-h) + 16px + env(safe-area-inset-bottom));
-  transform: translateX(-50%);
-  background: var(--text);
-  color: #fff;
-  padding: 10px 16px;
-  border-radius: 999px;
-  font-size: 0.9rem;
-  z-index: 50;
-  animation: enter 0.2s var(--ease);
-  max-width: calc(100% - 32px);
-}

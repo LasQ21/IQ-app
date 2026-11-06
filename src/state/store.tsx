@@ -25,12 +25,26 @@ function readUrlFlags(): { lang?: Lang; jury?: boolean } {
   }
 }
 
+// Read once at startup (StrictMode calls reducer initializers twice; the URL is cleaned on the first call).
+const URL_FLAGS = typeof window === 'undefined' ? {} : readUrlFlags();
+
 function init(): AppState {
   const saved = loadState();
-  const flags = readUrlFlags();
+  const flags = URL_FLAGS;
   const base = { ...initialState(), ...(saved ?? {}) } as AppState;
   if (flags.lang) base.lang = flags.lang;
   if (flags.jury !== undefined) base.juryMode = flags.jury;
+  // The QR deep link sets the language once; drop the flags so a later manual switch survives reloads.
+  if (flags.lang || flags.jury !== undefined) {
+    try {
+      const url = new URL(window.location.href);
+      url.searchParams.delete('lang');
+      url.searchParams.delete('jury');
+      window.history.replaceState(null, '', url.pathname + url.search + url.hash);
+    } catch {
+      /* ignore */
+    }
+  }
   return base;
 }
 
