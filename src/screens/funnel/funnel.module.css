@@ -1,8 +1,8 @@
 /* Shared styles for the funnel screens (Landing → Quiz → Teaser → Paywall → Onboarding).
-   Colours come from the tokens in src/styles/global.css. `--risk-ink` is the text-safe variant of
-   `--risk` (#F26B3A fails 4.5:1 on white); it is scoped here because global.css is outside this zone. */
+   Colours come from the tokens in src/styles/global.css (`--risk-ink` = text-safe variant of `--risk`). */
+
 .root {
-  --risk-ink: #b6431b;
+  min-width: 0;
 }
 
 /* ---------- shared bits ---------- */

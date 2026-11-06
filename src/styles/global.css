@@ -9,6 +9,7 @@
   --accent-ink: #ffffff;
   --risk: #f26b3a;
   --risk-soft: #fff0ea;
+  --risk-ink: #b6431b; /* risk colour for text: 4.5:1+ on white */
   --ok: #148a55;
   --ok-soft: #e6f6ee;
   --line-green: #06c755;
