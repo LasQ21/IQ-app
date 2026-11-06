@@ -1,0 +1,97 @@
+.btn {
+  min-height: var(--tap);
+  padding: 12px 20px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: transform 0.12s var(--ease), background 0.2s, opacity 0.2s;
+  touch-action: manipulation;
+}
+.btn:active {
+  transform: scale(0.97);
+}
+.btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+.primary {
+  background: var(--accent);
+  color: var(--accent-ink);
+  box-shadow: 0 6px 18px rgba(91, 71, 255, 0.28);
+}
+.secondary {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.ghost {
+  background: transparent;
+  color: var(--muted);
+  border-color: var(--border);
+}
+.block {
+  width: 100%;
+}
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: var(--shadow);
+}
+.cardAccent {
+  background: var(--accent-soft);
+  border-color: transparent;
+}
+.cardRisk {
+  background: var(--risk-soft);
+  border-color: transparent;
+}
+.screen {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+  max-width: 480px;
+  margin: 0 auto;
+  width: 100%;
+  animation: enter 0.28s var(--ease);
+}
+.padded {
+  padding: 16px 16px 24px;
+}
+@keyframes enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+.jury {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  background: #10111c;
+  color: #fff;
+  font-size: 0.78rem;
+  line-height: 1.4;
+}
+.jury b {
+  color: #c9c2ff;
+  font-weight: 700;
+}
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(var(--tabbar-h) + 16px + env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  background: var(--text);
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  z-index: 50;
+  animation: enter 0.2s var(--ease);
+  max-width: calc(100% - 32px);
+}

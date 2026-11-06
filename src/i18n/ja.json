@@ -1,0 +1,130 @@
+{
+  "_review": true,
+  "common": {
+    "brand": "Wittio · CC-146 チームのコンセプト",
+    "brandShort": "CC-146 コンセプト",
+    "jury": "審査員",
+    "juryReason": "離脱理由",
+    "juryMetric": "指標",
+    "juryGoal": "目標",
+    "lang": "言語",
+    "next": "次へ",
+    "back": "戻る",
+    "close": "閉じる",
+    "start": "スタート",
+    "done": "完了",
+    "minutes": "{n}分",
+    "days": "{n}日",
+    "illustrative": "※価格はイメージです",
+    "disclaimer": "※本アプリは医療機器ではなく、IQの向上や認知症の予防を保証するものではありません。",
+    "resetDemo": "デモをリセット",
+    "resetConfirm": "デモをリセットしますか？すべての進捗が消えます。",
+    "abilities": {
+      "memory": "記憶力",
+      "attention": "注意力",
+      "logic": "論理力",
+      "speed": "処理速度"
+    },
+    "nav": {
+      "today": "今日",
+      "index": "指数",
+      "report": "レポート",
+      "profile": "プロフィール"
+    }
+  },
+  "jury": {
+    "landing": {
+      "reason": "—",
+      "metric": "テスト開始率",
+      "goal": "広告からの流入をテストへ"
+    },
+    "quiz": {
+      "reason": "—",
+      "metric": "テスト完了率",
+      "goal": "60秒で完了"
+    },
+    "teaser": {
+      "reason": "30%「欲しいものは得た」",
+      "metric": "結果＝終わりではなく始まり",
+      "goal": "弱点を見せて次の一歩へ"
+    },
+    "paywall": {
+      "reason": "25%「高すぎる」",
+      "metric": "レポートではなくプランと進捗を販売",
+      "goal": "価値を4週間で可視化"
+    },
+    "onboarding": {
+      "reason": "25%「使わなかった」",
+      "metric": "結果後に製品を開いた割合",
+      "goal": "45% → 65%"
+    },
+    "today": {
+      "reason": "25%「使わなかった」",
+      "metric": "週あたりのセッション数",
+      "goal": "1日10分の習慣"
+    },
+    "flash41": {
+      "reason": "15%「同じことの繰り返し」",
+      "metric": "難易度が成長に合わせて上がる",
+      "goal": "飽きさせない"
+    },
+    "index": {
+      "reason": "25%「使わなかった」",
+      "metric": "D7 / D30",
+      "goal": "毎日戻る理由"
+    },
+    "line": {
+      "reason": "25%「使わなかった」",
+      "metric": "D30",
+      "goal": "5% → 10%以上"
+    },
+    "retest": {
+      "reason": "30%「欲しいものは得た」",
+      "metric": "2回目の課金",
+      "goal": "22% → 26–32%"
+    },
+    "report": {
+      "reason": "25%「高すぎる」",
+      "metric": "4週間の価値が見える",
+      "goal": "更新率アップ"
+    },
+    "profile": {
+      "reason": "—",
+      "metric": "—",
+      "goal": "—"
+    }
+  },
+  "app": {
+    "progress": "{n} / {total}",
+    "seconds": "{n}秒"
+  },
+  "funnel": {
+    "_todo": "subagent A"
+  },
+  "games": {
+    "_todo": "subagent B",
+    "stroop": {
+      "name": "色と文字",
+      "howto": "文字の意味ではなく、文字の「色」をタップしてください。"
+    },
+    "corsi": {
+      "name": "光る順番",
+      "howto": "光ったマスを同じ順番でタップしてください。"
+    },
+    "series": {
+      "name": "数の並び",
+      "howto": "並びのルールを見つけて、次の数を選んでください。"
+    },
+    "gonogo": {
+      "name": "すばやく反応",
+      "howto": "緑の丸が出たらすぐタップ。赤い丸はタップしないでください。"
+    },
+    "flash41": {
+      "name": "フラッシュグリッド №41",
+      "howto": "光ったマスを順番どおりにタップ。2回連続で正解するとレベルアップします。"
+    }
+  },
+  "progress": {
+    "_todo": "subagent C"
+  }
+}

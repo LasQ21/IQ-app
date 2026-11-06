@@ -1,0 +1,129 @@
+{
+  "common": {
+    "brand": "Wittio · concept by team CC-146",
+    "brandShort": "CC-146 concept",
+    "jury": "Jury",
+    "juryReason": "Churn reason",
+    "juryMetric": "Metric",
+    "juryGoal": "Goal",
+    "lang": "Language",
+    "next": "Next",
+    "back": "Back",
+    "close": "Close",
+    "start": "Start",
+    "done": "Done",
+    "minutes": "{n} min",
+    "days": "{n} d",
+    "illustrative": "* prices are illustrative",
+    "disclaimer": "This is not a medical device and does not guarantee higher IQ or dementia prevention.",
+    "resetDemo": "Reset demo",
+    "resetConfirm": "Reset the demo? All progress will be cleared.",
+    "abilities": {
+      "memory": "Memory",
+      "attention": "Attention",
+      "logic": "Logic",
+      "speed": "Speed"
+    },
+    "nav": {
+      "today": "Today",
+      "index": "Index",
+      "report": "Report",
+      "profile": "Profile"
+    }
+  },
+  "jury": {
+    "landing": {
+      "reason": "—",
+      "metric": "Ad → test conversion",
+      "goal": "Send ad traffic into the test"
+    },
+    "quiz": {
+      "reason": "—",
+      "metric": "Test completion",
+      "goal": "Done in 60 s"
+    },
+    "teaser": {
+      "reason": "30% “got what I wanted”",
+      "metric": "Result = a start, not the end",
+      "goal": "Show the weak spot and the next step"
+    },
+    "paywall": {
+      "reason": "25% “too expensive”",
+      "metric": "Sell the plan and progress, not a report",
+      "goal": "Value visible within 4 weeks"
+    },
+    "onboarding": {
+      "reason": "25% “didn't use it”",
+      "metric": "% who open the product after the result",
+      "goal": "45% → 65%"
+    },
+    "today": {
+      "reason": "25% “didn't use it”",
+      "metric": "Sessions per week",
+      "goal": "A 10-minute daily habit"
+    },
+    "flash41": {
+      "reason": "15% “it's repetitive”",
+      "metric": "Difficulty grows with the user",
+      "goal": "Never gets stale"
+    },
+    "index": {
+      "reason": "25% “didn't use it”",
+      "metric": "D7 / D30",
+      "goal": "A reason to come back daily"
+    },
+    "line": {
+      "reason": "25% “didn't use it”",
+      "metric": "D30",
+      "goal": "5% → ≥ 10%"
+    },
+    "retest": {
+      "reason": "30% “got what I wanted”",
+      "metric": "2nd charge",
+      "goal": "22% → 26–32%"
+    },
+    "report": {
+      "reason": "25% “too expensive”",
+      "metric": "4-week value is visible",
+      "goal": "More renewals"
+    },
+    "profile": {
+      "reason": "—",
+      "metric": "—",
+      "goal": "—"
+    }
+  },
+  "app": {
+    "progress": "{n} / {total}",
+    "seconds": "{n} s"
+  },
+  "funnel": {
+    "_todo": "subagent A"
+  },
+  "games": {
+    "_todo": "subagent B",
+    "stroop": {
+      "name": "Color & word",
+      "howto": "Tap the ink color of the word, not what the word says."
+    },
+    "corsi": {
+      "name": "Flash order",
+      "howto": "Tap the squares in the same order they lit up."
+    },
+    "series": {
+      "name": "Number series",
+      "howto": "Find the rule and pick the next number."
+    },
+    "gonogo": {
+      "name": "Quick reaction",
+      "howto": "Green circle — tap right away. Red circle — don't tap."
+    },
+    "flash41": {
+      "name": "FlashGrid #41",
+      "howto": "Repeat the flash sequence. 2 correct in a row — level up."
+    }
+  },
+  "progress": {
+    "_todo": "subagent C"
+  }
+}
