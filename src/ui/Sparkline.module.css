@@ -1,0 +1,24 @@
+.spark {
+  display: block;
+  overflow: visible;
+}
+.animate .line {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: draw 1s var(--ease) 0.15s forwards;
+}
+.animate .area,
+.animate .dot {
+  opacity: 0;
+  animation: fade 0.4s var(--ease) 0.9s forwards;
+}
+@keyframes draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes fade {
+  to {
+    opacity: 1;
+  }
+}

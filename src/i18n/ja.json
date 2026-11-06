@@ -179,6 +179,96 @@
     }
   },
   "progress": {
-    "_todo": "subagent C"
+    "streak": "{n}日連続",
+    "streakZero": "今日から連続記録を始めましょう",
+    "weakZone": "弱点",
+    "today": {
+      "greetMorning": "おはようございます",
+      "greetDay": "こんにちは",
+      "greetEvening": "こんばんは",
+      "dayOf": "プラン{n}日目",
+      "title": "今日のプラン · 10分",
+      "left": "残り{n}つ · 約{m}分",
+      "allDone": "今日のプランは完了です。また明日！",
+      "ringAria": "{total}つ中{done}つ完了",
+      "weakHint": "{total}つのうち{n}つは、弱点の「{ability}」を鍛えます。",
+      "approx": "約{n}分",
+      "play": "プレイ",
+      "again": "もう一度",
+      "retestIn": "再テストまであと{n}日",
+      "retestDue": "再テストを受けられます",
+      "retestText": "新しい問題（別フォーム）で、本当の変化を確認します。",
+      "lineLink": "LINEで毎日リマインド（モック）"
+    },
+    "index": {
+      "name": "Wittio指数",
+      "deltaNow": "今回のトレーニング",
+      "deltaLast": "前回のトレーニング",
+      "scale": "トレーニングの成果を0〜1000で表します",
+      "todayPlan": "今日のプラン",
+      "streakLabel": "連続記録",
+      "history": "指数の推移",
+      "sparkAria": "指数の推移：{from}から{to}",
+      "explain": "指数は、続けるほど、そして成績が良いほど上がります。休んだ日は伸びがゆるやかになります。",
+      "ctaOnboarding": "次へ：毎日のリマインダー",
+      "ctaToday": "今日のプランに戻る"
+    },
+    "line": {
+      "title": "続けるためのリマインダー",
+      "mockNote": "LINE通知のデモです。実際には送信されません。",
+      "sender": "Wittio（CC-146 コンセプト）",
+      "now": "今",
+      "body": "今日の10分トレーニングの時間です",
+      "bodyStreak": "今日の10分トレーニングの時間です。{n}日連続をキープしましょう！",
+      "tapHint": "通知をタップしてください",
+      "timeLabel": "通知の時間",
+      "caption": "お好きな時間に、日本で最も使われているメッセンジャーのLINEでお知らせします。これはモックで、メッセージの送信やデータの収集は行いません。",
+      "cta": "今日のプランへ"
+    },
+    "retest": {
+      "title": "30日ごとの再テスト",
+      "intro": "30日ごとに、新しい並行フォーム（B）で測り直します。答えを覚えたのではなく、本当の変化がわかります。",
+      "baselineCaption": "最初のテスト（フォームA）の結果です。弱点を強調しています。",
+      "simulate": "デモ：10分トレーニングを{n}日間続けたと仮定します。その後、フォームBで実際に能力を測定します。",
+      "dueNote": "30日が経ちました。フォームBで60秒の再テストを受けましょう。",
+      "advance": "デモ：+{n}日",
+      "start": "再テストを始める",
+      "runKicker": "{n}日目 · フォームB",
+      "runTitle": "再テスト · 60秒",
+      "resultKicker": "フォームBと最初のテスト（フォームA）の比較",
+      "resultTitle": "{n}日間の変化",
+      "legendNow": "現在（フォームB）",
+      "legendThen": "{n}日前（フォームA）",
+      "honest": "フォームBで測った実際の結果です。スコアが下がることもあります。",
+      "indexTitle": "{n}日間の指数",
+      "whyBack": "変化が見えるから、続けたくなります。",
+      "next": "次の再テストは{n}日後です · プランを新しい弱点「{ability}」に合わせて更新しました。",
+      "cta": "今日のプランへ",
+      "again": "もう一度再テストする（+{n}日）"
+    },
+    "report": {
+      "title": "週間レポート",
+      "total": "合計時間",
+      "games": "ゲーム数",
+      "indexWeek": "指数（7日間）",
+      "minutesTitle": "1日のトレーニング（分）",
+      "activeDays": "{n}/7日 実施",
+      "barsAria": "1日のトレーニング時間：{list}",
+      "simulated": "デモで再現した日（1日約10分）を含みます。",
+      "growthTitle": "最初のテストからの伸び",
+      "valueTitle": "4週間で得られるもの",
+      "perSession": "10分のトレーニング1回あたり約{price}",
+      "valueText": "お試し{trial}のあと、4週間で{price}：毎日のトレーニング{n}回、週間レポート、再テスト付き。",
+      "retestLink": "30日後の再テストを見る"
+    },
+    "profile": {
+      "title": "あなたの能力プロフィール",
+      "legendNow": "現在",
+      "legendStart": "最初のテスト",
+      "retestLink": "30日ごとの再テスト",
+      "resetNote": "この端末の進捗をすべて消去し、最初の画面に戻ります。",
+      "cancel": "キャンセル",
+      "confirm": "リセットする"
+    }
   }
 }

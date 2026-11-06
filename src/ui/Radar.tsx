@@ -34,7 +34,7 @@ export function Radar({
   const desc = ABILITIES.map((ab) => `${t(`common.abilities.${ab}`)} ${Math.round(scores[ab])}`).join(', ');
 
   return (
-    <svg viewBox={`0 0 ${size} ${size}`} width="100%" style={{ maxWidth: size, display: 'block', margin: '0 auto' }} role="img" aria-label={desc}>
+    <svg viewBox={`0 0 ${size} ${size}`} width="100%" style={{ maxWidth: size, display: 'block', margin: '0 auto', overflow: 'visible' }} role="img" aria-label={desc}>
       {[0.25, 0.5, 0.75, 1].map((k) => (
         <polygon
           key={k}
