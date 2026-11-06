@@ -92,7 +92,7 @@ for (const l of LANGS) {
         errors++;
       }
     }
-    if (/Wittio(?! Index)/.test(val) && !/CC-146/.test(val) && !key.startsWith('common.brand')) {
+    if (/Wittio(?!\s*(Index|指数|Індекс))/.test(val) && !/CC-146/.test(val) && !key.startsWith('common.brand')) {
       // brand mentions must carry the "concept by CC-146" note somewhere on screen; flag for review
       console.warn(`note ${l}: "${key}" mentions Wittio without CC-146 in the same string`);
     }
