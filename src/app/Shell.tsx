@@ -51,7 +51,7 @@ export function Shell({ children }: { children: ReactNode }) {
       </header>
       <main className={[s.main, showTabs ? s.withTabs : ''].join(' ')}>{children}</main>
       {showTabs && (
-        <nav className={s.tabbar} aria-label="tabs">
+        <nav className={s.tabbar} aria-label={t('common.nav.label')}>
           {TABS.map((tab) => (
             <a
               key={tab.key}

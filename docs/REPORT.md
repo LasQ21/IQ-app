@@ -29,7 +29,7 @@ The re-test is played with higher accuracy and faster taps to illustrate a user 
 Timing: the quiz is exactly 60 s; everything else is ~15–25 s of taps.
 
 ## What is simulated (known limitations)
-- **Payment** — illustrative prices only (¥150 trial → ¥5 250 / 4 weeks at `USD_JPY = 150`); nothing is charged.
+- **Payment** — illustrative prices only (¥150 trial → ¥5,250 / 4 weeks at `USD_JPY = 150`); nothing is charged.
 - **LINE** — a mock lock-screen notification; nothing is sent, no real LINE logo.
 - **30 days** — "Demo: +30 days" shifts the demo clock and assumes daily 10-minute training (index history, minutes, streak).
 - **Re-test deltas are real** — they are the results of the form-B assessment just played, compared with form A.

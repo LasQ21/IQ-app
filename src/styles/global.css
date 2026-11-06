@@ -50,6 +50,11 @@ body {
   -webkit-tap-highlight-color: transparent;
   overscroll-behavior-y: none;
 }
+:root[lang='ja'] body {
+  /* keep Japanese words (e.g. プラン) together where supported (Chromium); others wrap normally */
+  word-break: auto-phrase;
+  line-break: strict;
+}
 #root {
   min-height: 100dvh;
 }

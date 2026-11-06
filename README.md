@@ -43,7 +43,7 @@ src/
 
 ## What is simulated
 
-- **Payment** — the paywall shows illustrative prices (¥150 trial → ¥5 250 / 4 weeks at `USD_JPY = 150`), nothing is charged.
+- **Payment** — the paywall shows illustrative prices (¥150 trial → ¥5,250 / 4 weeks at `USD_JPY = 150`), nothing is charged.
 - **LINE reminder** — a mock lock-screen notification; nothing is sent.
 - **30 days** — "Demo: +30 days" shifts the demo clock and assumes daily training (index history, minutes);
   the ability deltas on the re-test are **real** results of the form-B assessment you just played.

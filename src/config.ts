@@ -4,7 +4,7 @@ export const TRIAL_USD = 1;
 export const PRICE_USD_4W = 35;
 
 export const TRIAL_JPY = TRIAL_USD * USD_JPY; // ¥150
-export const PRICE_JPY_4W = PRICE_USD_4W * USD_JPY; // ¥5 250
+export const PRICE_JPY_4W = PRICE_USD_4W * USD_JPY; // ¥5,250
 
 /** Assessment task length (ms). 4 tasks × 15 s = 60 s quiz. */
 export const ASSESSMENT_MS = 15_000;
@@ -16,5 +16,5 @@ export const DEMO_JUMP_DAYS = 30;
 export const STORAGE_KEY = 'cc146-wittio-v1';
 
 export function formatJPY(n: number): string {
-  return '¥' + n.toLocaleString('en-US').replace(/,/g, ' ');
+  return '¥' + n.toLocaleString('en-US'); // ¥5,250 — the format Japanese readers expect
 }

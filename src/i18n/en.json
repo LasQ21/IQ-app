@@ -12,8 +12,8 @@
     "close": "Close",
     "start": "Start",
     "done": "Done",
-    "minutes": "{n}\u00a0min",
-    "days": "{n}\u00a0d",
+    "minutes": "{n} min",
+    "days": "{n} d",
     "illustrative": "* prices are illustrative",
     "disclaimer": "This app is not a medical device and does not guarantee higher IQ or dementia prevention.",
     "resetDemo": "Reset demo",
@@ -28,7 +28,8 @@
       "today": "Today",
       "index": "Index",
       "report": "Report",
-      "profile": "Profile"
+      "profile": "Profile",
+      "label": "Main menu"
     }
   },
   "jury": {
@@ -40,7 +41,7 @@
     "quiz": {
       "reason": "—",
       "metric": "Test completion",
-      "goal": "Done in 60\u00a0s"
+      "goal": "Done in 60 s"
     },
     "teaser": {
       "reason": "30% “got what I wanted”",
@@ -50,7 +51,7 @@
     "paywall": {
       "reason": "25% “too expensive”",
       "metric": "Sell the plan and progress, not a report",
-      "goal": "Value visible within 4\u00a0weeks"
+      "goal": "Value visible within 4 weeks"
     },
     "onboarding": {
       "reason": "25% “didn’t use it”",
@@ -75,7 +76,7 @@
     "line": {
       "reason": "25% “didn’t use it”",
       "metric": "D30",
-      "goal": "5% → ≥\u00a010%"
+      "goal": "5% → ≥ 10%"
     },
     "retest": {
       "reason": "30% “got what I wanted”",
@@ -95,12 +96,12 @@
   },
   "app": {
     "progress": "{n} / {total}",
-    "seconds": "{n}\u00a0s"
+    "seconds": "{n} s"
   },
   "funnel": {
     "landing": {
       "eyebrow": "Free · 60 seconds",
-      "title": "Find your brain’s {weak} and train it 10\u00a0minutes a day",
+      "title": "Find your brain’s {weak} and train it 10 minutes a day",
       "titleWeak": "“weak spot”",
       "sub": "60-second test · 4 abilities · free",
       "chipsLabel": "Abilities we measure",
@@ -110,12 +111,12 @@
       "note": "No sign-up · no payment · concept by CC-146",
       "loopLabel": "How it works",
       "loop1": "60-second test",
-      "loop2": "10\u00a0min a day",
+      "loop2": "10 min a day",
       "loop3": "Re-test on day 30"
     },
     "quiz": {
       "title": "60-second test",
-      "sub": "4 short tasks · 15\u00a0s each"
+      "sub": "4 short tasks · 15 s each"
     },
     "teaser": {
       "eyebrow": "Your ability profile",
@@ -129,7 +130,7 @@
       "eyebrow": "Based on your result",
       "title": "Your personal 4-week training plan",
       "weakLabel": "Weak spot",
-      "perDay": "10\u00a0minutes a day",
+      "perDay": "10 minutes a day",
       "focus": "2 of 3 daily exercises target your weak spot ({ability})",
       "retest": "Re-test on day 30 to see what has changed",
       "timelineLabel": "{ability} now: {score}. Day 30: measured by the re-test.",
@@ -138,20 +139,20 @@
       "day30": "Day 30",
       "timelineNote": "We don’t promise a number — on day 30 the re-test measures your real change.",
       "trial": "Trial",
-      "then": "then {price} / 4\u00a0weeks",
+      "then": "then {price} / 4 weeks",
       "start": "Start my plan",
       "demoNote": "Demo: no payment is taken"
     },
     "onboarding": {
       "eyebrow": "Your plan is ready",
-      "title": "Your first exercise — right now, 3\u00a0minutes",
+      "title": "Your first exercise — right now, 3 minutes",
       "sub": "Start while your result is fresh.",
-      "planTitle": "Today’s plan · 10\u00a0min",
+      "planTitle": "Today’s plan · 10 min",
       "now": "Now",
       "later": "Later today",
       "weakTag": "Weak spot",
       "start": "Start the first exercise",
-      "note": "About 3\u00a0minutes · stop anytime"
+      "note": "About 3 minutes · stop anytime"
     }
   },
   "games": {
@@ -191,9 +192,9 @@
     "gonogo": {
       "name": "Quick reaction",
       "howto": "Green circle — tap right away. Red circle — don’t tap.",
-      "avg": "Avg {n}\u00a0ms",
+      "avg": "Avg {n} ms",
       "stage": "Reaction area: tap when the green circle appears",
-      "ms": "{n}\u00a0ms",
+      "ms": "{n} ms",
       "dontTap": "Red — don’t tap",
       "tooSlow": "A bit faster",
       "legendGo": "Green = tap",
@@ -201,12 +202,12 @@
     },
     "flash41": {
       "name": "FlashGrid #41",
-      "howto": "Repeat the flash sequence. 2 correct in a row — level up; a mistake — level down (Lv\u00a02–9).",
+      "howto": "Repeat the flash sequence. 2 correct in a row — level up; a mistake — level down (Lv 2–9).",
       "round": "Round {n}/{total}",
       "level": "Level",
-      "lv": "Lv\u00a0{n}",
-      "up": "Lv\u00a0{n} ↑",
-      "down": "Lv\u00a0{n} ↓"
+      "lv": "Lv {n}",
+      "up": "Lv {n} ↑",
+      "down": "Lv {n} ↓"
     }
   },
   "progress": {
@@ -218,12 +219,12 @@
       "greetDay": "Hello",
       "greetEvening": "Good evening",
       "dayOf": "Day {n} of your plan",
-      "title": "Today’s plan · 10\u00a0min",
-      "left": "{n} left · about {m}\u00a0min",
+      "title": "Today’s plan · 10 min",
+      "left": "{n} left · about {m} min",
       "allDone": "All done for today. See you tomorrow!",
       "ringAria": "{done} of {total} exercises done",
       "weakHint": "{n} of {total} exercises train your weak spot: {ability}.",
-      "approx": "~{n}\u00a0min",
+      "approx": "~{n} min",
       "play": "Play",
       "again": "Again",
       "retestIn": "Days to re-test: {n}",
@@ -285,7 +286,7 @@
       "minutesTitle": "Minutes per day",
       "activeDays": "{n}/7 active days",
       "barsAria": "Minutes per day: {list}",
-      "simulated": "Includes simulated demo days (about 10\u00a0min a day).",
+      "simulated": "Includes simulated demo days (about 10 min a day).",
       "growthTitle": "Change since your first test",
       "valueTitle": "What’s included in 4 weeks",
       "perSession": "About {price} per 10-minute session",
