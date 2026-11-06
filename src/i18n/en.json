@@ -101,26 +101,58 @@
     "_todo": "subagent A"
   },
   "games": {
-    "_todo": "subagent B",
+    "common": {
+      "finish": "Finish",
+      "secondsLeft": "{n}s",
+      "timeLeft": "Time left",
+      "correctN": "Correct: {n}",
+      "correct": "Correct!",
+      "wrong": "Not quite",
+      "watch": "Watch",
+      "yourTurn": "Your turn — repeat the order",
+      "cell": "Cell {n}"
+    },
     "stroop": {
       "name": "Color & word",
-      "howto": "Tap the ink color of the word, not what the word says."
+      "howto": "Tap the ink color of the word, not what the word says.",
+      "prompt": "What color is the ink?",
+      "colors": {
+        "red": "Red",
+        "blue": "Blue",
+        "green": "Green",
+        "black": "Black"
+      }
     },
     "corsi": {
       "name": "Flash order",
-      "howto": "Tap the squares in the same order they lit up."
+      "howto": "Tap the squares in the same order they lit up. Each correct answer makes the next one longer.",
+      "span": "Span {n}"
     },
     "series": {
       "name": "Number series",
-      "howto": "Find the rule and pick the next number."
+      "howto": "Find the rule and pick the next number.",
+      "prompt": "What comes next?",
+      "item": "Item {n}"
     },
     "gonogo": {
       "name": "Quick reaction",
-      "howto": "Green circle — tap right away. Red circle — don't tap."
+      "howto": "Green circle — tap right away. Red circle — don't tap.",
+      "avg": "Avg {n} ms",
+      "stage": "Reaction area: tap when the green circle appears",
+      "ms": "{n} ms",
+      "dontTap": "Red — don't tap",
+      "tooSlow": "A bit faster",
+      "legendGo": "Green = tap",
+      "legendNoGo": "Red = wait"
     },
     "flash41": {
       "name": "FlashGrid #41",
-      "howto": "Repeat the flash sequence. 2 correct in a row — level up."
+      "howto": "Repeat the flash sequence. 2 correct in a row — level up; a mistake — level down (Lv 2–9).",
+      "round": "Round {n}/{total}",
+      "level": "Level",
+      "lv": "Lv {n}",
+      "up": "Lv {n} ↑",
+      "down": "Lv {n} ↓"
     }
   },
   "progress": {

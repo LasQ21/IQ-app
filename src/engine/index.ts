@@ -1,14 +1,6 @@
-// PHASE-1 PLACEHOLDER — subagent B replaces. Public engine API lives here.
-import type { GameResult } from '../state/types';
-import { normalize } from './scoring';
-
-export { normalize, buildProfile } from './scoring';
-export { nextLevel } from './adaptive';
-export { pickForm, planForToday } from './forms';
+// Public engine API.
+export { normalize, buildProfile, indexFromMean } from './scoring';
+export { nextLevel, MIN_LEVEL, MAX_LEVEL } from './adaptive';
+export { pickForm, planForToday, GAME_FOR } from './forms';
+export { updateIndex } from './wittioIndex';
 export { demoNow, dayKey, addDays } from './days';
-
-/** EMA with a visible gain after every finished game. 0–1000. */
-export function updateIndex(prev: number, result: GameResult): number {
-  const target = normalize(result) * 10;
-  return Math.min(1000, Math.round(prev + 0.2 * (target - prev)) + 5);
-}

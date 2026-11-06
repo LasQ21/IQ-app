@@ -1,0 +1,87 @@
+.prompt {
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+.seq {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 6px;
+  padding: 14px 10px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  animation: slide 0.2s var(--ease);
+}
+@keyframes slide {
+  from {
+    opacity: 0;
+    transform: translateX(10px);
+  }
+}
+.term {
+  height: 64px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  background: var(--bg);
+  font-size: 1.2rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+.ask {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border: 2px dashed var(--accent);
+}
+.askOk {
+  background: var(--ok);
+  border-color: var(--ok);
+  color: #fff;
+}
+.askBad {
+  background: var(--ok-soft);
+  border-color: var(--ok);
+  color: var(--ok);
+}
+.options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.option {
+  min-height: 76px;
+  border-radius: var(--radius);
+  border: 2px solid var(--border);
+  background: var(--card);
+  font-size: 1.5rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition:
+    transform 0.1s var(--ease),
+    background 0.15s,
+    border-color 0.15s;
+}
+.option:active {
+  transform: scale(0.97);
+  background: var(--accent-soft);
+}
+.optOk {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+.optBad {
+  background: var(--risk);
+  border-color: var(--risk);
+  color: var(--text);
+}
+.optHint {
+  border-color: var(--ok);
+  color: var(--ok);
+}
