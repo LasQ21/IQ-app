@@ -29,8 +29,14 @@ export function App() {
 
   useEffect(() => {
     if (!blocked) return;
-    // Returning user with a finished funnel lands on Today; everyone else on Landing.
-    navigate(state.baseline && state.stage === 'home' ? PATHS.today : PATHS.landing, { replace: true });
+    // Route changes are sync-priority (useSyncExternalStore) while reducer updates dispatched in the same
+    // handler may land one render later — wait a tick so e.g. Quiz → Teaser isn't bounced before the
+    // baseline commits. If the state catches up, the cleanup cancels the redirect.
+    const id = window.setTimeout(() => {
+      // Returning user with a finished funnel lands on Today; everyone else on Landing.
+      navigate(state.baseline && state.stage === 'home' ? PATHS.today : PATHS.landing, { replace: true });
+    }, 60);
+    return () => window.clearTimeout(id);
   }, [blocked, state.baseline, state.stage]);
 
   if (blocked) return null;
