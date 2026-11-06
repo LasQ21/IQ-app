@@ -353,3 +353,11 @@ The Japanese is an editorial draft. It was not written by a native speaker, so `
 |  | `progress.profile.cancel` | キャンセル | Cancel | Скасувати |  |
 |  | `progress.profile.confirm` | リセットする | Yes, reset | Так, скинути |  |
 
+
+## Added after the text pass
+
+| Key | ja | meaning |
+| --- | --- | --- |
+| `progress.retest.withinNoise` ⚠️ | 誤差の範囲 | within measurement noise |
+| `progress.retest.noiseNote` ⚠️ | 短いテストのため、±{n}以内の変化は誤差の範囲です。 | The test is short, so changes up to ±{n} are within noise. |
+| `common.nav.label` | メインメニュー | Main menu (screen-reader label of the tab bar) |
