@@ -20,6 +20,7 @@ export function Radar({
   const t = useT();
   const c = size / 2;
   const r = size / 2 - 44;
+  const padX = 36; // room for long side labels (処理速度, Швидкість)
   const angle = (i: number) => -Math.PI / 2 + (i * Math.PI * 2) / ABILITIES.length;
   const pt = (i: number, v: number) => {
     const a = angle(i);
@@ -34,7 +35,13 @@ export function Radar({
   const desc = ABILITIES.map((ab) => `${t(`common.abilities.${ab}`)} ${Math.round(scores[ab])}`).join(', ');
 
   return (
-    <svg viewBox={`0 0 ${size} ${size}`} width="100%" style={{ maxWidth: size, display: 'block', margin: '0 auto', overflow: 'visible' }} role="img" aria-label={desc}>
+    <svg
+      viewBox={`${-padX} 0 ${size + padX * 2} ${size}`}
+      width="100%"
+      style={{ maxWidth: size + padX * 2, display: 'block', margin: '0 auto', overflow: 'visible' }}
+      role="img"
+      aria-label={desc}
+    >
       {[0.25, 0.5, 0.75, 1].map((k) => (
         <polygon
           key={k}
