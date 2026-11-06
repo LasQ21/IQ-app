@@ -29,7 +29,7 @@ export function AssessmentRunner({
   const Game = def.component;
 
   const handleDone = (r: GameResult) => {
-    results.current = [...results.current, r];
+    results.current = [...results.current, { ...r, form, meta: { ...r.meta, mode: 'assessment' } }];
     if (step + 1 >= ASSESSMENT_ORDER.length) {
       onComplete(results.current);
     } else {

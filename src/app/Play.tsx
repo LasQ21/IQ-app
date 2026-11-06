@@ -32,7 +32,8 @@ export function Play() {
   const Game = def.component;
 
   const onDone = (result: GameResult) => {
-    dispatch({ type: 'trainingDone', result, durationMs: Date.now() - startedAt.current });
+    const stamped = { ...result, meta: { ...result.meta, mode: 'training' as const } };
+    dispatch({ type: 'trainingDone', result: stamped, durationMs: Date.now() - startedAt.current });
     if (from === 'onboarding') dispatch({ type: 'setStage', stage: 'home' });
     navigate(`${PATHS.index}?from=${from}`, { replace: true });
   };

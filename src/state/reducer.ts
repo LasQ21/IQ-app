@@ -53,6 +53,7 @@ export function reducer(state: AppState, action: Action): AppState {
           baseline: profile,
           current: profile,
           retest: undefined,
+          lastRetestDay: undefined,
           plan: undefined,
           indexHistory: pushHistory(state, today, profile.index),
         };
@@ -60,7 +61,7 @@ export function reducer(state: AppState, action: Action): AppState {
       }
       // retest: abilities come from the new form-B assessment; index keeps its trained value
       const current = { ...profile, index: Math.max(state.current?.index ?? 0, profile.index) };
-      return withFreshPlan({ ...state, results, retest: profile, current, plan: undefined });
+      return withFreshPlan({ ...state, results, retest: profile, lastRetestDay: today, current, plan: undefined });
     }
 
     case 'trainingDone': {

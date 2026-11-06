@@ -56,6 +56,7 @@ export interface AppState {
   baseline?: Profile; // first assessment
   current?: Profile; // live profile
   retest?: Profile; // result of the +30 day re-assessment (form B)
+  lastRetestDay?: string; // 'YYYY-MM-DD' (demo-shifted) of the latest finished re-test
   streakDays: number;
   lastActiveDay?: string; // 'YYYY-MM-DD'
   demoDayOffset: number; // for the "simulate +30 days" button

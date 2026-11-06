@@ -82,6 +82,7 @@ export function daysSinceBaseline(state: AppState): number {
 /** Demo-day of the latest finished re-test (form-B assessment results), if any. */
 export function lastRetestDay(state: AppState): string | undefined {
   if (!state.retest) return undefined;
+  if (state.lastRetestDay) return state.lastRetestDay;
   let ts = 0;
   for (const r of state.results) if (r.form === 'B' && r.meta?.mode === 'assessment') ts = Math.max(ts, r.playedAt);
   return ts ? dayKey(ts) : undefined;
