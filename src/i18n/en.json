@@ -98,7 +98,61 @@
     "seconds": "{n} s"
   },
   "funnel": {
-    "_todo": "subagent A"
+    "landing": {
+      "eyebrow": "Free · 60 seconds",
+      "title": "Find your brain's {weak} and train it 10 minutes a day",
+      "titleWeak": "“weak spot”",
+      "sub": "60-second assessment · 4 abilities · free",
+      "chipsLabel": "Abilities we measure",
+      "illoLabel": "An ability profile with a highlighted weak spot turns into a 10-minute daily plan",
+      "start": "Start the assessment",
+      "continue": "Continue my plan",
+      "note": "No sign-up · no payment · concept by CC-146",
+      "loopLabel": "How it works",
+      "loop1": "60-second test",
+      "loop2": "10 min a day",
+      "loop3": "Re-test on day 30"
+    },
+    "quiz": {
+      "title": "60-second assessment",
+      "sub": "4 short tasks · 15 s each"
+    },
+    "teaser": {
+      "eyebrow": "Your ability profile",
+      "title": "Your weak zone: {ability}",
+      "scoresLabel": "Scores by ability, 0–100",
+      "startTitle": "This is the start, not the end",
+      "startBody": "We've built a 4-week plan around your weak zone — {ability}.",
+      "next": "See my plan"
+    },
+    "paywall": {
+      "eyebrow": "Made for you",
+      "title": "Your personal training plan for 4 weeks",
+      "weakLabel": "Weak zone",
+      "perDay": "10 minutes a day",
+      "focus": "2 of 3 exercises target your weak zone ({ability})",
+      "retest": "Re-test in 30 days to see your progress",
+      "timelineLabel": "{ability} now: {score}. Day 30: measured by the re-test.",
+      "now": "Now",
+      "week": "W{n}",
+      "day30": "Day 30",
+      "timelineNote": "We don't promise a number — on day 30 the re-test measures your real change.",
+      "trial": "Trial",
+      "then": "then {price} / 4 weeks",
+      "start": "Start my plan",
+      "demoNote": "Demo: no payment is taken"
+    },
+    "onboarding": {
+      "eyebrow": "Your plan is ready",
+      "title": "First training right now — 3 minutes",
+      "sub": "Start while your result is fresh.",
+      "planTitle": "Today's plan · 10 min",
+      "now": "Now",
+      "later": "Later today",
+      "weakTag": "Weak zone",
+      "start": "Start the first training",
+      "note": "About 3 minutes · stop anytime"
+    }
   },
   "games": {
     "_todo": "subagent B",

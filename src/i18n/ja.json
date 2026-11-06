@@ -99,7 +99,61 @@
     "seconds": "{n}秒"
   },
   "funnel": {
-    "_todo": "subagent A"
+    "landing": {
+      "eyebrow": "無料・60秒",
+      "title": "あなたの脳の{weak}を見つけて、1日10分で鍛えよう",
+      "titleWeak": "“弱点”",
+      "sub": "60秒の診断・4つの能力・無料",
+      "chipsLabel": "測定する4つの能力",
+      "illoLabel": "弱点が強調された能力プロフィールが、1日10分のプランにつながります",
+      "start": "診断をはじめる",
+      "continue": "プランを続ける",
+      "note": "登録不要・お支払いなし・CC-146のコンセプト",
+      "loopLabel": "しくみ",
+      "loop1": "60秒の診断",
+      "loop2": "1日10分のトレーニング",
+      "loop3": "30日後に再テスト"
+    },
+    "quiz": {
+      "title": "60秒診断",
+      "sub": "4つの短い課題・各15秒"
+    },
+    "teaser": {
+      "eyebrow": "あなたの能力プロフィール",
+      "title": "あなたの弱点：{ability}",
+      "scoresLabel": "能力別スコア（0〜100）",
+      "startTitle": "結果はゴールではなく、スタートです",
+      "startBody": "あなたの弱点「{ability}」に合わせて、4週間のプランを作成しました。",
+      "next": "プランを見る"
+    },
+    "paywall": {
+      "eyebrow": "あなた専用",
+      "title": "あなた専用の4週間トレーニングプラン",
+      "weakLabel": "弱点",
+      "perDay": "1日10分",
+      "focus": "3つのうち2つの課題で「{ability}」を鍛えます",
+      "retest": "30日後に再テストして、変化を確認できます",
+      "timelineLabel": "現在の{ability}：{score}。30日後は再テストで測定します。",
+      "now": "現在",
+      "week": "{n}週目",
+      "day30": "30日後",
+      "timelineNote": "数値はお約束しません。30日後の再テストで、実際の変化を測ります。",
+      "trial": "お試し",
+      "then": "その後 {price}／4週間",
+      "start": "プランをはじめる",
+      "demoNote": "デモのため、お支払いは発生しません"
+    },
+    "onboarding": {
+      "eyebrow": "プランの準備ができました",
+      "title": "さっそく最初のトレーニング（3分）",
+      "sub": "結果が新しいうちに始めましょう。",
+      "planTitle": "今日のプラン・10分",
+      "now": "今すぐ",
+      "later": "今日中に",
+      "weakTag": "弱点",
+      "start": "最初のトレーニングをはじめる",
+      "note": "約3分・いつでも中断できます"
+    }
   },
   "games": {
     "_todo": "subagent B",
