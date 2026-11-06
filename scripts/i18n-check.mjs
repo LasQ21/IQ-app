@@ -74,14 +74,41 @@ for (const file of walk(srcDir)) {
 
 // compliance: no medical promises / IQ-gain claims outside the disclaimer
 const ALLOW = new Set(['common.disclaimer']);
+// Note: JS `\w` is ASCII-only even with the `u` flag, so Cyrillic word tails use `\p{L}*`.
+const COGNITIVE_JA = '(記憶力?|注意力|集中力|論理力|処理速度|認知機能|脳機能|脳|頭|知能|能力)';
+const COGNITIVE_UK = '(пам\\p{L}*|уваг\\p{L}*|концентрац\\p{L}*|логік\\p{L}*|мислен\\p{L}*|інтелект\\p{L}*|мозок|мозку|когнітивн\\p{L}*)';
+const COGNITIVE_EN = '(memory|attention|focus|concentration|logic|brain|intelligence|cognition|cognitive\\s+\\w+|mental\\s+\\w+)';
 const BANNED = [
-  /IQ\s*(が|を)?\s*(上が|上げ|向上|アップ)/,
-  /認知症(を|の)?(予防|防)/,
-  /підвищ\w*\s+(ваш\w*\s+)?IQ/i,
-  /деменц/i,
-  /(raise|boost|increase|improve)s?\s+(your\s+)?IQ/i,
-  /dementia/i,
-  /IQ\s*↑/,
+  // any language: an IQ result / IQ gain
+  /IQ\s*[=＝:：]\s*\d/,
+  /IQ\s*\d{2,3}/,
+  /IQ\s*(↑|⬆|\+)/,
+  // ja
+  /IQ\s*(が|を)?\s*(上が|上げ|向上|アップ|伸ば|伸び)/,
+  /認知症/,
+  /ボケ防止|物忘れ(を|の)?(防|予防|改善)/,
+  /(脳|頭)(の)?(老化|衰え)/,
+  /頭(が|を)?(良く|よく)/,
+  /賢くな/,
+  new RegExp(`${COGNITIVE_JA}(が|を|の)?\\s*(向上|改善|アップ|上が|上げ|伸ば|若返)`, 'u'),
+  /改善(し|され|でき)ます/,
+  /臨床|医学的|科学的に(証明|実証)|効果が(証明|実証)/,
+  // uk
+  /підвищ\p{L}*\s+(ваш\p{L}*\s+)?IQ/iu,
+  /деменц/iu,
+  /розумніш/iu,
+  /клінічн/iu,
+  /науково\s+(доведен|підтвердж)/iu,
+  /старіння\s+мозку|когнітивн\p{L}*\s+(спад|зниж|занепад|погірш)/iu,
+  new RegExp(`(покращ|підвищ|посил|розвива|прокача)\\p{L}*\\s+(ваш\\p{L}*\\s+|свою\\s+|свій\\s+)?${COGNITIVE_UK}`, 'iu'),
+  // en
+  /(raise|boost|increase|improve|enhance)s?\s+(your\s+)?IQ/i,
+  /dementia|alzheimer/i,
+  /smarter/i,
+  /clinically/i,
+  /(scientifically|clinically|medically)\s+(proven|tested|backed)|proven\s+to/i,
+  /cognitive\s+decline|brain\s+(aging|ageing)/i,
+  new RegExp(`(improve|boost|enhance|sharpen|increase|raise)s?\\s+(your\\s+)?${COGNITIVE_EN}`, 'i'),
 ];
 for (const l of LANGS) {
   for (const [key, val] of Object.entries(flat[l])) {
