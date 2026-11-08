@@ -22,3 +22,12 @@
     opacity: 1;
   }
 }
+@media (prefers-reduced-motion: reduce) {
+  .animate .line,
+  .animate .area,
+  .animate .dot {
+    animation: none;
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+}

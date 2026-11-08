@@ -4,8 +4,14 @@
   font-size: 0.95rem;
   font-weight: 500;
 }
+/* prompt row + two body gaps + the gap between option rows */
+.card,
+.options {
+  --stroop-free: calc(var(--game-avail, 100vh) - 64px);
+  --stroop-opt: clamp(52px, calc(var(--stroop-free) * 0.25), 76px);
+}
 .card {
-  height: 150px;
+  height: clamp(72px, calc(var(--stroop-free) - 2 * var(--stroop-opt)), 150px);
   display: grid;
   place-items: center;
   background: var(--card);
@@ -39,7 +45,7 @@
   gap: 12px;
 }
 .option {
-  min-height: 76px;
+  min-height: var(--stroop-opt, 76px);
   border: 0;
   border-radius: var(--radius);
   color: #fff;

@@ -60,6 +60,11 @@
 .padded {
   padding: 16px 16px 24px;
 }
+/* While a game is being played, only the game is on screen: the jury strip and the screen's own
+   headings step aside so every control fits (iPhone 13 Safari 390×664, iPhone SE 375×553). */
+.screen:has([data-testid='game']) > :not(:has([data-testid='game'])) {
+  display: none;
+}
 @keyframes enter {
   from {
     opacity: 0;

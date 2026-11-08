@@ -51,7 +51,10 @@
     "paywall": {
       "reason": "25% “too expensive”",
       "metric": "Sell the plan and progress, not a report",
-      "goal": "Value visible within 4 weeks"
+      "goal": "Value visible within 4 weeks",
+      "was": "Was: “Get my IQ report”",
+      "now": "Now: a plan for the weak spot",
+      "ab": "A/B on 20% of traffic"
     },
     "onboarding": {
       "reason": "25% “didn’t use it”",
@@ -112,7 +115,13 @@
       "loopLabel": "How it works",
       "loop1": "60-second test",
       "loop2": "10 min a day",
-      "loop3": "Re-test on day 30"
+      "loop3": "Re-test on day 30",
+      "resume": "Continue",
+      "restart": "Take the test again",
+      "restartTitle": "Start over?",
+      "restartBody": "Progress on this device will be reset.",
+      "restartYes": "Reset and start",
+      "restartNo": "Cancel"
     },
     "quiz": {
       "title": "60-second test",
@@ -141,7 +150,10 @@
       "trial": "Trial",
       "then": "then {price} / 4 weeks",
       "start": "Start my plan",
-      "demoNote": "Demo: no payment is taken"
+      "demoNote": "Demo: no payment is taken",
+      "profileYours": "Your 4-ability profile is already yours",
+      "perDayPrice": "≈ {price} per day",
+      "cancel": "Cancel anytime (until the day before renewal) · Legal notice (demo)"
     },
     "onboarding": {
       "eyebrow": "Your plan is ready",
@@ -152,7 +164,8 @@
       "later": "Later today",
       "weakTag": "Weak spot",
       "start": "Start the first exercise",
-      "note": "About 3 minutes · stop anytime"
+      "note": "About 3 minutes · stop anytime",
+      "warmup": "Warm-up: feel the level grow"
     }
   },
   "games": {
@@ -205,7 +218,7 @@
       "howto": "Repeat the flash sequence. 2 correct in a row — level up; a mistake — level down (Lv 2–9).",
       "round": "Round {n}/{total}",
       "level": "Level",
-      "lv": "Lv {n}",
+      "lv": "{n}",
       "up": "Lv {n} ↑",
       "down": "Lv {n} ↓"
     }
@@ -243,7 +256,9 @@
       "sparkAria": "Index history: from {from} to {to}",
       "explain": "The Index grows when you train regularly and perform well. Skipped days slow it down.",
       "ctaOnboarding": "Next: a daily reminder",
-      "ctaToday": "Back to today’s plan"
+      "ctaToday": "Back to today’s plan",
+      "before": "Before training",
+      "after": "After training"
     },
     "line": {
       "title": "A reminder that brings you back",
@@ -303,6 +318,7 @@
       "resetNote": "Clears all progress on this device and returns to the start.",
       "cancel": "Cancel",
       "confirm": "Yes, reset"
-    }
+    },
+    "streakStarted": "Streak started"
   }
 }

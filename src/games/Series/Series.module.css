@@ -53,7 +53,8 @@
   gap: 12px;
 }
 .option {
-  min-height: 76px;
+  /* prompt + sequence card + gaps above the 2×2 options */
+  min-height: clamp(52px, calc((var(--game-avail, 100vh) - 172px) / 2), 76px);
   border-radius: var(--radius);
   border: 2px solid var(--border);
   background: var(--card);

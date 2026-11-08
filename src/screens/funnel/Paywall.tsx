@@ -6,10 +6,12 @@ import { Button } from '../../ui/Button';
 import { Card } from '../../ui/Card';
 import { Disclaimer } from '../../ui/Disclaimer';
 import { Screen } from '../../ui/Screen';
-import { ClockIcon, RepeatIcon, TargetIcon } from './icons';
+import { ClockIcon, OwnedIcon, RepeatIcon, TargetIcon } from './icons';
 import s from './funnel.module.css';
 
 const WEEKS = [1, 2, 3, 4];
+/** One 4-week period = 28 daily sessions. */
+const DAYS_4W = 28;
 
 /** Sells the plan and the visible progress, not a one-off report. No payment step in the demo. */
 export function Paywall() {
@@ -20,6 +22,7 @@ export function Paywall() {
   const weak = baseline.weakest;
   const weakName = t(`common.abilities.${weak}`);
   const now = Math.round(baseline.scores[weak]);
+  const perDay = formatJPY(Math.round(PRICE_JPY_4W / DAYS_4W));
 
   const start = () => {
     dispatch({ type: 'setStage', stage: 'onboarding' });
@@ -44,6 +47,12 @@ export function Paywall() {
           </span>
         </div>
         <ul className={s.features}>
+          <li className={`${s.feature} ${s.featureOwned}`} data-testid="paywall-profile-yours">
+            <span className={s.featureIcon}>
+              <OwnedIcon />
+            </span>
+            {t('funnel.paywall.profileYours')}
+          </li>
           <li className={s.feature}>
             <span className={s.featureIcon}>
               <ClockIcon />
@@ -99,26 +108,42 @@ export function Paywall() {
         <p className="muted small">{t('funnel.paywall.timelineNote')}</p>
       </Card>
 
-      <Card className={s.price} data-testid="paywall-price">
-        <div className={s.priceMain}>
-          <span className="muted small">{t('funnel.paywall.trial')}</span>
-          <span className={s.priceBig}>{formatJPY(TRIAL_JPY)}</span>
-        </div>
-        <div className={s.priceThen}>
-          {t('funnel.paywall.then', { price: formatJPY(PRICE_JPY_4W) })}
-          <br />
-          {t('common.illustrative')}
-        </div>
-      </Card>
+      {state.juryMode && (
+        <aside className={s.juryChange} aria-label={t('common.jury')} data-testid="paywall-jury-change">
+          <span className={s.juryWas}>{t('jury.paywall.was')}</span>
+          <span>
+            <span aria-hidden="true">→ </span>
+            <b>{t('jury.paywall.now')}</b>
+          </span>
+          <span className={s.juryAb}>{t('jury.paywall.ab')}</span>
+        </aside>
+      )}
 
-      <div className={`${s.cta} ${s.sticky}`}>
+      {/* The price lives inside the sticky bar, right above the button, so the bar can never cover it. */}
+      <div className={`${s.cta} ${s.sticky} ${s.payBar}`}>
+        <div className={s.price} data-testid="paywall-price">
+          <div className={s.priceMain}>
+            <span className="muted small">{t('funnel.paywall.trial')}</span>
+            <span className={s.priceBig}>{formatJPY(TRIAL_JPY)}</span>
+          </div>
+          <div className={s.priceThen}>
+            <span>{t('funnel.paywall.then', { price: formatJPY(PRICE_JPY_4W) })}</span>
+            <b className={s.perDay} data-testid="paywall-per-day">
+              {t('funnel.paywall.perDayPrice', { price: perDay })}
+            </b>
+          </div>
+        </div>
         <Button block className={s.ctaBtn} onClick={start} data-testid="paywall-start">
           {t('funnel.paywall.start')}
         </Button>
         <p className={s.note}>{t('funnel.paywall.demoNote')}</p>
       </div>
 
-      <Disclaimer />
+      <div className={s.legal}>
+        <p>{t('funnel.paywall.cancel')}</p>
+        <p>{t('common.illustrative')}</p>
+        <Disclaimer />
+      </div>
     </Screen>
   );
 }

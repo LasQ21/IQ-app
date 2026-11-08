@@ -87,3 +87,13 @@ export function SparkIcon() {
     </svg>
   );
 }
+
+/** Check in a circle: something the person already has (the 4-ability profile). */
+export function OwnedIcon() {
+  return (
+    <svg {...common}>
+      <circle cx="12" cy="12" r="8.5" />
+      <path d="M8.5 12.2l2.4 2.4 4.6-5" />
+    </svg>
+  );
+}
