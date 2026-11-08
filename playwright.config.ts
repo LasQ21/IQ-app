@@ -20,6 +20,9 @@ const baseURL = `http://localhost:${PORT}`;
 export default defineConfig({
   testDir: 'tests',
   timeout: 360_000,
+  // Under full-suite load (4 workers, 4 browser contexts in retest-stability, two vite builds in sw-update) a render
+  // can take > 5 s of real time; the app itself transitions synchronously.
+  expect: { timeout: 10_000 },
   use: {
     baseURL,
     viewport: { width: 390, height: 844 },
