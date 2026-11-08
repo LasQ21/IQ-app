@@ -10,7 +10,11 @@ Plan and council findings: `docs/ITERATION-2-PLAN.md`; acceptance review: `docs/
   10 s warm-up). `?fast=1` turns on the fast mode alone. Each screen shows *problem · metric · goal* with the deck numbers.
 - **Loop economics:** `#/economics` (or `?econ=1`), linked from the jury strip on Landing, Paywall, Profile and Re-test.
 - Vercel project `cc146-wittio` (team *The best team*). Iteration 2 was built on branch `claude/dazzling-hopper-4w5znp`
-  (preview deployments) and promoted to production after the council's acceptance. The URL — and therefore the QR codes — did not change.
+  (preview deployments) and, after the council's acceptance, deployed to production from commit `708af96`
+  (deployment `dpl_5DCpSUgsD9SXzqPZxvbdeMwgSq7U`; the bundle hash matches the locally tested build). The URL — and
+  therefore the QR codes — did not change. **Note:** the project's production branch is still
+  `claude/wittio-retention-loop-4en8i2`; a push there would replace production with the old iteration. Roll back via
+  Vercel → Deployments → the previous production deployment (`c93a7ad`) → "Promote".
 
 ## QR codes (`docs/demo/`)
 | File | Opens |
