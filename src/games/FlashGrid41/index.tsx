@@ -2,7 +2,8 @@ import { useCallback, useRef, useState } from 'react';
 import { nextLevel } from '../../engine/adaptive';
 import { demoNow } from '../../engine/days';
 import { useT } from '../../i18n/useT';
-import { FLASH_BANK, FLASH_MAX, FLASH_MIN, FLASH_N } from '../banks';
+import { FLASH_FIRST_LEVEL, FLASH_TIMING } from '../../engine/timing';
+import { FLASH_MAX, FLASH_MIN, FLASH_N, flashBank } from '../banks';
 import { GameFrame } from '../shared/GameFrame';
 import { SeqGrid } from '../shared/SeqGrid';
 import { clampInt, mean, useEnd } from '../shared/hooks';
@@ -11,19 +12,18 @@ import type { GameProps } from '../types';
 import s from './FlashGrid41.module.css';
 
 const TRAINING_TRIALS = 10;
-const TIMING = { onMs: 360, stepMs: 480, leadMs: 450 };
 const LEVELS = Array.from({ length: FLASH_MAX - FLASH_MIN + 1 }, (_, i) => FLASH_MIN + i);
 
 /**
  * FlashGrid №41 (memory, adaptive). A sequence of `level` cells flashes on a 4×4 grid; repeat it.
- * Level 2–9 via the 2-up/1-down staircase `nextLevel`. Starts at `startLevel ?? 3`.
+ * Level 2–9 via the 2-up/1-down staircase `nextLevel`. Starts at `startLevel ?? 3` (Play: first session 3, later the last final level − 1).
  * rawScore = number of correct sequences; level = final level (after the last answer);
  * meta.maxLevel = highest level reached (played); meta.accuracy = correct / total.
  */
-export function FlashGrid41({ mode, form, onDone, durationMs, startLevel, demoDayOffset = 0 }: GameProps) {
+export function FlashGrid41({ mode, form, seed, onDone, durationMs, startLevel, demoDayOffset = 0 }: GameProps) {
   const t = useT();
   const { end } = useEnd(onDone);
-  const start = clampInt(startLevel ?? 3, FLASH_MIN, FLASH_MAX, 3);
+  const start = clampInt(startLevel ?? FLASH_FIRST_LEVEL, FLASH_MIN, FLASH_MAX, FLASH_FIRST_LEVEL);
   const streak = useRef(0);
   const [shown, setShown] = useState({ level: start, dir: 0 as -1 | 0 | 1, n: 0 });
 
@@ -57,13 +57,13 @@ export function FlashGrid41({ mode, form, onDone, durationMs, startLevel, demoDa
   );
 
   const g = useSeqSession({
-    bank: FLASH_BANK[form],
+    bank: flashBank(form, seed),
     startLen: start,
     advance,
     mode,
     durationMs,
     trainingTrials: TRAINING_TRIALS,
-    timing: TIMING,
+    timing: FLASH_TIMING,
     onFinish,
   });
 

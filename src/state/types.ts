@@ -51,6 +51,7 @@ export interface GameResult {
     meanRtMs?: number;
     maxLevel?: number;
     recalled?: number; // sequence games: cells recalled in order (incl. correct prefixes of failed trials)
+    durationMs?: number; // session time actually played (ms); rate-based scores (Series, short Corsi runs) use it
     mode?: 'assessment' | 'training';
   };
 }
@@ -66,6 +67,10 @@ export type Stage = 'landing' | 'quiz' | 'teaser' | 'paywall' | 'onboarding' | '
 export interface PlanItem {
   gameId: GameId;
   done: boolean;
+  /** 'second' = second round of the weak-zone game today (other generated items / harder start). */
+  variant?: 'second';
+  /** Start level (FlashGrid) or Series tier for this card; absent = the game's default. */
+  startLevel?: number;
 }
 
 export interface TodayPlan {
