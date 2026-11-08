@@ -3,6 +3,7 @@ import { AssessmentRunner, type AssessmentPhase } from '../../app/AssessmentRunn
 import { navigate, PATHS } from '../../app/router';
 import { DEMO_JUMP_DAYS } from '../../config';
 import { classifyChange } from '../../engine';
+import { joinSentences } from '../../i18n/typography';
 import { useT } from '../../i18n/useT';
 import { useStore } from '../../state/store';
 import { Button } from '../../ui/Button';
@@ -112,7 +113,7 @@ export function Retest() {
           then={prev.isBaseline ? t('progress.retest.legendThen', { n: gap }) : t('progress.retest.legendPrev')}
         />
         <p className="small muted">
-          {t('progress.retest.honest')} {t('progress.retest.rangeNote')}
+          {joinSentences(state.lang, t('progress.retest.honest'), t('progress.retest.rangeNote'))}
         </p>
       </Card>
 

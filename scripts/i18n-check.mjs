@@ -1,5 +1,6 @@
-// Checks: every key exists in ja/uk/en; every literal t('…') key used in src exists;
-// no medical / IQ-gain promises; lists ja strings marked `_review` for a native-speaker pass.
+// Checks: every key exists in ja/uk/en; every literal t('…') key used in src exists (and gets vars if it has
+// placeholders); no medical / IQ-gain promises; banned ja words; jury strips carry numbers and no "—";
+// zero-width spaces only in ja; lists ja strings marked `_review` for a native-speaker pass.
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 
@@ -26,6 +27,20 @@ let errors = 0;
 const flat = {};
 const reviewJa = { list: [] };
 for (const l of LANGS) flat[l] = flatten(dicts[l], '', {}, l === 'ja' ? reviewJa : { list: [] });
+
+// Zero-width spaces (U+200B) mark phrase breaks in ja headings (Safari fallback for `word-break: auto-phrase`).
+// They are invisible, so they must never hide a banned word from the checks below: compare on the stripped text.
+const ZWSP = /​/g;
+const plain = (s) => String(s ?? '').replace(ZWSP, '');
+for (const l of LANGS) {
+  if (l === 'ja') continue;
+  for (const [key, val] of Object.entries(flat[l])) {
+    if (String(val).includes('​')) {
+      console.error(`zero-width space outside ja: ${l}: ${key}`);
+      errors++;
+    }
+  }
+}
 
 const all = new Set(LANGS.flatMap((l) => Object.keys(flat[l])));
 for (const key of [...all].sort()) {
@@ -67,6 +82,42 @@ for (const file of walk(srcDir)) {
   for (const m of code.matchAll(/\bt\(\s*['"]([a-zA-Z0-9_.]+)['"]/g)) {
     if (!all.has(m[1])) {
       console.error(`unknown key used in ${file.replace(srcDir, 'src')}: ${m[1]}`);
+      errors++;
+    }
+  }
+  // a string with {placeholders} called without vars would show the raw "{name}" on screen
+  // (`t('…').split('{name}')` is the intended way to wrap a placeholder in markup)
+  for (const m of code.matchAll(/\bt\(\s*['"]([a-zA-Z0-9_.]+)['"]\s*\)(?!\s*\.split\()/g)) {
+    const used = LANGS.filter((l) => /\{\w+\}/.test(String(flat[l][m[1]] ?? '')));
+    if (used.length) {
+      console.error(`t('${m[1]}') without vars in ${file.replace(srcDir, 'src')}, but ${used.join('/')} has placeholders`);
+      errors++;
+    }
+  }
+}
+
+// jury strips: deck numbers only — no "—" placeholders, every metric and goal carries a number
+for (const l of LANGS) {
+  for (const [key, val] of Object.entries(flat[l])) {
+    if (!key.startsWith('jury.')) continue;
+    if (/—|^\s*[–-]\s*$/.test(val)) {
+      console.error(`jury uses "—" ${l}: ${key} → "${val}"`);
+      errors++;
+    }
+    if (/\.(metric|goal)$/.test(key) && !/\d/.test(val)) {
+      console.error(`jury without a number ${l}: ${key} → "${val}"`);
+      errors++;
+    }
+  }
+}
+
+// ja: words that read as medical or effect claims (allowed only inside the disclaimer)
+const BANNED_JA_WORDS = ['診断', '効果', '改善', '脳年齢', '予防'];
+for (const [key, val] of Object.entries(flat.ja)) {
+  if (key === 'common.disclaimer') continue;
+  for (const w of BANNED_JA_WORDS) {
+    if (plain(val).includes(w)) {
+      console.error(`banned ja word ${w}: ${key} → "${plain(val)}"`);
       errors++;
     }
   }
@@ -114,7 +165,7 @@ for (const l of LANGS) {
   for (const [key, val] of Object.entries(flat[l])) {
     if (ALLOW.has(key)) continue;
     for (const re of BANNED) {
-      if (re.test(val)) {
+      if (re.test(plain(val))) {
         console.error(`compliance ${l}: ${key} matches ${re} → "${val}"`);
         errors++;
       }
