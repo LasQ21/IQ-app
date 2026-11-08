@@ -6,6 +6,7 @@ import { ABILITIES } from '../../state/types';
 import { Button } from '../../ui/Button';
 import { Card } from '../../ui/Card';
 import { Screen } from '../../ui/Screen';
+import { EconomicsLink } from '../economics';
 import { AbilityIcon } from './icons';
 import s from './funnel.module.css';
 
@@ -82,6 +83,7 @@ export function Landing() {
 
   return (
     <Screen juryKey="landing" className={s.root}>
+      <EconomicsLink from="landing" />
       <Card className={s.hero}>
         <HeroIllustration label={t('funnel.landing.illoLabel')} />
       </Card>

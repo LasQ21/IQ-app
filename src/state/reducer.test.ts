@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { initialState, pushHistory, reducer, todayOf } from './reducer';
-import type { AppState, GameId, GameResult } from './types';
-import { addDays } from '../engine';
+import { initialState, pushHistory, reducer, simulatedIndexGain, simulateIndexDay, todayOf } from './reducer';
+import type { Ability, AppState, GameId, GameResult } from './types';
+import { ABILITIES } from './types';
+import { addDays, buildProfile, errorBand, weakestStable } from '../engine';
+import { TRAINING_PLAN_GAMES_PER_DAY } from '../config';
 
 const ABILITY = { stroop: 'attention', corsi: 'memory', series: 'logic', gonogo: 'speed', flash41: 'memory' } as const;
 
@@ -96,5 +98,117 @@ describe('reducer', () => {
     expect(s.baseline).toBeUndefined();
     expect(s.lang).toBe('uk');
     expect(s.juryMode).toBe(true);
+  });
+
+  it('reset keeps the fast jury mode', () => {
+    const s = reducer({ ...afterBaseline(), juryMode: true, fastMode: true }, { type: 'reset' });
+    expect(s.fastMode).toBe(true);
+  });
+});
+
+const formB = (rs: GameResult[]) => rs.map((r) => ({ ...r, form: 'B' as const }));
+
+describe('reducer · honest re-test', () => {
+  it('stores the measured re-test scores untouched', () => {
+    let s = afterBaseline();
+    s = reducer(s, { type: 'demoAdvance', days: 30 });
+    const results = formB(quiz(0.6));
+    s = reducer(s, { type: 'assessmentDone', kind: 'retest', results });
+    expect(s.retest!.scores).toEqual(buildProfile(results).scores);
+    expect(s.current!.scores).toEqual(buildProfile(results).scores);
+  });
+
+  it('identical skill → the weak zone does not move', () => {
+    let s = afterBaseline();
+    const weak = s.current!.weakest;
+    s = reducer(s, { type: 'demoAdvance', days: 30 });
+    s = reducer(s, { type: 'assessmentDone', kind: 'retest', results: formB(quiz(0.8)) });
+    expect(s.current!.weakest).toBe(weak);
+    expect(s.retest!.weakest).toBe(weak);
+  });
+
+  it('a new candidate within the error band keeps the previous weak zone', () => {
+    const results = formB(quiz(0.8));
+    const next = buildProfile(results);
+    // previous weak zone = the ability closest to the new minimum (a gap inside the band)
+    const others = ABILITIES.filter((a) => a !== next.weakest);
+    const prevWeak = others.reduce((b, a) => (next.scores[a] < next.scores[b] ? a : b));
+    const gap = next.scores[prevWeak] - next.scores[next.weakest];
+    const band = Math.sqrt(errorBand(prevWeak) ** 2 + errorBand(next.weakest) ** 2) / Math.SQRT2;
+    expect(gap).toBeLessThanOrEqual(band); // precondition
+
+    const s0 = afterBaseline();
+    const s = reducer({ ...s0, current: { ...s0.current!, weakest: prevWeak } }, { type: 'assessmentDone', kind: 'retest', results });
+    expect(s.current!.weakest).toBe(prevWeak);
+    // plan follows the (unchanged) weak zone
+    expect(s.plan!.items).toHaveLength(3);
+  });
+
+  it('a clearly weaker ability (outside the band) becomes the new weak zone and the plan follows', () => {
+    // logic collapses, everything else strong
+    const results = formB((['stroop', 'corsi', 'series', 'gonogo'] as GameId[]).map((g) => res(g, g === 'series' ? 0 : 1)));
+    const next = buildProfile(results);
+    expect(next.weakest).toBe('logic');
+    const prevWeak: Ability = 'attention';
+    expect(next.scores.attention - next.scores.logic).toBeGreaterThan(errorBand('logic')); // precondition
+    const s0 = afterBaseline();
+    const prev = { ...s0.current!, weakest: prevWeak };
+    const s = reducer({ ...s0, current: prev }, { type: 'assessmentDone', kind: 'retest', results });
+    expect(s.current!.weakest).toBe(weakestStable(prev, next));
+    expect(s.current!.weakest).toBe('logic');
+    expect(s.plan!.items.some((i) => i.gameId === 'series')).toBe(true);
+  });
+
+  it('training afterwards does not flip the weak zone on noise', () => {
+    const s0 = afterBaseline();
+    const training = res('flash41', 0.8, {}, 'training');
+    const live = buildProfile([...s0.results, training].slice(s0.profileFrom ?? 0));
+    const others = ABILITIES.filter((a) => a !== live.weakest);
+    const prevWeak = others.reduce((b, a) => (live.scores[a] < live.scores[b] ? a : b));
+    const band = Math.sqrt(errorBand(prevWeak) ** 2 + errorBand(live.weakest) ** 2) / Math.SQRT2;
+    expect(live.scores[prevWeak] - live.scores[live.weakest]).toBeLessThanOrEqual(band); // precondition
+    const s = reducer({ ...s0, current: { ...s0.current!, weakest: prevWeak } }, { type: 'trainingDone', result: training, durationMs: 45_000 });
+    expect(s.current!.weakest).toBe(prevWeak);
+  });
+});
+
+describe('reducer · index pace', () => {
+  it('simulated gain follows the iteration-2 formula', () => {
+    expect(simulatedIndexGain(400)).toBeCloseTo(7, 5); // room clamped to 1
+    expect(simulatedIndexGain(540)).toBeCloseTo(7 * (460 / 600), 5);
+    expect(simulatedIndexGain(999)).toBeCloseTo(7 * 0.05, 5);
+    const day = simulateIndexDay(540) - 540;
+    expect(day).toBeGreaterThanOrEqual(10);
+    expect(day).toBeLessThanOrEqual(18);
+  });
+
+  it('"+30 days" drifts the index at a realistic, slowing pace (< 1000)', () => {
+    const s0 = afterBaseline();
+    const start = s0.current!.index;
+    const s = reducer(s0, { type: 'demoAdvance', days: 30 });
+    let expected = start;
+    for (let i = 0; i < 30; i++) expected = simulateIndexDay(expected);
+    expect(s.current!.index).toBe(expected);
+    expect(s.current!.index).toBeLessThan(1000);
+    const pts = s.indexHistory.map((p) => p.index);
+    const steps = pts.slice(1).map((v, i) => v - pts[i]);
+    expect(steps.every((d) => d >= 0)).toBe(true);
+    // slows down: last day's gain ≤ first simulated day's gain
+    expect(steps[steps.length - 1]).toBeLessThanOrEqual(steps[1]);
+    // abilities are not touched by the simulation
+    expect(s.current!.scores).toEqual(s0.current!.scores);
+  });
+
+  it(`only the first ${TRAINING_PLAN_GAMES_PER_DAY} games of a day move the index`, () => {
+    let s = afterBaseline();
+    for (let i = 0; i < TRAINING_PLAN_GAMES_PER_DAY; i++) {
+      s = reducer(s, { type: 'trainingDone', result: res('flash41', 0.8, {}, 'training'), durationMs: 45_000 });
+      expect(s.lastIndexDelta).toBeGreaterThan(0);
+    }
+    const before = s.current!.index;
+    s = reducer(s, { type: 'trainingDone', result: res('flash41', 0.8, {}, 'training'), durationMs: 45_000 });
+    expect(s.lastIndexDelta).toBe(0);
+    expect(s.current!.index).toBe(before);
+    expect(s.indexGamesByDay?.[todayOf(s)]).toBe(TRAINING_PLAN_GAMES_PER_DAY + 1);
   });
 });

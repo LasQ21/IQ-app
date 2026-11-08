@@ -7,6 +7,7 @@ import { Button } from '../../ui/Button';
 import { Card } from '../../ui/Card';
 import { Radar } from '../../ui/Radar';
 import { Screen } from '../../ui/Screen';
+import { EconomicsLink } from '../economics';
 import { ArrowIcon } from './icons';
 import { RadarLegend } from './parts';
 import s from './progress.module.css';
@@ -26,6 +27,7 @@ export function Profile() {
 
   return (
     <Screen juryKey="profile" className={s.page}>
+      <EconomicsLink from="profile" />
       <h1>{t('progress.profile.title')}</h1>
 
       <Card className="stack" data-testid="profile-radar">

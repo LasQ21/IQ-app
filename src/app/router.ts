@@ -62,4 +62,5 @@ export const PATHS = {
   retest: '/retest',
   report: '/report',
   profile: '/profile',
+  economics: '/economics',
 } as const;
