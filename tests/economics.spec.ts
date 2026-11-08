@@ -6,7 +6,7 @@ import { numbersIn, setRange, watchPage } from './helpers';
  * (plan S2-3; engine/economics.ts). Depends on S2. Test ids the screen must expose:
  *   econ-opened  <input type="range"> "Opened the product after paying", 45–65 (%; a 0.45–0.65 fraction also works)
  *   econ-churn   <input type="range"> "Lower churn between charges", 0–20
- *   econ-ltvcac  LTV/CAC, e.g. "1.09×"           econ-romi  ROMI, e.g. "+9%"
+ *   econ-ltvCac  LTV/CAC, e.g. "1.09×"           econ-romi  ROMI, e.g. "+9%"
  *   econ-charge1 charge 1 share, e.g. "38%"       econ-charge2 charge 2 share, e.g. "22%"
  */
 const PRESETS: { opened: number; churn: number; ltvCac: string; romi: string }[] = [
@@ -24,7 +24,7 @@ test.describe('economics', () => {
     for (const p of PRESETS) {
       await setRange(page, 'econ-opened', p.opened);
       await setRange(page, 'econ-churn', p.churn);
-      await expect.poll(async () => numbersIn((await page.getByTestId('econ-ltvcac').textContent()) ?? ''), `LTV/CAC at ${p.opened}% / ${p.churn}%`).toContain(p.ltvCac);
+      await expect.poll(async () => numbersIn((await page.getByTestId('econ-ltvCac').textContent()) ?? ''), `LTV/CAC at ${p.opened}% / ${p.churn}%`).toContain(p.ltvCac);
       const romi = (await page.getByTestId('econ-romi').textContent()) ?? '';
       expect(romi, `ROMI at ${p.opened}% / ${p.churn}%`).toContain('+');
       expect(numbersIn(romi)).toContain(p.romi);
@@ -40,7 +40,7 @@ test.describe('economics', () => {
   test('works without a baseline and in all languages', async ({ page }) => {
     for (const lang of ['ja', 'uk', 'en']) {
       await page.goto(`/?lang=${lang}#/economics`);
-      await expect(page.getByTestId('econ-ltvcac')).toBeVisible();
+      await expect(page.getByTestId('econ-ltvCac')).toBeVisible();
       expect(await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)).toBeLessThanOrEqual(0);
     }
   });
@@ -48,6 +48,6 @@ test.describe('economics', () => {
   test('the landing jury strip links to Loop economics', async ({ page }) => {
     await page.goto('/?lang=en&jury=1');
     await page.locator('[data-screen="landing"] aside a[href="#/economics"]').click();
-    await expect(page.getByTestId('econ-ltvcac')).toBeVisible();
+    await expect(page.getByTestId('econ-ltvCac')).toBeVisible();
   });
 });

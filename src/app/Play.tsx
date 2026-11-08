@@ -6,6 +6,7 @@ import { trainingSeed } from '../games/banks';
 import { GAMES } from '../games';
 import { useT } from '../i18n/useT';
 import { useStore } from '../state/store';
+import { setPlaying } from '../playing';
 import type { GameId, GameResult } from '../state/types';
 import { Button } from '../ui/Button';
 import { Card } from '../ui/Card';
@@ -27,6 +28,10 @@ export function Play() {
   useEffect(() => {
     if (!def) navigate(PATHS.today, { replace: true });
   }, [def]);
+  useEffect(() => {
+    setPlaying(phase === 'play');
+    return () => setPlaying(false);
+  }, [phase]);
 
   if (!def) return null;
   // Training never sees assessment items: generated items ('T'), seeded per demo-day and slot of the day.

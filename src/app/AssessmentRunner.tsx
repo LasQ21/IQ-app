@@ -4,6 +4,7 @@ import { ASSESSMENT_ORDER, GAMES } from '../games';
 import type { GameProps } from '../games/types';
 import { useT } from '../i18n/useT';
 import { useStore } from '../state/store';
+import { setPlaying } from '../playing';
 import type { GameResult } from '../state/types';
 import { Button } from '../ui/Button';
 import { Card } from '../ui/Card';
@@ -36,6 +37,10 @@ export function AssessmentRunner({
   const id = ASSESSMENT_ORDER[step];
   const def = GAMES[id];
   const Game = def.component;
+  useEffect(() => {
+    setPlaying(phase === 'play');
+    return () => setPlaying(false);
+  }, [phase]);
   const durationMs = assessmentMs(state.fastMode);
 
   const phaseCb = useRef(onPhaseChange);
