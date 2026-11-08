@@ -142,7 +142,8 @@ export function Landing() {
         ))}
       </ul>
 
-      <div className={s.cta}>
+      {/* Sticky like Onboarding: the start button stays on screen at 390×664 (Safari with the jury strip) and 375×553. */}
+      <div className={`${s.cta} ${s.sticky}`}>
         {returning ? (
           <>
             <Button block className={s.ctaBtn} onClick={resume} data-testid="landing-continue" data-stage={state.stage}>

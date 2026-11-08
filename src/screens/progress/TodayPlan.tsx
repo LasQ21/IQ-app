@@ -11,8 +11,8 @@ import { abilityOf, daysSinceBaseline, daysUntilRetest, formatDay, livePlan, now
 import { StreakChip } from './parts';
 import s from './progress.module.css';
 
-const MIN_PER_ITEM = 3;
-const PLAN_MIN = 10;
+/** Training sessions last ≤ 45 s (TRAINING_MAX_MS): ~1 min per card, ~3 min for the plan. */
+const PLAN_MIN = 3;
 
 export function TodayPlan() {
   const t = useT();
@@ -88,7 +88,7 @@ export function TodayPlan() {
                     <span className={[s.tag, isWeak ? s.tagWeak : ''].join(' ')}>
                       {joinParts([t(`common.abilities.${ab}`), isWeak && t('progress.weakZone'), it.variant === 'second' && t('progress.today.round2')])}
                     </span>
-                    <span>{t('progress.today.approx', { n: MIN_PER_ITEM })}</span>
+                    <span>{t('progress.today.approx')}</span>
                   </span>
                 </div>
                 <Button

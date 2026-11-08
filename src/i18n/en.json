@@ -62,9 +62,9 @@
       "goal": "Gate ≥ 60%"
     },
     "today": {
-      "reason": "25% “didn’t use it”",
-      "metric": "Sessions per week: 3.0 → 0.5",
-      "goal": "≥ 3 sessions per week"
+      "reason": "Sessions fall 3.0 → 0.5 per week · 15% “it’s repetitive”",
+      "metric": "≥ 3 sessions per week",
+      "goal": "Games rotate daily; difficulty adapts (levels 2–9)"
     },
     "flash41": {
       "reason": "15% “it’s repetitive” · 60% of sessions in 3 of 40 games",
@@ -109,17 +109,17 @@
   "funnel": {
     "landing": {
       "eyebrow": "Free · 60 seconds",
-      "title": "Find your brain’s {weak} and train it 10 minutes a day",
+      "title": "Find your brain’s {weak} and train it with 3 short exercises a day",
       "titleWeak": "weak spot",
       "sub": "Check 4 abilities · no sign-up",
       "chipsLabel": "Abilities we measure",
-      "illoLabel": "An ability profile with a highlighted weak spot turns into a 10-minute daily plan",
+      "illoLabel": "An ability profile with a highlighted weak spot turns into a daily plan of 3 exercises",
       "start": "Start the test",
       "continue": "Continue my plan",
       "note": "No sign-up · no payment · concept by CC-146",
       "loopLabel": "How it works",
       "loop1": "60-second test",
-      "loop2": "10 min a day",
+      "loop2": "3 exercises a day",
       "loop3": "Re-test on day 30",
       "resume": "Continue",
       "restart": "Take the test again",
@@ -130,7 +130,7 @@
     },
     "quiz": {
       "title": "60-second test",
-      "sub": "4 short tasks · 15 s each"
+      "sub": "4 short tasks · {n} s each"
     },
     "teaser": {
       "eyebrow": "Your ability profile",
@@ -144,7 +144,7 @@
       "eyebrow": "Based on your result",
       "title": "Your personal 4-week training plan",
       "weakLabel": "Weak spot",
-      "perDay": "10 minutes a day",
+      "perDay": "3 short exercises a day",
       "focus": "2 of 3 daily exercises target your weak spot ({ability})",
       "retest": "Re-test on day 30 to see what has changed",
       "timelineLabel": "{ability} now: {score}. Day 30: measured by the re-test.",
@@ -158,7 +158,8 @@
       "demoNote": "Demo: no payment is taken",
       "profileYours": "Your 4-ability profile is already yours",
       "perDayPrice": "≈ {price} per day",
-      "cancel": "Cancel anytime until the day before renewal · legally required notice (demo)"
+      "cancel": "Cancel anytime until the day before renewal\nlegally required notice (demo)",
+      "trialTax": "tax incl."
     },
     "onboarding": {
       "eyebrow": "Your plan is ready",
@@ -238,7 +239,7 @@
       "greetEvening": "Good evening",
       "dayOf": "Day {n} of your plan",
       "title": "Today’s plan · ~3 min",
-      "left": "{n} left · about {n} min",
+      "left": "{n} left · about {m} min",
       "allDone": "All done for today. See you tomorrow!",
       "ringAria": "{done} of {total} exercises done",
       "weakHint": "{n} of {total} exercises train your weak spot: {ability}.",
@@ -260,7 +261,7 @@
       "streakLabel": "Streak",
       "history": "Index over time",
       "sparkAria": "Index history: from {from} to {to}",
-      "explain": "The Index grows when you train regularly and perform well. Skipped days slow it down.",
+      "explain": "The Index shows how regularly and how well you train — it is not IQ. Abilities are measured only by the re-test. Skipped days slow it down.",
       "ctaOnboarding": "Next: a daily reminder",
       "ctaToday": "Back to today’s plan",
       "before": "Before training",
@@ -271,8 +272,8 @@
       "mockNote": "Demo of a LINE notification — nothing is sent.",
       "sender": "Wittio (CC-146 concept)",
       "now": "now",
-      "body": "Time for today’s 10-minute training.",
-      "bodyStreak": "Time for today’s 10-minute training. Keep your streak going ({n} days)!",
+      "body": "Time for today’s 3 exercises.",
+      "bodyStreak": "Time for today’s 3 exercises. Keep your streak going ({n} days)!",
       "tapHint": "Tap the notification",
       "timeLabel": "Reminder time",
       "caption": "Reminders arrive at the time you choose via LINE, the messenger most people use in Japan. This is a demo: no messages are sent and no data is collected.",
@@ -282,7 +283,7 @@
       "title": "Re-test every 30 days",
       "intro": "Every 30 days you take the test again on a new parallel form (B), so you see real change — not remembered answers.",
       "baselineCaption": "Your first test (form A). Your weak spot is highlighted.",
-      "simulate": "Demo: we simulate {n} days of 10-minute training. Then your abilities are measured for real on form B.",
+      "simulate": "Demo: we simulate {n} days of 3 exercises a day. Then your abilities are measured for real on a new test form.",
       "dueNote": "30 days have passed. Take the 60-second re-test on form B.",
       "advance": "Demo: +{n} days",
       "start": "Start the re-test",
@@ -313,7 +314,8 @@
       "legendPrev": "Previous test",
       "illoTitle": "Typical picture after {n} days of regular practice",
       "illoBadge": "Illustration, not your result",
-      "illoNote": "Example for someone who trains 10 minutes a day. Your real result is above."
+      "illoNote": "Example for someone who trains every day. Your real result is above.",
+      "fastNote": "Fast demo mode: 10 s tasks, so the error is wider (±27–43); the full 15 s test has ±21–38. “Stable” is the expected picture in the first month."
     },
     "report": {
       "title": "Weekly report",
@@ -323,7 +325,7 @@
       "minutesTitle": "Minutes per day",
       "activeDays": "{n}/7 active days",
       "barsAria": "Minutes per day: {list}",
-      "simulated": "Includes simulated demo days (about 10 min a day).",
+      "simulated": "Includes simulated demo days (3 exercises, about 3 min a day).",
       "growthTitle": "Change since your first test",
       "valueTitle": "What’s included in 4 weeks",
       "perSession": "About {price} per day",
@@ -350,7 +352,7 @@
     "presetGate": "Gate",
     "presetTarget": "Target",
     "opened": "Opened the product after paying",
-    "openedHint": "today 45% · gate ≥ 60%",
+    "openedHint": "today 45% · gate ≥ 60% · “opened” = finished ≥ 1 exercise within 7 days of paying (team definition)",
     "churn": "Lower churn between charges",
     "churnHint": "today 0% · every charge after the first",
     "charge1": "Charge 1",

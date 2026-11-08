@@ -1,5 +1,6 @@
 import type { Ability, AbilityChange, DeltaClass, Profile } from '../state/types';
 import { ABILITIES } from '../state/types';
+import { POP_NORMS, POP_NORMS_FAST, standardScore } from './scoring';
 
 /**
  * Error band per ability = 1.645 × SD of the difference between two runs at the SAME skill
@@ -21,7 +22,7 @@ export const ERROR_BAND: Record<Ability, number> = {
 
 /** Same simulation for the 10 s fast jury mode (fewer trials → wider bands). */
 export const ERROR_BAND_FAST: Record<Ability, number> = {
-  memory: 48,
+  memory: 43,
   attention: 27,
   logic: 42,
   speed: 33,
@@ -71,8 +72,12 @@ export function weakestStable(prev: Profile, next: Profile, fast = false): Abili
   const prevWeak = prev && ABILITIES.includes(prev.weakest) ? prev.weakest : undefined;
   const cand = next && ABILITIES.includes(next.weakest) ? next.weakest : 'memory';
   if (!prevWeak || prevWeak === cand) return cand;
-  const gap = safe(next.scores?.[prevWeak]) - safe(next.scores?.[cand]);
-  const band = (WEAK_ZONE_MARGIN * Math.sqrt(errorBand(prevWeak, fast) ** 2 + errorBand(cand, fast) ** 2)) / Math.SQRT2;
+  // Compared on standardised scores (the weak zone is picked on them): gap and bands in SD units.
+  const norms = fast ? POP_NORMS_FAST : POP_NORMS;
+  const gap = standardScore(prevWeak, safe(next.scores?.[prevWeak]), fast) - standardScore(cand, safe(next.scores?.[cand]), fast);
+  const bp = errorBand(prevWeak, fast) / norms[prevWeak].sd;
+  const bc = errorBand(cand, fast) / norms[cand].sd;
+  const band = (WEAK_ZONE_MARGIN * Math.sqrt(bp ** 2 + bc ** 2)) / Math.SQRT2;
   return gap > band ? cand : prevWeak;
 }
 

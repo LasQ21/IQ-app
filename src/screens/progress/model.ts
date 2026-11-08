@@ -93,7 +93,8 @@ export function daysUntilRetest(state: AppState): number {
   const since = daysSinceBaseline(state);
   if (!state.retest) return Math.max(0, DEMO_JUMP_DAYS - since);
   const last = lastRetestDay(state);
-  if (last) return Math.max(1, DEMO_JUMP_DAYS - diffDays(last, todayOf(state)));
+  // 0 = due now (also right after the demo jump, so a reload mid re-test never jumps again)
+  if (last) return Math.max(0, DEMO_JUMP_DAYS - diffDays(last, todayOf(state)));
   return DEMO_JUMP_DAYS - (since % DEMO_JUMP_DAYS);
 }
 

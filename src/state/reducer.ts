@@ -165,7 +165,7 @@ export function reducer(state: AppState, action: Action): AppState {
     }
 
     case 'demoAdvance': {
-      // Simulated adherence: the user trained every day of the jump (~10 min/day, 3 average plan games).
+      // Simulated adherence: the user trained every day of the jump (3 average plan games, ~3 min/day).
       // Only the index is simulated (real Index-formula pace); abilities do NOT change here —
       // the re-test measures them for real on a new form.
       const startDay = todayOf(state);
@@ -178,7 +178,7 @@ export function reducer(state: AppState, action: Action): AppState {
         const day = addDays(startDay, i);
         index = Math.round(simulated[i - 1] ?? index);
         history = pushHistory(history.filter((p) => p.day !== day), day, index);
-        minutesByDay[day] = 10;
+        minutesByDay[day] = 3;
       }
       const next: AppState = {
         ...state,

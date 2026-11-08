@@ -126,7 +126,9 @@ export function Paywall() {
         <div className={s.price} data-testid="paywall-price">
           <div className={s.priceMain}>
             <span className="muted small">{t('funnel.paywall.trial')}</span>
-            <span className={s.priceBig}>{formatJPY(TRIAL_JPY)}</span>
+            <span className={s.priceBig}>
+              {formatJPY(TRIAL_JPY)} <span className="muted small">{t('funnel.paywall.trialTax')}</span>
+            </span>
           </div>
           <div className={s.priceThen}>
             <span>{t('funnel.paywall.then', { price: formatJPY(PRICE_JPY_4W) })}</span>
@@ -142,7 +144,11 @@ export function Paywall() {
       </div>
 
       <div className={s.legal}>
-        <p>{t('funnel.paywall.cancel')}</p>
+        {t('funnel.paywall.cancel')
+          .split('\n')
+          .map((line) => (
+            <p key={line}>{line}</p>
+          ))}
         <p>{t('common.illustrative')}</p>
         <Disclaimer />
       </div>

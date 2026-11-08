@@ -148,7 +148,7 @@ for (const lang of ['ja', 'uk', 'en'] as const) {
     // jury mode strip: reason · metric · goal
     await page.getByTestId('jury-toggle').click();
     await expect(page.locator('[data-screen="today"] aside')).toBeVisible();
-    await expect(page.locator('[data-screen="today"]')).toHaveAttribute('data-reason', /25/);
+    await expect(page.locator('[data-screen="today"]')).toHaveAttribute('data-reason', /15%/);
     await page.getByTestId('jury-toggle').click();
 
     // 10 Retest on form B, deltas vs baseline

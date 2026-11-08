@@ -19,9 +19,9 @@ const TYPES = {
   '.txt': 'text/plain; charset=utf-8',
 };
 
-/** `vite build` with APP_BUILD=<id> into test-results/sw-builds/<id>. Returns the absolute folder. */
+/** `vite build` with APP_BUILD=<id> into node_modules/.cache/sw-builds/<id> (Playwright clears test-results/ at the start of every run). Returns the absolute folder. */
 export function buildTo(id) {
-  const outDir = resolve('test-results', 'sw-builds', id);
+  const outDir = resolve('node_modules', '.cache', 'sw-builds', id);
   execFileSync('npx', ['vite', 'build', '--outDir', outDir, '--emptyOutDir', '--logLevel', 'warn'], {
     env: { ...process.env, APP_BUILD: id },
     stdio: 'inherit',

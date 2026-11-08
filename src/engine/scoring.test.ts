@@ -186,8 +186,11 @@ describe('corsi partial credit (meta.recalled)', () => {
   it('more recalled cells → higher score', () => {
     expect(normalize(corsi(4, 12))).toBeGreaterThan(normalize(corsi(4, 8)));
   });
-  it('a 10 s fast-mode run is scaled to 15 s; a 10-trial training run to 3 trials', () => {
-    expect(normalize(corsi(5, 6, 2, { durationMs: 10_000 }))).toBe(normalize(corsi(5, 9, 2)));
+  it('a 10 s fast-mode run is scaled to 15 s (span scale tops at 5.5); a 10-trial training run to 3 trials', () => {
+    // 6 recalled in 10 s → 9 per 15 s; span 5 on the 2 → 5.5 scale: 100 · (0.5 · 3/3.5 + 0.5 · 6/9) = 76
+    expect(normalize(corsi(5, 6, 2, { durationMs: 10_000 }))).toBe(76);
+    // two early slips in 10 s still show a working span of 3 (not 0)
+    expect(normalize(corsi(0, 2, 2, { durationMs: 10_000 }))).toBeGreaterThan(normalize(corsi(0, 2, 2)));
     expect(normalize(corsi(6, 30, 10, { mode: 'training' }))).toBe(normalize(corsi(6, 9, 3)));
   });
 });

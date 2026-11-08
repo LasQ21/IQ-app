@@ -87,7 +87,9 @@ export function Retest() {
   // Honest comparison: a change counts only outside the ability's error band.
   const changes = classifyChange(prev.profile, retest, state.fastMode);
   const outcome = outcomeOf(changes);
-  const gap = prev.isBaseline || !prev.day ? since : Math.max(0, diffDays(prev.day, today(state)));
+  // Days between the two measurements (up to the re-test day, not today — a later reload must not stretch it).
+  const measuredOn = state.lastRetestDay ?? today(state);
+  const gap = prev.isBaseline || !prev.day ? Math.max(0, since - diffDays(measuredOn, today(state))) : Math.max(0, diffDays(prev.day, measuredOn));
   // demoDayOffset > 0 → the days were simulated by the demo jump (index only); the measurement just happened.
   const simulated = state.demoDayOffset > 0;
   const history = sortedHistory(state).slice(-(gap + 1));
@@ -115,6 +117,11 @@ export function Retest() {
         <p className="small muted">
           {joinSentences(state.lang, t('progress.retest.honest'), t('progress.retest.rangeNote'))}
         </p>
+        {state.fastMode && (
+          <p className="small muted" data-testid="retest-fast-note">
+            {t('progress.retest.fastNote')}
+          </p>
+        )}
       </Card>
 
       {state.juryMode && <PracticeIllustration from={prev.profile} days={DEMO_JUMP_DAYS} />}

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { demoNow } from '../../engine/days';
 import { useT } from '../../i18n/useT';
 import { gonogoBank } from '../banks';
+import { usePageHidden } from '../shared/activeClock';
 import { GameFrame } from '../shared/GameFrame';
 import { mean, press, useEnd, useSessionClock } from '../shared/hooks';
 import type { GameProps } from '../types';
@@ -96,8 +97,10 @@ export function GoNoGo({ mode, form, seed = 0, onDone, durationMs, demoDayOffset
     [idx, item.kind],
   );
 
+  // Paused while the page is hidden: no trials run (or count as misses) in the background.
+  const hidden = usePageHidden();
   useEffect(() => {
-    if (over) return;
+    if (over || hidden) return;
     let id = 0;
     if (phase === 'isi') {
       id = window.setTimeout(() => setPhase('stim'), item.isiMs);
@@ -119,7 +122,7 @@ export function GoNoGo({ mode, form, seed = 0, onDone, durationMs, demoDayOffset
       );
     }
     return () => window.clearTimeout(id);
-  }, [phase, idx, over, item, resolve, fb, mode, bank.length, finish]);
+  }, [phase, idx, over, hidden, item, resolve, fb, mode, bank.length, finish]);
 
   const onTap = () => {
     if (over || phase !== 'stim') return;

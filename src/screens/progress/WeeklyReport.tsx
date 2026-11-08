@@ -1,18 +1,19 @@
 import { PATHS } from '../../app/router';
 import { formatJPY, PRICE_JPY_4W, TRIAL_JPY } from '../../config';
-import { addDays, dayKey } from '../../engine';
+import { addDays, dayKey, errorBand } from '../../engine';
 import { dateRange } from '../../i18n/typography';
 import { useT } from '../../i18n/useT';
 import { useStore } from '../../state/store';
 import { Card } from '../../ui/Card';
 import { Screen } from '../../ui/Screen';
+import { ABILITIES } from '../../state/types';
 import { ArrowIcon } from './icons';
 import { formatDay, indexAt, isTraining, lastDays, signed, sortedHistory, today, tone } from './model';
 import { DeltaGrid } from './parts';
 import s from './progress.module.css';
 
 const SESSIONS_4W = 28;
-/** Simulated demo days (demoAdvance) carry minutes but no game results: ~10 min ≈ the 3-game plan. */
+/** Simulated demo days (demoAdvance) carry minutes but no game results: ~3 min ≈ the 3-game plan. */
 const SIMULATED_GAMES_PER_DAY = 3;
 
 export function WeeklyReport() {
@@ -88,7 +89,12 @@ export function WeeklyReport() {
         {state.baseline && profile && (
           <Card className="stack" style={{ gap: 10 }}>
             <h3>{t('progress.report.growthTitle')}</h3>
-            <DeltaGrid now={profile.scores} then={state.baseline.scores} testIdPrefix="report-delta-" />
+            <DeltaGrid
+              now={profile.scores}
+              then={state.baseline.scores}
+              testIdPrefix="report-delta-"
+              noiseBand={Object.fromEntries(ABILITIES.map((a) => [a, errorBand(a, state.fastMode)]))}
+            />
           </Card>
         )}
 

@@ -34,15 +34,16 @@ export function DeltaGrid({
   now: Record<Ability, number>;
   then: Record<Ability, number>;
   testIdPrefix?: string;
-  /** |delta| ≤ noiseBand is shown neutral with a "within measurement error" note (short tests are noisy). */
-  noiseBand?: number;
+  /** |delta| ≤ band is shown neutral with a "within measurement error" note (short tests are noisy). Per ability or one number. */
+  noiseBand?: number | Partial<Record<Ability, number>>;
 }) {
   const t = useT();
   return (
     <div className={s.deltas}>
       {ABILITIES.map((ab) => {
         const d = Math.round(now[ab]) - Math.round(then[ab]);
-        const noise = d !== 0 && Math.abs(d) <= noiseBand;
+        const band = typeof noiseBand === 'number' ? noiseBand : (noiseBand[ab] ?? 0);
+        const noise = d !== 0 && Math.abs(d) <= band;
         return (
           <div
             key={ab}

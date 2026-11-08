@@ -120,7 +120,11 @@ export function normalize(result: GameResult): number {
             : dur > 0 && dur < RUN_MS
               ? (recalled * RUN_MS) / Math.max(dur, MIN_RATE_WINDOW_MS)
               : recalled;
-        return finalize(100 * (0.5 * lin(span, 2, 6) + 0.5 * lin(perRun, 3, 12)));
+        // 10 s fast mode: length 6 cannot fit, so the span scale tops out at 5.5 (span 5 → 93, not 88), and a run
+        // with trials but two early slips counts as span 3 instead of 0 (it still shows a working span ≥ 3).
+        const short = m.mode !== 'training' && dur > 0 && dur < RUN_MS;
+        const spanEff = short && total > 0 ? Math.max(span, 3) : span;
+        return finalize(100 * (0.5 * lin(spanEff, 2, short ? 5.5 : 6) + 0.5 * lin(perRun, 3, 12)));
       }
       if (span <= 0) return 0;
       return finalize(100 * lin(span, 2, 6) * (0.75 + 0.25 * acc));
@@ -160,8 +164,34 @@ export function isAssessmentResult(r: GameResult): boolean {
 }
 
 /**
+ * Population norms (mean, SD) of each assessment score — `npx vite-node scripts/sim-norms.ts`
+ * (4000 simulated players, skill z ~ N(0, 1) per ability). The weak zone is picked on standardised scores,
+ * so with equal skills every ability is equally likely to be "weak" (raw scores differ in scale per task).
+ */
+export const POP_NORMS: Record<Ability, { mean: number; sd: number }> = {
+  memory: { mean: 57, sd: 22 },
+  attention: { mean: 58, sd: 16 },
+  logic: { mean: 50, sd: 20 },
+  speed: { mean: 57, sd: 20 },
+};
+/** Same for the 10 s fast jury mode. */
+export const POP_NORMS_FAST: Record<Ability, { mean: number; sd: number }> = {
+  memory: { mean: 58, sd: 24 },
+  attention: { mean: 57, sd: 19 },
+  logic: { mean: 56, sd: 25 },
+  speed: { mean: 56, sd: 22 },
+};
+
+/** Standardised score (z) of an ability against the population norms. */
+export function standardScore(ability: Ability, score: number, fast = false): number {
+  const n = (fast ? POP_NORMS_FAST : POP_NORMS)[ability];
+  return (num(score, n.mean) - n.mean) / n.sd;
+}
+
+/**
  * Per ability: mean of normalize() over the latest up to 3 measured ASSESSMENT results; missing → 50.
- * weakest = lowest score (ties → stable order memory, attention, logic, speed).
+ * weakest = lowest STANDARDISED score (ties → stable order memory, attention, logic, speed);
+ * fast norms when the assessment ran in the 10 s mode (`meta.durationMs` < 15 s).
  */
 export function buildProfile(results: GameResult[]): Profile {
   const list = Array.isArray(results) ? results.filter((r) => r && typeof r === 'object' && isAssessmentResult(r)) : [];
@@ -170,7 +200,11 @@ export function buildProfile(results: GameResult[]): Profile {
     const rs = list.filter((r) => r.ability === a && isMeasured(r)).slice(-3);
     scores[a] = rs.length ? Math.round(rs.reduce((s, r) => s + normalize(r), 0) / rs.length) : 50;
   }
-  const weakest = ABILITIES.reduce((w, a) => (scores[a] < scores[w] ? a : w), ABILITIES[0]);
+  const fast = list.some((r) => num(r.meta?.durationMs, RUN_MS) < RUN_MS - 1_000);
+  // An ability with no measured result counts as average (z = 0), not as weak.
+  const measured = new Set(list.filter(isMeasured).map((r) => r.ability));
+  const z = (a: Ability) => (measured.has(a) ? standardScore(a, scores[a], fast) : 0);
+  const weakest = ABILITIES.reduce((w, a) => (z(a) < z(w) ? a : w), ABILITIES[0]);
   const mean = ABILITIES.reduce((s, a) => s + scores[a], 0) / ABILITIES.length;
   return { scores, weakest, index: indexFromMean(mean) };
 }

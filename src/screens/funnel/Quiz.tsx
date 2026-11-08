@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { AssessmentRunner, type AssessmentPhase } from '../../app/AssessmentRunner';
 import { navigate, PATHS } from '../../app/router';
+import { assessmentMs } from '../../config';
 import { useT } from '../../i18n/useT';
 import { useStore } from '../../state/store';
 import type { GameResult } from '../../state/types';
@@ -10,7 +11,7 @@ import s from './funnel.module.css';
 /** 60-second baseline assessment on form A. */
 export function Quiz() {
   const t = useT();
-  const { dispatch } = useStore();
+  const { state, dispatch } = useStore();
   const [phase, setPhase] = useState<AssessmentPhase>('intro');
 
   const onComplete = (results: GameResult[]) => {
@@ -23,7 +24,7 @@ export function Quiz() {
     <Screen juryKey="quiz" className={s.root} hideJury={phase === 'play'}>
       <div className={s.quizHead}>
         <h2>{t('funnel.quiz.title')}</h2>
-        <span className="muted small">{t('funnel.quiz.sub')}</span>
+        <span className="muted small">{t('funnel.quiz.sub', { n: assessmentMs(state.fastMode) / 1000 })}</span>
       </div>
       <AssessmentRunner form="A" onComplete={onComplete} onPhaseChange={setPhase} />
     </Screen>
