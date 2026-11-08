@@ -2,8 +2,8 @@ import { expect, type Page } from '@playwright/test';
 import { BOT } from './bot.js';
 
 /**
- * Shared e2e helpers. Selectors are the app's data-testid / data-screen attributes; see tests/README section
- * in the iteration-2 report for the ids other agents add (econ-*, data-cls on retest-delta-*).
+ * Shared e2e helpers. Selectors are the app's data-testid / data-screen attributes. Ids other agents add are
+ * listed in the spec that needs them (economics.spec.ts: econ-*; retest-stability.spec.ts: data-cls).
  */
 
 export const ABILITIES = ['memory', 'attention', 'logic', 'speed'] as const;
