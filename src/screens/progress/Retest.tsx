@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { AssessmentRunner } from '../../app/AssessmentRunner';
 import { navigate, PATHS } from '../../app/router';
 import { DEMO_JUMP_DAYS } from '../../config';
+import { joinSentences } from '../../i18n/typography';
 import { useT } from '../../i18n/useT';
 import { useStore } from '../../state/store';
 import { Button } from '../../ui/Button';
@@ -96,7 +97,7 @@ export function Retest() {
         <Radar scores={retest.scores} compare={baseline.scores} highlight={retest.weakest} size={240} />
         <RadarLegend now={t('progress.retest.legendNow')} then={t('progress.retest.legendThen', { n: since })} />
         <p className="small muted">
-          {t('progress.retest.honest')} {t('progress.retest.noiseNote', { n: NOISE_BAND })}
+          {joinSentences(state.lang, t('progress.retest.honest'), t('progress.retest.noiseNote', { n: NOISE_BAND }))}
         </p>
       </Card>
 

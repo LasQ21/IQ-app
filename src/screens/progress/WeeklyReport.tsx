@@ -1,6 +1,7 @@
 import { PATHS } from '../../app/router';
 import { formatJPY, PRICE_JPY_4W, TRIAL_JPY } from '../../config';
 import { addDays, dayKey } from '../../engine';
+import { dateRange } from '../../i18n/typography';
 import { useT } from '../../i18n/useT';
 import { useStore } from '../../state/store';
 import { Card } from '../../ui/Card';
@@ -41,10 +42,8 @@ export function WeeklyReport() {
   const profile = state.current ?? state.retest;
   const perSession = formatJPY(Math.round(PRICE_JPY_4W / SESSIONS_4W));
 
-  const range = `${formatDay(state.lang, first, { month: 'numeric', day: 'numeric' })} – ${formatDay(state.lang, last, {
-    month: 'numeric',
-    day: 'numeric',
-  })}`;
+  const md = { month: 'numeric', day: 'numeric' } as const;
+  const range = dateRange(state.lang, formatDay(state.lang, first, md), formatDay(state.lang, last, md));
 
   return (
     <Screen juryKey="report" className={s.page}>
