@@ -2,23 +2,33 @@ import { navigate, PATHS } from '../../app/router';
 import { GAMES } from '../../games';
 import { useT } from '../../i18n/useT';
 import { useStore } from '../../state/store';
+import type { GameId } from '../../state/types';
 import { Button } from '../../ui/Button';
 import { Screen } from '../../ui/Screen';
 import { AbilityIcon } from './icons';
 import s from './funnel.module.css';
 
-const FIRST_GAME = 'flash41';
+const WARMUP_GAME: GameId = 'flash41';
 
-/** Straight from the paywall into the first exercise — no empty "welcome" screen. */
+/**
+ * Straight from the paywall into the first exercise — no empty "welcome" screen.
+ * "Now" is the first card: an exercise for the weak spot; if the plan has none, FlashGrid №41 as a
+ * warm-up ("feel the level grow").
+ */
 export function Onboarding() {
   const t = useT();
   const { state } = useStore();
   const weak = state.baseline?.weakest;
-  const items = state.plan?.items ?? [];
-  const nowIdx = Math.max(
-    0,
-    items.findIndex((it) => it.gameId === FIRST_GAME),
-  );
+  const plan = (state.plan?.items ?? []).map((it, i) => ({ ...it, i }));
+  const open = plan.filter((it) => !it.done);
+  const now =
+    open.find((it) => GAMES[it.gameId].ability === weak) ??
+    open.find((it) => it.gameId === WARMUP_GAME) ??
+    open[0] ??
+    plan[0];
+  const items = now ? [now, ...plan.filter((it) => it.i !== now.i)] : plan;
+  const firstGame: GameId = now?.gameId ?? WARMUP_GAME;
+  const warmup = firstGame === WARMUP_GAME && GAMES[firstGame].ability !== weak;
 
   return (
     <Screen juryKey="onboarding" className={s.root}>
@@ -36,13 +46,19 @@ export function Onboarding() {
         <ol className={s.steps} data-testid="onboarding-plan">
           {items.map((it, i) => {
             const def = GAMES[it.gameId];
-            const isNow = i === nowIdx;
+            const isNow = it === now;
             const isWeak = def.ability === weak;
             return (
-              <li key={`${it.gameId}-${i}`} className={[s.step, isNow ? s.stepNow : ''].join(' ')}>
+              <li
+                key={`${it.gameId}-${it.i}`}
+                className={[s.step, isNow ? s.stepNow : ''].join(' ')}
+                data-game={it.gameId}
+                data-now={isNow || undefined}
+              >
                 <span className={s.stepNum}>{i + 1}</span>
                 <span className={s.stepBody}>
                   <span className={s.stepName}>{t(`games.${it.gameId}.name`)}</span>
+                  {isNow && warmup && <span className={s.stepWarmup}>{t('funnel.onboarding.warmup')}</span>}
                   <span className={s.stepMeta}>
                     <span className={s.stepMetaIcon}>
                       <AbilityIcon ability={def.ability} />
@@ -68,7 +84,8 @@ export function Onboarding() {
         <Button
           block
           className={s.ctaBtn}
-          onClick={() => navigate(PATHS.play(FIRST_GAME, 'onboarding'))}
+          onClick={() => navigate(PATHS.play(firstGame, 'onboarding'))}
+          data-game={firstGame}
           data-testid="onboarding-start"
         >
           {t('funnel.onboarding.start')}

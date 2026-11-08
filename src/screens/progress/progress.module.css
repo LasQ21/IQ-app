@@ -214,12 +214,29 @@ a.chip {
   padding: 20px 16px;
 }
 .indexValue {
-  font-size: 4rem;
-  font-weight: 700;
+  font-size: 4.5rem;
+  font-weight: 800;
   line-height: 1;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.03em;
   font-variant-numeric: tabular-nums;
+  color: var(--accent);
+}
+/* "526 → 541": the before → after anchor under the big number */
+.anchor {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.anchor b {
   color: var(--text);
+  font-weight: 700;
+}
+.anchorArrow {
+  color: var(--accent);
 }
 .delta {
   display: inline-flex;
@@ -233,7 +250,10 @@ a.chip {
   font-variant-numeric: tabular-nums;
   background: var(--ok-soft);
   color: var(--ok-ink);
-  animation: pop 0.5s var(--ease) 0.9s both;
+}
+/* Pops in as the counter lands (delay set inline from the count-up length). */
+.deltaPop {
+  animation: pop 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) 1.5s both;
 }
 .delta[data-tone='zero'],
 .delta[data-tone='neg'] {
@@ -245,9 +265,22 @@ a.chip {
   font-weight: 500;
 }
 @keyframes pop {
-  from {
+  0% {
     opacity: 0;
-    transform: scale(0.6);
+    transform: scale(0.4);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.18);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .deltaPop {
+    animation: none;
   }
 }
 .twoCol {

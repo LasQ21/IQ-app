@@ -431,6 +431,14 @@
   background: var(--card);
   border: 2px solid var(--accent);
 }
+/* Paywall bottom bar: price + button + note, sticky. Solid background so nothing shows through. */
+.payBar {
+  gap: 8px;
+  padding-top: 10px;
+  background: var(--bg);
+  border-top: 1px solid var(--border);
+  box-shadow: 0 -6px 16px rgba(16, 17, 28, 0.06);
+}
 .price {
   display: flex;
   align-items: center;
@@ -448,9 +456,55 @@
   font-variant-numeric: tabular-nums;
 }
 .priceThen {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
   text-align: right;
   font-size: 0.85rem;
+  line-height: 1.35;
   color: var(--muted);
+  min-width: 0;
+}
+.perDay {
+  color: var(--text);
+  font-weight: 700;
+}
+.featureOwned {
+  font-weight: 700;
+}
+.featureOwned .featureIcon {
+  background: var(--ok-soft);
+  color: var(--ok);
+}
+.legal {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+/* Jury mode: what changed on this screen vs the current product */
+.juryChange {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  background: #10111c;
+  color: #fff;
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+.juryWas {
+  color: #b9bccf;
+  text-decoration: line-through;
+}
+.juryChange b {
+  color: #c9c2ff;
+}
+.juryAb {
+  color: #ffd2c2;
+  font-weight: 700;
 }
 
 /* ---------- Onboarding ---------- */
@@ -532,4 +586,39 @@
     animation: none;
     opacity: 0;
   }
+}
+
+/* ---------- Landing: returning user ---------- */
+.confirm {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px;
+  border-radius: var(--radius);
+  background: var(--card);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+.confirmTitle {
+  font-size: 1.05rem;
+}
+.confirmBody {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+.confirmRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 4px;
+}
+.dangerBtn {
+  background: var(--risk-ink);
+  color: #fff;
+  box-shadow: none;
+}
+.stepWarmup {
+  color: var(--accent);
+  font-size: 0.8rem;
+  font-weight: 700;
 }

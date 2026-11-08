@@ -1,6 +1,7 @@
 .stage {
   position: relative;
-  height: 320px;
+  /* legend row + gap below the stage */
+  height: clamp(160px, calc(var(--game-avail, 100vh) - 36px), 320px);
   display: grid;
   place-items: center;
   background: var(--card);
@@ -15,8 +16,8 @@
   border-color: var(--risk);
 }
 .circle {
-  width: 168px;
-  height: 168px;
+  width: clamp(96px, calc(var(--game-avail, 100vh) - 100px), 168px);
+  height: clamp(96px, calc(var(--game-avail, 100vh) - 100px), 168px);
   border-radius: 50%;
   display: grid;
   place-items: center;

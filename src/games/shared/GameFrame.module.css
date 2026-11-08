@@ -1,4 +1,6 @@
 .frame {
+  /* Height left for the game itself so every control fits on screen (375×553 included). */
+  --game-avail: calc(var(--vh) - var(--game-top) - env(safe-area-inset-bottom) - 12px);
   display: flex;
   flex-direction: column;
   gap: 10px;

@@ -1,17 +1,25 @@
 // Small presentational pieces shared by several progress screens.
-import { useT } from '../../i18n/useT';
+import { useT, type T } from '../../i18n/useT';
 import type { Ability } from '../../state/types';
 import { ABILITIES } from '../../state/types';
+import { joinParts } from '../../ui/text';
 import { FlameIcon } from './icons';
 import { signed, tone } from './model';
 import s from './progress.module.css';
+
+/** "Start your streak today" / "Streak started" (day 1) / "5-day streak". */
+export function streakText(t: T, days: number): string {
+  if (days <= 0) return t('progress.streakZero');
+  if (days === 1) return t('progress.streakStarted');
+  return t('progress.streak', { n: days });
+}
 
 export function StreakChip({ days }: { days: number }) {
   const t = useT();
   return (
     <span className={[s.chip, s.chipStreak].join(' ')} data-testid="streak-chip" data-streak={days}>
       <FlameIcon />
-      {days > 0 ? t('progress.streak', { n: days }) : t('progress.streakZero')}
+      {streakText(t, days)}
     </span>
   );
 }
@@ -47,8 +55,7 @@ export function DeltaGrid({
             <span>{t(`common.abilities.${ab}`)}</span>
             <b>{signed(d)}</b>
             <span className={s.deltaScore}>
-              {Math.round(then[ab])} → {Math.round(now[ab])}
-              {noise && <> · {t('progress.retest.withinNoise')}</>}
+              {joinParts([`${Math.round(then[ab])} → ${Math.round(now[ab])}`, noise && t('progress.retest.withinNoise')])}
             </span>
           </div>
         );

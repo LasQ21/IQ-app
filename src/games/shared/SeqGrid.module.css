@@ -1,7 +1,8 @@
 .grid {
   display: grid;
   gap: 10px;
-  width: 100%;
+  /* The board is square, so its width is also its height: never taller than the space left. */
+  width: min(100%, calc(var(--game-avail, 100vh) - var(--grid-above, 0px)));
   margin: 0 auto;
   padding: 10px;
   border-radius: calc(var(--radius) + 4px);
@@ -11,9 +12,15 @@
   transition: border-color 0.15s;
 }
 .grid3 {
+  /* Corsi: hint row above the board */
+  --grid-above: 38px;
+  min-width: 180px; /* 3 × 44 px cells + gaps + padding (landscape phones) */
   max-width: 330px;
 }
 .grid4 {
+  /* FlashGrid №41: level row + hint row above the board */
+  --grid-above: 114px;
+  min-width: 224px; /* 4 × 44 px cells + gaps + padding (landscape phones) */
   max-width: 350px;
   gap: 8px;
 }
@@ -25,7 +32,8 @@
 }
 .cell {
   aspect-ratio: 1;
-  min-height: 64px;
+  min-height: 44px;
+  min-width: 44px;
   border-radius: 12px;
   border: 0;
   background: #e9eaf3;

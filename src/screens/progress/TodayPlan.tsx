@@ -5,6 +5,7 @@ import { Button } from '../../ui/Button';
 import { Card } from '../../ui/Card';
 import { Ring } from '../../ui/Ring';
 import { Screen } from '../../ui/Screen';
+import { joinParts } from '../../ui/text';
 import { ArrowIcon, CheckIcon } from './icons';
 import { abilityOf, daysSinceBaseline, daysUntilRetest, formatDay, livePlan, nowMs, today, weakest } from './model';
 import { StreakChip } from './parts';
@@ -34,7 +35,7 @@ export function TodayPlan() {
       <div className={s.head}>
         <div>
           <p className={s.kicker} data-testid="today-date">
-            {t('progress.today.dayOf', { n: daysSinceBaseline(state) + 1 })} · {date}
+            {joinParts([t('progress.today.dayOf', { n: daysSinceBaseline(state) + 1 }), date])}
           </p>
           <h1>{greeting}</h1>
         </div>
@@ -85,8 +86,7 @@ export function TodayPlan() {
                   </span>
                   <span className={s.tags}>
                     <span className={[s.tag, isWeak ? s.tagWeak : ''].join(' ')}>
-                      {t(`common.abilities.${ab}`)}
-                      {isWeak && ` · ${t('progress.weakZone')}`}
+                      {joinParts([t(`common.abilities.${ab}`), isWeak && t('progress.weakZone')])}
                     </span>
                     <span>{t('progress.today.approx', { n: MIN_PER_ITEM })}</span>
                   </span>

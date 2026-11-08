@@ -21,11 +21,21 @@
   --shadow: 0 1px 2px rgba(16, 17, 28, 0.04), 0 4px 16px rgba(16, 17, 28, 0.06);
   --header-h: 52px;
   --tabbar-h: 64px;
+  /* Viewport height for game sizing: 100vh fallback, 100dvh where supported (iOS Safari toolbars). */
+  --vh: 100vh;
+  /* Distance from the top of the viewport to a game's body (header + screen padding + game frame).
+     The assessment runner adds its progress rows (see app.module.css .runner). */
+  --game-top: 140px;
 
   --font-ja: 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', 'Noto Sans CJK JP', 'Yu Gothic UI', Meiryo, system-ui, sans-serif;
   --font-uk: 'Onest', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --font: var(--font-ja);
   --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+@supports (height: 100dvh) {
+  :root {
+    --vh: 100dvh;
+  }
 }
 :root[lang='uk'],
 :root[lang='en'] {

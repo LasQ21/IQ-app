@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import type { GameId } from '../../state/types';
 import { useT } from '../../i18n/useT';
+import { activeNow } from './activeClock';
 import { press } from './hooks';
 import s from './GameFrame.module.css';
 
@@ -30,11 +31,12 @@ export function GameFrame({
 
   useEffect(() => {
     if (!total) return;
-    const start = performance.now();
+    // Active time: the countdown stands still while the page is hidden (see activeClock).
+    const start = activeNow();
     let raf = 0;
     let last = -1;
     const tick = () => {
-      const left = Math.max(0, total - (performance.now() - start));
+      const left = Math.max(0, total - (activeNow() - start));
       if (barRef.current) barRef.current.style.transform = `scaleX(${left / total})`;
       const sec = Math.ceil(left / 1000);
       if (sec !== last) {

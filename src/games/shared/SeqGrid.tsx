@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useT } from '../../i18n/useT';
+import { usePageHidden } from './activeClock';
 import { press } from './hooks';
 import s from './SeqGrid.module.css';
 
@@ -9,6 +10,7 @@ export type CellMark = 'tap' | 'ok' | 'bad' | 'hint';
  * Plays `seq` (cell indices) while `playing` is true: each cell lights for `onMs`, one every `stepMs`,
  * after `leadMs`. Calls `onEnd` when finished. Re-runs for every new `trialKey`.
  * StrictMode-safe: all timers belong to the effect and are cleared in its cleanup.
+ * If the page is hidden mid-playback, playback stops and the whole sequence replays on return.
  */
 export function useFlashPlayback(
   seq: number[],
@@ -18,12 +20,14 @@ export function useFlashPlayback(
   { onMs, stepMs, leadMs }: { onMs: number; stepMs: number; leadMs: number },
 ): number | null {
   const [lit, setLit] = useState<number | null>(null);
+  const hidden = usePageHidden();
+  const run = playing && !hidden;
   const endRef = useRef(onEnd);
   useEffect(() => {
     endRef.current = onEnd;
   });
   useEffect(() => {
-    if (!playing) return;
+    if (!run) return;
     const ids: number[] = [];
     seq.forEach((cell, i) => {
       ids.push(window.setTimeout(() => setLit(cell), leadMs + i * stepMs));
@@ -34,7 +38,7 @@ export function useFlashPlayback(
       ids.forEach((id) => window.clearTimeout(id));
       setLit(null);
     };
-  }, [playing, trialKey, seq, onMs, stepMs, leadMs]);
+  }, [run, trialKey, seq, onMs, stepMs, leadMs]);
   return lit;
 }
 

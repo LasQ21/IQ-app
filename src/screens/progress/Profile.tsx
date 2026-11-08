@@ -9,7 +9,7 @@ import { Radar } from '../../ui/Radar';
 import { Screen } from '../../ui/Screen';
 import { EconomicsLink } from '../economics';
 import { ArrowIcon } from './icons';
-import { RadarLegend } from './parts';
+import { RadarLegend, streakText } from './parts';
 import s from './progress.module.css';
 
 export function Profile() {
@@ -59,7 +59,9 @@ export function Profile() {
         </div>
         <div>
           <dt>{t('progress.index.streakLabel')}</dt>
-          <dd data-testid="profile-streak">{t('progress.streak', { n: state.streakDays })}</dd>
+          <dd data-testid="profile-streak" data-streak={state.streakDays}>
+            {streakText(t, state.streakDays)}
+          </dd>
         </div>
       </dl>
 

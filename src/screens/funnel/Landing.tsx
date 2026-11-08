@@ -1,8 +1,8 @@
-import { Fragment } from 'react';
+import { Fragment, useEffect, useId, useRef, useState } from 'react';
 import { navigate, PATHS } from '../../app/router';
 import { useT } from '../../i18n/useT';
 import { useStore } from '../../state/store';
-import { ABILITIES } from '../../state/types';
+import { ABILITIES, type Stage } from '../../state/types';
 import { Button } from '../../ui/Button';
 import { Card } from '../../ui/Card';
 import { Screen } from '../../ui/Screen';
@@ -67,18 +67,50 @@ function HeroIllustration({ label }: { label: string }) {
   );
 }
 
+/** Where a returning user continues: the screen of their stage (anything after the baseline test). */
+const RESUME: Partial<Record<Stage, string>> = {
+  teaser: PATHS.teaser,
+  paywall: PATHS.paywall,
+  onboarding: PATHS.onboarding,
+  home: PATHS.today,
+};
+
 export function Landing() {
   const t = useT();
   const { state, dispatch } = useStore();
   const [before, after = ''] = t('funnel.landing.title').split('{weak}');
-  const canContinue = Boolean(state.baseline) && state.stage === 'home';
+  // Re-scanning the QR mid-funnel must not lose progress: once there is a baseline, "Continue" is primary.
+  const returning = Boolean(state.baseline);
+  const [confirming, setConfirming] = useState(false);
+  const restartRef = useRef<HTMLButtonElement>(null);
+  const cancelRef = useRef<HTMLButtonElement>(null);
+  const wasConfirming = useRef(false);
+  const dialogId = useId();
 
-  const start = () => {
-    // Taking the test again from the landing page starts a fresh demo (instead of silently
-    // overwriting the baseline of an existing plan). "Continue my plan" keeps the progress.
+  useEffect(() => {
+    // Focus management for the inline confirmation: into it on open, back to the trigger on close.
+    if (confirming) cancelRef.current?.focus();
+    else if (wasConfirming.current) restartRef.current?.focus();
+    wasConfirming.current = confirming;
+  }, [confirming]);
+
+  const startQuiz = () => {
+    // Taking the test again starts a fresh demo (instead of silently overwriting the baseline of an
+    // existing plan) — only after the explicit confirmation below.
     if (state.baseline) dispatch({ type: 'reset' });
     dispatch({ type: 'setStage', stage: 'quiz' });
     navigate(PATHS.quiz);
+  };
+
+  const resume = () => {
+    const path = RESUME[state.stage];
+    if (path) {
+      navigate(path);
+      return;
+    }
+    // Baseline exists but the stage says landing/quiz (e.g. back gesture mid-funnel): the result is next.
+    dispatch({ type: 'setStage', stage: 'teaser' });
+    navigate(PATHS.teaser);
   };
 
   return (
@@ -111,12 +143,53 @@ export function Landing() {
       </ul>
 
       <div className={s.cta}>
-        <Button block className={s.ctaBtn} onClick={start} data-testid="landing-start">
-          {t('funnel.landing.start')}
-        </Button>
-        {canContinue && (
-          <Button block variant="secondary" onClick={() => navigate(PATHS.today)} data-testid="landing-continue">
-            {t('funnel.landing.continue')}
+        {returning ? (
+          <>
+            <Button block className={s.ctaBtn} onClick={resume} data-testid="landing-continue" data-stage={state.stage}>
+              {state.stage === 'home' ? t('funnel.landing.continue') : t('funnel.landing.resume')}
+            </Button>
+            {confirming ? (
+              <div
+                className={s.confirm}
+                role="alertdialog"
+                aria-labelledby={`${dialogId}-t`}
+                aria-describedby={`${dialogId}-d`}
+                data-testid="landing-restart-confirm"
+                onKeyDown={(e) => {
+                  if (e.key === 'Escape') setConfirming(false);
+                }}
+              >
+                <h2 id={`${dialogId}-t`} className={s.confirmTitle}>
+                  {t('funnel.landing.restartTitle')}
+                </h2>
+                <p id={`${dialogId}-d`} className={s.confirmBody}>
+                  {t('funnel.landing.restartBody')}
+                </p>
+                <div className={s.confirmRow}>
+                  <Button ref={cancelRef} variant="ghost" onClick={() => setConfirming(false)} data-testid="landing-restart-cancel">
+                    {t('funnel.landing.restartNo')}
+                  </Button>
+                  <Button className={s.dangerBtn} onClick={startQuiz} data-testid="landing-start">
+                    {t('funnel.landing.restartYes')}
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <Button
+                ref={restartRef}
+                block
+                variant="ghost"
+                onClick={() => setConfirming(true)}
+                aria-haspopup="dialog"
+                data-testid="landing-restart"
+              >
+                {t('funnel.landing.restart')}
+              </Button>
+            )}
+          </>
+        ) : (
+          <Button block className={s.ctaBtn} onClick={startQuiz} data-testid="landing-start">
+            {t('funnel.landing.start')}
           </Button>
         )}
         <p className={s.note}>{t('funnel.landing.note')}</p>
