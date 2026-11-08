@@ -1,28 +1,29 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { demoNow } from '../../engine/days';
 import { useT } from '../../i18n/useT';
-import { SERIES_BANK } from '../banks';
+import { SERIES_FEEDBACK_MS, playedMs } from '../../engine/timing';
+import { seriesBank } from '../banks';
 import { GameFrame } from '../shared/GameFrame';
 import { mean, press, useEnd, useSessionClock, useTimeouts } from '../shared/hooks';
 import type { GameProps } from '../types';
 import s from './Series.module.css';
 
-const FEEDBACK_OK_MS = 450;
-const FEEDBACK_BAD_MS = 900;
 
 /**
- * Number series (logic). Pick the next number from 4 options; items get harder in a fixed order.
+ * Number series (logic). Pick the next number from 4 options; items get harder in a fixed order
+ * (4 short warm-up items first, so a 15 s run measures ≥ 4 answers).
  * rawScore = correct answers. meta: correct, total (answered), accuracy, meanRtMs (per answer).
- * Training: the whole bank (12 items) or the time cap.
+ * Training: generated items (`seed`), from tier `startLevel` (default 1), 12 items or the time cap.
  */
-export function Series({ mode, form, onDone, durationMs, demoDayOffset = 0 }: GameProps) {
+export function Series({ mode, form, seed, startLevel, onDone, durationMs, demoDayOffset = 0 }: GameProps) {
   const t = useT();
-  const bank = SERIES_BANK[form];
+  const bank = useMemo(() => seriesBank(form, seed, startLevel), [form, seed, startLevel]);
   const [idx, setIdx] = useState(0);
   const [fb, setFb] = useState<{ choice: number; ok: boolean } | null>(null);
   const [over, setOver] = useState(false);
   const stats = useRef({ correct: 0, total: 0, rts: [] as number[] });
   const shownAt = useRef(0);
+  const startedAt = useRef(0);
   const timers = useTimeouts();
   const { end } = useEnd(onDone);
 
@@ -36,11 +37,22 @@ export function Series({ mode, form, onDone, durationMs, demoDayOffset = 0 }: Ga
       rawScore: correct,
       form,
       playedAt: demoNow(demoDayOffset),
-      meta: { correct, total, accuracy: total ? correct / total : 0, meanRtMs: Math.round(mean(rts)), mode },
+      meta: {
+        correct,
+        total,
+        accuracy: total ? correct / total : 0,
+        meanRtMs: Math.round(mean(rts)),
+        durationMs: playedMs(startedAt.current, durationMs),
+        mode,
+      },
     });
-  }, [demoDayOffset, end, form, mode, timers]);
+  }, [demoDayOffset, durationMs, end, form, mode, timers]);
 
   useSessionClock(durationMs, finish);
+
+  useEffect(() => {
+    startedAt.current = performance.now();
+  }, []);
 
   useEffect(() => {
     shownAt.current = performance.now();
@@ -62,7 +74,7 @@ export function Series({ mode, form, onDone, durationMs, demoDayOffset = 0 }: Ga
         setFb(null);
         setIdx((i) => i + 1);
       },
-      ok ? FEEDBACK_OK_MS : FEEDBACK_BAD_MS,
+      ok ? SERIES_FEEDBACK_MS.ok : SERIES_FEEDBACK_MS.bad,
     );
   };
 

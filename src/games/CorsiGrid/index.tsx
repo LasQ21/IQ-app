@@ -1,7 +1,8 @@
-import { useCallback, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { demoNow } from '../../engine/days';
 import { useT } from '../../i18n/useT';
-import { CORSI_BANK, CORSI_MAX, CORSI_MIN, CORSI_N } from '../banks';
+import { CORSI_START_SPAN, CORSI_TIMING, playedMs } from '../../engine/timing';
+import { CORSI_MAX, CORSI_MIN, CORSI_N, corsiBank } from '../banks';
 import { GameFrame } from '../shared/GameFrame';
 import { SeqGrid } from '../shared/SeqGrid';
 import { mean, useEnd } from '../shared/hooks';
@@ -9,21 +10,22 @@ import { useSeqSession, type SeqStats } from '../shared/useSeqSession';
 import type { GameProps } from '../types';
 import s from './CorsiGrid.module.css';
 
-/** Assessment starts one step higher so a 15 s run can reach span 6–7; training warms up at 3. */
-const START_SPAN = { assessment: 4, training: 3 } as const;
 const TRAINING_TRIALS = 10;
-const TIMING = { onMs: 380, stepMs: 480, leadMs: 350 };
 
 /**
- * Corsi block span (memory) on a 3×3 grid. Starts at span 3; a correct repeat → span + 1;
+ * Corsi block span (memory) on a 3×3 grid. Starts at span 4 (assessment, fast timing) or 3 (training); a correct repeat → span + 1;
  * the first miss at a span retries the same span, a second miss in a row → span − 1.
  * rawScore = longest span reproduced correctly (0 if none). meta: correct/total sequences,
  * accuracy, meanRtMs (mean time between taps).
  */
-export function CorsiGrid({ mode, form, onDone, durationMs, demoDayOffset = 0 }: GameProps) {
+export function CorsiGrid({ mode, form, seed, onDone, durationMs, demoDayOffset = 0 }: GameProps) {
   const t = useT();
   const { end } = useEnd(onDone);
   const missedOnce = useRef(false);
+  const startedAt = useRef(0);
+  useEffect(() => {
+    startedAt.current = performance.now();
+  }, []);
 
   const advance = useCallback((span: number, ok: boolean) => {
     if (ok) {
@@ -52,20 +54,21 @@ export function CorsiGrid({ mode, form, onDone, durationMs, demoDayOffset = 0 }:
           accuracy: st.total ? st.correct / st.total : 0,
           meanRtMs: Math.round(mean(st.tapRts)),
           recalled: st.recalled,
+          durationMs: playedMs(startedAt.current, durationMs),
           mode,
         },
       }),
-    [demoDayOffset, end, form, mode],
+    [demoDayOffset, durationMs, end, form, mode],
   );
 
   const g = useSeqSession({
-    bank: CORSI_BANK[form],
-    startLen: START_SPAN[mode],
+    bank: corsiBank(form, seed),
+    startLen: CORSI_START_SPAN[mode],
     advance,
     mode,
     durationMs,
     trainingTrials: TRAINING_TRIALS,
-    timing: TIMING,
+    timing: CORSI_TIMING[mode],
     onFinish,
   });
 
