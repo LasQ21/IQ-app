@@ -11,14 +11,18 @@ interface Store {
 
 const StoreContext = createContext<Store | null>(null);
 
-function readUrlFlags(): { lang?: Lang; jury?: boolean } {
+function readUrlFlags(): { lang?: Lang; jury?: boolean; fast?: boolean } {
   try {
     const params = new URLSearchParams(window.location.search);
     const lang = params.get('lang') as Lang | null;
     const jury = params.get('jury');
+    const fast = params.get('fast');
+    const juryOn = jury === null ? undefined : jury === '1' || jury === 'true';
     return {
       lang: lang && LANGS.includes(lang) ? lang : undefined,
-      jury: jury === null ? undefined : jury === '1' || jury === 'true',
+      jury: juryOn,
+      // ?jury=1 implies the fast demo mode; ?fast=1 turns it on alone.
+      fast: fast !== null ? fast === '1' || fast === 'true' : juryOn,
     };
   } catch {
     return {};
@@ -34,12 +38,14 @@ function init(): AppState {
   const base = { ...initialState(), ...(saved ?? {}) } as AppState;
   if (flags.lang) base.lang = flags.lang;
   if (flags.jury !== undefined) base.juryMode = flags.jury;
+  if (flags.fast !== undefined) base.fastMode = flags.fast;
   // The QR deep link sets the language once; drop the flags so a later manual switch survives reloads.
-  if (flags.lang || flags.jury !== undefined) {
+  if (flags.lang || flags.jury !== undefined || flags.fast !== undefined) {
     try {
       const url = new URL(window.location.href);
       url.searchParams.delete('lang');
       url.searchParams.delete('jury');
+      url.searchParams.delete('fast');
       window.history.replaceState(null, '', url.pathname + url.search + url.hash);
     } catch {
       /* ignore */

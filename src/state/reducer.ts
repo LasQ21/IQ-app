@@ -12,6 +12,8 @@ export function initialState(lang: Lang = 'ja'): AppState {
     juryMode: false,
     indexHistory: [],
     minutesByDay: {},
+    fastMode: false,
+    trainingSeedDay: 0,
   };
 }
 
@@ -60,6 +62,8 @@ export function reducer(state: AppState, action: Action): AppState {
       return { ...state, stage: action.stage };
     case 'toggleJury':
       return { ...state, juryMode: action.on ?? !state.juryMode };
+    case 'setFast':
+      return { ...state, fastMode: action.on };
 
     case 'assessmentDone': {
       const from = state.results.length;
