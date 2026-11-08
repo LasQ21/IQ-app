@@ -1,5 +1,11 @@
 # Japanese copy review (ja.json)
 
+> **Iteration 2 (8 Nov 2026):** the native-speaker council review was applied — 特商法-style paywall block
+> (7日間のお試し, ¥150（税込）, 4週間ごとに自動更新, 解約 until the day before renewal, 特定商取引法に基づく表記（デモ）),
+> new disclaimer, 連続{n}日目, 苦手分野 everywhere, ・ separators, no モック, no “”, dates 12/1〜12/7 and 11月8日（日）.
+> **Open for the team:** the 7-day trial length is a placeholder. The screen-by-screen lists below predate iteration 2;
+> `src/i18n/ja.json` is the source of truth.
+
 All 227 UI strings, grouped by screen, for a review by a native Japanese speaker.
 The Japanese is an editorial draft. It was not written by a native speaker, so `ja.json` keeps `"_review": true`.
 
@@ -25,15 +31,15 @@ The Japanese is an editorial draft. It was not written by a native speaker, so `
 
 | Concept | 日本語 | EN | UK | Notes |
 |---|---|---|---|---|
-| weak zone / weak spot | 弱点 | weak spot | слабке місце | The headline highlights it as “弱点”. Inside a sentence the ability is quoted: 弱点の「処理速度」 |
+| weak zone / weak spot | 苦手分野 | weak spot | слабке місце | Iteration 2: one term everywhere (was 弱点, which can read as a brain-health claim). Inside a sentence the ability is quoted: 苦手分野の「処理速度」 |
 | first assessment | テスト（最初のテスト） | test (first test) | тест (перший тест) | Not 診断: it suggests a medical diagnosis |
 | re-test (day 30) | 再測定 | re-test | повторний тест | Verb: 測り直す / 再測定する |
-| parallel form A / B | 問題セットA / B | form A / B | форма A / B | Short form in the radar legend: 現在（B） / 30日前（A） |
+| parallel form A / B / A2 | 別の問題セット | new form | нова форма | Iteration 2: texts no longer name the form (the 3rd test uses A2); radar legend 現在 / 30日前 |
 | assessment task (15 s) | 課題 | task | завдання | Only for the 4 quiz tasks |
-| training / one exercise | トレーニング | training / exercise | тренування / вправа | EN uses "exercise" for one game in the plan and "session" for the daily 10 minutes |
+| training / one exercise | トレーニング | training / exercise | тренування / вправа | Iteration 2: the daily plan is 「1日3つ」 (3 exercises, ≈ 3 min), not 10 minutes |
 | plan | プラン | plan | план | 4週間のプラン, 今日のプラン |
 | Wittio Index | Wittio指数 (指数 for short) | Wittio Index | Wittio Index / індекс | The product's own score. Never written as an IQ |
-| streak | 連続日数 (label) · {n}日連続 (value) | streak · {n}-day streak | серія · {n} дн. поспіль | |
+| streak | 継続 (label) · 連続{n}日目 (value) · 記録スタート (day 1) | streak · {n} days · Streak started | серія · {n} дн. · Серію розпочато | Iteration 2 (native-speaker review) |
 | ability names | 記憶力・注意力・論理力・処理速度 | Memory, Attention, Logic, Speed | Пам’ять, Увага, Логіка, Швидкість | |
 | reminder | リマインダー / リマインド | reminder | нагадування | LINE is shown as a mock only |
 | start (CTA verbs) | 〜をはじめる (hiragana) | Start … | Почати / Пройти | The generic game-intro button stays スタート |

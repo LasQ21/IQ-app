@@ -1,6 +1,7 @@
-// Deck screenshots at 1170×2532 (390×844 @3x): Paywall, TodayPlan, IndexStreak, Retest.
+// Deck screenshots at 1170×2532 (390×844 @3x): Paywall, TodayPlan, IndexStreak, Retest (+ illustration), Loop economics.
 // A scripted player plays every game for real (reads the games' data-* attributes) on a fake clock.
-// The re-test is played slightly more accurately / faster to illustrate a user after 30 days of practice.
+// The re-test is played with the SAME skills as the baseline: the honest picture after a month is "Stable"
+// (changes within the error band). The labelled illustration card (jury mode) shows a typical 30-day picture.
 // The player is seeded (deterministic), so the same build gives the same screenshots.
 //
 // Usage:  npm run build && npx vite preview --port 4190 --strictPort &
@@ -63,9 +64,17 @@ for (const lang of langs) {
   await shot('2-today');
   await page.getByTestId('today-retest').click();
   await page.getByTestId('retest-advance').click();
-  await skill(0.78, 680); // modest practice effect: slightly more accurate and faster than at baseline
+  await skill(0.75, 700); // identical skills — nothing is faked
   await quiz();
+  await page.getByTestId('jury-toggle').click(); // the labelled illustration card is shown in jury mode only
   await shot('4-retest');
+  await page.getByTestId('retest-illustration').scrollIntoViewIfNeeded();
+  await page.clock.runFor(500);
+  await page.screenshot({ path: `${out}/${lang}-4b-retest-illustration.png` });
+  console.log('wrote', `${out}/${lang}-4b-retest-illustration.png`);
+  await page.evaluate(() => (window.location.hash = '#/economics'));
+  await page.getByTestId('econ-presetGate').click();
+  await shot('5-economics');
   await ctx.close();
 }
 await browser.close();
