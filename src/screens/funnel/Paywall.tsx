@@ -6,6 +6,7 @@ import { Button } from '../../ui/Button';
 import { Card } from '../../ui/Card';
 import { Disclaimer } from '../../ui/Disclaimer';
 import { Screen } from '../../ui/Screen';
+import { EconomicsLink } from '../economics';
 import { ClockIcon, RepeatIcon, TargetIcon } from './icons';
 import s from './funnel.module.css';
 
@@ -28,6 +29,7 @@ export function Paywall() {
 
   return (
     <Screen juryKey="paywall" className={s.root}>
+      <EconomicsLink from="paywall" />
       <div className={s.head}>
         <span className={s.eyebrow}>
           <span className={s.eyebrowDot} aria-hidden />

@@ -93,6 +93,11 @@
       "reason": "—",
       "metric": "—",
       "goal": "—"
+    },
+    "economics": {
+      "reason": "現状：ROMI +9%、LTV/CAC 1.09倍",
+      "metric": "LTV/CAC 1.09倍 → 1.39〜1.75倍",
+      "goal": "ROMI +39〜75%"
     }
   },
   "app": {
@@ -279,7 +284,21 @@
       "cta": "今日のプランへ",
       "again": "もう一度再測定する（+{n}日）",
       "withinNoise": "誤差の範囲",
-      "noiseNote": "短いテストのため、±{n}以内の変化は誤差の範囲です。"
+      "noiseNote": "短いテストのため、±{n}以内の変化は誤差の範囲です。",
+      "demoTitle": "デモ：たった今の再測定 · {n}日間のシミュレーションは指数のみ",
+      "clsBetter": "誤差を超えて上昇",
+      "clsStable": "安定（±{n}の誤差内）",
+      "clsLower": "前回より低め",
+      "rowScore": "前回 {before} · 今回 {after}（{lo}〜{hi}）",
+      "rangeNote": "かっこ内は、本来のスコアがある可能性が高い範囲です。その課題の誤差より大きい場合だけ、変化として数えます。",
+      "whyBetter": "誤差を超えて上昇：{abilities}。測定の誤差より大きな変化です。",
+      "whyStable": "変化はまだ誤差の範囲内です。はじめの数週間はよくあることです。",
+      "whyLower": "今回は低めの項目があります。短いテストは、睡眠や時間帯、集中の具合でも上下します。プランを続けて、{n}日後にもう一度確かめましょう。",
+      "nextSame": "次の再測定は{n}日後です。プランの重点は引き続き「{ability}」です。",
+      "legendPrev": "前回のテスト",
+      "illoTitle": "{n}日間続けた場合の典型的な例",
+      "illoBadge": "イメージ図・あなたの結果ではありません",
+      "illoNote": "1日10分続けた人の例です。実際の結果は上に表示しています。"
     },
     "report": {
       "title": "週間レポート",
@@ -305,5 +324,36 @@
       "cancel": "キャンセル",
       "confirm": "リセットする"
     }
+  },
+  "economics": {
+    "title": "ループの経済性",
+    "sub": "月間コホート：お試し{trials}件、広告費{budget}、CAC {cac}",
+    "presets": "シナリオ",
+    "presetToday": "現状",
+    "presetCautious": "慎重",
+    "presetGate": "ゲート",
+    "presetTarget": "目標",
+    "opened": "購入後にアプリを開いた割合",
+    "openedHint": "現状45% · ゲート60%以上",
+    "churn": "課金ごとの解約の減少",
+    "churnHint": "現状0% · 2回目以降の各課金",
+    "charge1": "1回目の課金",
+    "charge2": "2回目の課金",
+    "ofTrials": "お試し比",
+    "netLtv": "純LTV",
+    "perTrial": "お試し1件あたり",
+    "ltvCac": "LTV/CAC",
+    "romi": "ROMI",
+    "romiMonth": "月間ROMI（金額）",
+    "perCohort": "月間コホートあたり",
+    "gates": "判断ゲート",
+    "gateOpened": "開いた割合60%以上",
+    "gateCharge1": "1回目の課金42%以上",
+    "gatePass": "達成",
+    "gateFail": "未達",
+    "how": "1回目の課金＝開いた人×66%＋開かなかった人×15%。2回目以降は現状の解約率を、解約の減少分だけ小さくして計算。純額は返金10%を控除。",
+    "footer": "データ：ケース資料。66%／15%はCC-146チームの推定",
+    "link": "ループの経済性",
+    "summary": "LTV/CAC {ltv} · ROMI {romi}"
   }
 }

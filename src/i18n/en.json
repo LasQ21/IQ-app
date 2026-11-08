@@ -92,6 +92,11 @@
       "reason": "—",
       "metric": "—",
       "goal": "—"
+    },
+    "economics": {
+      "reason": "Business today: ROMI +9%, LTV/CAC 1.09×",
+      "metric": "LTV/CAC 1.09× → 1.39–1.75×",
+      "goal": "ROMI +39–75%"
     }
   },
   "app": {
@@ -278,7 +283,21 @@
       "cta": "Go to today’s plan",
       "again": "Run the re-test again (+{n} days)",
       "withinNoise": "within noise",
-      "noiseNote": "The test is short, so changes up to ±{n} are within measurement noise."
+      "noiseNote": "The test is short, so changes up to ±{n} are within measurement noise.",
+      "demoTitle": "Demo: re-test just now · {n} days simulated for the index only",
+      "clsBetter": "Noticeably better",
+      "clsStable": "Stable (within ±{n})",
+      "clsLower": "Lower",
+      "rowScore": "was {before} · now {after} ({lo}–{hi})",
+      "rangeNote": "In brackets: the range where your true score most likely lies. A change counts only when it is larger than the error of that task.",
+      "whyBetter": "Noticeably better: {abilities}. This change is larger than the measurement error.",
+      "whyStable": "Changes are still within the error — normal for the first weeks.",
+      "whyLower": "Some scores are lower this time. A short test also depends on sleep, time of day and focus. Keep the plan and check again in {n} days.",
+      "nextSame": "Next re-test in {n} days. The plan keeps its focus: {ability}.",
+      "legendPrev": "Previous test",
+      "illoTitle": "Typical picture after {n} days of regular practice",
+      "illoBadge": "Illustration, not your result",
+      "illoNote": "Example for someone who trains 10 minutes a day. Your real result is above."
     },
     "report": {
       "title": "Weekly report",
@@ -304,5 +323,36 @@
       "cancel": "Cancel",
       "confirm": "Yes, reset"
     }
+  },
+  "economics": {
+    "title": "Loop economics",
+    "sub": "One monthly cohort: {trials} trials, {budget} ad budget, CAC {cac}.",
+    "presets": "Scenarios",
+    "presetToday": "Today",
+    "presetCautious": "Cautious",
+    "presetGate": "Gate",
+    "presetTarget": "Target",
+    "opened": "Opened the product after paying",
+    "openedHint": "today 45% · gate ≥ 60%",
+    "churn": "Lower churn between charges",
+    "churnHint": "today 0% · every charge after the first",
+    "charge1": "Charge 1",
+    "charge2": "Charge 2",
+    "ofTrials": "of trials",
+    "netLtv": "Net LTV",
+    "perTrial": "per trial",
+    "ltvCac": "LTV / CAC",
+    "romi": "ROMI",
+    "romiMonth": "ROMI per month",
+    "perCohort": "per monthly cohort",
+    "gates": "Decision gates",
+    "gateOpened": "≥ 60% opened the product",
+    "gateCharge1": "≥ 42% pay charge 1",
+    "gatePass": "passed",
+    "gateFail": "not yet",
+    "how": "Charge 1 = opened × 66% + not opened × 15%. Each later charge loses today's share of payers, reduced by the churn cut. Net = after 10% refunds.",
+    "footer": "Data — case brief; 66% / 15% — CC-146 team estimate",
+    "link": "Loop economics",
+    "summary": "LTV/CAC {ltv} · ROMI {romi}"
   }
 }

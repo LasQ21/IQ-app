@@ -2,6 +2,7 @@ import { useEffect, type ComponentType } from 'react';
 import { useStore } from '../state/store';
 import { Landing, Quiz, ResultTeaser, Paywall, Onboarding } from '../screens/funnel';
 import { TodayPlan, IndexStreak, LineMock, Retest, WeeklyReport, Profile } from '../screens/progress';
+import { Economics } from '../screens/economics';
 import { Play } from './Play';
 import { Shell } from './Shell';
 import { navigate, PATHS, useRoute } from './router';
@@ -19,11 +20,30 @@ const ROUTES: Record<string, { component: ComponentType; needs?: 'baseline' }> =
   retest: { component: Retest, needs: 'baseline' },
   report: { component: WeeklyReport, needs: 'baseline' },
   profile: { component: Profile, needs: 'baseline' },
+  economics: { component: Economics },
 };
+
+/** `?econ=1` (e.g. from a QR on the economics slide) opens Loop economics directly. */
+function takeEconFlag(): boolean {
+  try {
+    const url = new URL(window.location.href);
+    if (url.searchParams.get('econ') !== '1') return false;
+    url.searchParams.delete('econ');
+    window.history.replaceState(null, '', url.pathname + url.search + url.hash);
+    return true;
+  } catch {
+    return false;
+  }
+}
 
 export function App() {
   const route = useRoute();
   const { state } = useStore();
+
+  useEffect(() => {
+    if (takeEconFlag() || route.query.get('econ') === '1') navigate(PATHS.economics, { replace: true });
+    // once, at startup
+  }, []);
   const def = ROUTES[route.segments[0] ?? ''];
   const blocked = !def || (def.needs === 'baseline' && !state.baseline);
 
