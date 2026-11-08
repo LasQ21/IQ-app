@@ -112,9 +112,14 @@ export async function teaserToIndex(page: Page, { readMs = 0 }: { readMs?: numbe
   await expect(page.locator('[data-screen="onboarding"]')).toBeVisible();
   await read();
   await page.getByTestId('onboarding-start').click();
-  await expect(page.getByTestId('game-start')).toBeVisible();
-  await read();
-  await page.getByTestId('game-start').click();
+  await expect.poll(() => page.evaluate(() => location.hash)).toContain('/play/');
+  // Fast jury mode starts the onboarding warm-up right away; otherwise the game intro waits for "Start".
+  const fast = await page.evaluate((key) => Boolean(JSON.parse(localStorage.getItem(key) ?? '{}').fastMode), STORAGE_KEY);
+  if (!fast) {
+    await expect(page.getByTestId('game-start')).toBeVisible();
+    await read();
+    await page.getByTestId('game-start').click();
+  }
   await playUntil(page, 60_000, () => !!document.querySelector('[data-screen="index"]'));
   await expect(page.locator('[data-screen="index"]')).toBeVisible();
 }

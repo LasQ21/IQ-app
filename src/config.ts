@@ -42,6 +42,8 @@ export const ECON = {
 } as const;
 /** Upper bound for one training session in the demo (ms). */
 export const TRAINING_MAX_MS = 45_000;
+/** Fast jury mode: the onboarding warm-up starts right away (the onboarding screen already explains it) and lasts 10 s, like a quiz task. */
+export const FAST_WARMUP_MS = 10_000;
 /** Days the demo button jumps forward. */
 export const DEMO_JUMP_DAYS = 30;
 

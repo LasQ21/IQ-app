@@ -11,7 +11,11 @@ import { idle, playUntil, runAssessment, savedState, takeBaseline, teaserToIndex
  */
 const READ_SCREEN_MS = 2_500;
 const READ_TASK_MS = 2_000;
-const BUDGET_TO_INDEX_MS = 60_000;
+/** At the reading pace above (2.5 s per screen, 2 s per instruction) the 4 × 10 s tasks alone take ≈ 50 s. */
+const BUDGET_TO_INDEX_MS = 72_000;
+/** A presenter who knows the flow (≈ 1 s per screen / instruction) gets to the Index within a minute. */
+const BRISK_SCREEN_MS = 1_000;
+const BRISK_BUDGET_MS = 60_000;
 
 const phase = () => document.querySelector<HTMLElement>('[data-testid="assessment"]')?.dataset.phase ?? 'none';
 
@@ -54,6 +58,25 @@ test.describe('fast-mode', () => {
     const totalMs = (await page.evaluate(() => Date.now())) - t0;
     test.info().annotations.push({ type: 'pace', description: `quiz done at ${quizMs} ms, Index at ${totalMs} ms` });
     expect(totalMs, `Landing → Index (quiz done at ${quizMs} ms)`).toBeLessThanOrEqual(BUDGET_TO_INDEX_MS);
+    expect(errors).toEqual([]);
+  });
+
+  test('Landing → Index ≤ 60 s at a presenter\'s brisk pace (?jury=1)', async ({ page }) => {
+    const { errors } = watchPage(page);
+    await withBot(page);
+    await page.goto('/?lang=uk&jury=1');
+    await expect(page.locator('[data-screen="landing"]')).toBeVisible();
+    const t0 = await page.evaluate(() => Date.now());
+    await idle(page, BRISK_SCREEN_MS);
+    await page.getByTestId('landing-start').click();
+    await runAssessment(page, { readMs: BRISK_SCREEN_MS });
+    await expect(page.locator('[data-screen="teaser"]')).toBeVisible();
+    await teaserToIndex(page, { readMs: BRISK_SCREEN_MS });
+    const totalMs = (await page.evaluate(() => Date.now())) - t0;
+    test.info().annotations.push({ type: 'pace', description: `brisk: Index at ${totalMs} ms` });
+    expect(totalMs, 'Landing → Index at a brisk pace').toBeLessThanOrEqual(BRISK_BUDGET_MS);
+    // the short warm-up still moves the index
+    expect((await savedState(page)).lastIndexDelta).toBeGreaterThan(0);
     expect(errors).toEqual([]);
   });
 

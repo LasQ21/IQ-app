@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { TRAINING_MAX_MS } from '../config';
+import { FAST_WARMUP_MS, TRAINING_MAX_MS } from '../config';
 import { dayKey, demoNow, SECOND_ROUND_SERIES_TIER, TRAINING_FORM, trainingSeedDayOf, trainingSlot } from '../engine';
 import { FLASH_FIRST_LEVEL } from '../engine/timing';
 import { trainingSeed } from '../games/banks';
@@ -22,8 +22,10 @@ export function Play() {
   const gameId = route.segments[1] as GameId;
   const from = route.query.get('from') ?? 'today';
   const def = GAMES[gameId];
-  const [phase, setPhase] = useState<'intro' | 'play'>('intro');
-  const startedAt = useRef(0);
+  // Fast jury mode: the onboarding warm-up skips the intro card and is short, so Landing → Index stays ≈ 1 minute.
+  const warmup = from === 'onboarding' && state.fastMode;
+  const [phase, setPhase] = useState<'intro' | 'play'>(warmup ? 'play' : 'intro');
+  const startedAt = useRef(warmup ? Date.now() : 0);
 
   useEffect(() => {
     if (!def) navigate(PATHS.today, { replace: true });
@@ -88,7 +90,7 @@ export function Play() {
             mode="training"
             form={TRAINING_FORM}
             seed={seed}
-            durationMs={TRAINING_MAX_MS}
+            durationMs={warmup ? FAST_WARMUP_MS : TRAINING_MAX_MS}
             startLevel={startLevel}
             demoDayOffset={state.demoDayOffset}
             onDone={onDone}

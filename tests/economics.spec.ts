@@ -24,16 +24,16 @@ test.describe('economics', () => {
     for (const p of PRESETS) {
       await setRange(page, 'econ-opened', p.opened);
       await setRange(page, 'econ-churn', p.churn);
-      await expect.poll(async () => numbersIn((await page.getByTestId('econ-ltvCac').textContent()) ?? ''), `LTV/CAC at ${p.opened}% / ${p.churn}%`).toContain(p.ltvCac);
-      const romi = (await page.getByTestId('econ-romi').textContent()) ?? '';
+      await expect.poll(async () => numbersIn((await page.getByTestId('econ-ltvCac').locator('b').textContent()) ?? ''), `LTV/CAC at ${p.opened}% / ${p.churn}%`).toContain(p.ltvCac);
+      const romi = (await page.getByTestId('econ-romi').locator('b').textContent()) ?? '';
       expect(romi, `ROMI at ${p.opened}% / ${p.churn}%`).toContain('+');
       expect(numbersIn(romi)).toContain(p.romi);
     }
     // today's baseline: charge 1 ≈ 38%, charge 2 ≈ 22%
     await setRange(page, 'econ-opened', 45);
     await setRange(page, 'econ-churn', 0);
-    await expect.poll(async () => numbersIn((await page.getByTestId('econ-charge1').textContent()) ?? '')).toContain('38');
-    expect(numbersIn((await page.getByTestId('econ-charge2').textContent()) ?? '')).toContain('22');
+    await expect.poll(async () => numbersIn((await page.getByTestId('econ-charge1').locator('b').textContent()) ?? '')).toContain('38.0');
+    expect(numbersIn((await page.getByTestId('econ-charge2').locator('b').textContent()) ?? '')).toContain('22.0');
     expect(errors).toEqual([]);
   });
 
@@ -47,7 +47,7 @@ test.describe('economics', () => {
 
   test('the landing jury strip links to Loop economics', async ({ page }) => {
     await page.goto('/?lang=en&jury=1');
-    await page.locator('[data-screen="landing"] aside a[href="#/economics"]').click();
+    await page.locator('[data-screen="landing"]').getByTestId('econ-link').click();
     await expect(page.getByTestId('econ-ltvCac')).toBeVisible();
   });
 });

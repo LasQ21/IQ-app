@@ -63,7 +63,7 @@ test.describe('retest-stability', () => {
     const lines: string[] = [];
     const uiMismatch: string[] = [];
     for (const r of runs) {
-      const changes = classifyChange(r.baseline, r.retest);
+      const changes = classifyChange(r.baseline, r.retest, true); // runs use ?fast=1 → fast-mode bands, as on the screen
       stable += changes.filter((c) => c.cls === 'stable').length;
       if (r.weakAfter === r.weakBefore) weakKept++;
       for (const c of changes) {
