@@ -42,7 +42,7 @@ test.describe('fast-mode', () => {
     await expect.poll(async () => (await savedState(page)).fastMode).toBe(true);
   });
 
-  test('Landing → Index ≤ 60 s at a human pace (?jury=1)', async ({ page }) => {
+  test('Landing → Index ≤ 72 s at a 2–2.5 s reading pace (?jury=1)', async ({ page }) => {
     const { errors } = watchPage(page);
     await withBot(page);
     await page.goto('/?lang=uk&jury=1');

@@ -131,7 +131,12 @@ export function Paywall() {
             </span>
           </div>
           <div className={s.priceThen}>
-            <span>{t('funnel.paywall.then', { price: formatJPY(PRICE_JPY_4W) })}</span>
+            {/* one line per clause, so a narrow screen never starts a line with a dangling "·" */}
+            {t('funnel.paywall.then', { price: formatJPY(PRICE_JPY_4W) })
+              .split(' · ')
+              .map((part) => (
+                <span key={part}>{part}</span>
+              ))}
             <b className={s.perDay} data-testid="paywall-per-day">
               {t('funnel.paywall.perDayPrice', { price: perDay })}
             </b>

@@ -69,3 +69,19 @@
     0 0 0 3px #fff,
     0 0 0 6px var(--risk);
 }
+/* Phone in landscape (≈ 390 px tall): word and 4 answers in one compact band, nothing below the fold. */
+@media (orientation: landscape) and (max-height: 500px) {
+  .card {
+    height: 64px;
+  }
+  .word {
+    font-size: 2.2rem;
+  }
+  .options {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+  }
+  .option {
+    min-height: 48px;
+  }
+}

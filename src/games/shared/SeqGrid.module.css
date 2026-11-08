@@ -67,3 +67,17 @@
 .hint {
   box-shadow: inset 0 0 0 3px var(--ok);
 }
+/* Phone in landscape (≈ 390 px tall): tighter gaps so the board fits while cells stay ≥ 44 px. */
+@media (orientation: landscape) and (max-height: 500px) {
+  .grid3 {
+    min-width: 160px;
+    gap: 6px;
+    padding: 6px;
+  }
+  .grid4 {
+    --grid-above: 0px; /* level row and hint sit beside the board (GameFrame.module.css) */
+    min-width: 204px;
+    gap: 4px;
+    padding: 6px;
+  }
+}

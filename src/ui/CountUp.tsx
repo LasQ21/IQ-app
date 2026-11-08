@@ -62,7 +62,10 @@ export function CountUp({
     const tick = (now: number) => {
       if (!start) start = now;
       const p = Math.min(1, (now - start) / duration);
-      setValue(Math.round(from + (to - from) * easeOutCubic(p)));
+      // Small deltas (+9 on a 1000 scale) step evenly over the whole duration, so the number visibly ticks until the
+      // chip pops; large ones ease out.
+      const eased = Math.abs(to - from) < 40 ? p : easeOutCubic(p);
+      setValue(Math.round(from + (to - from) * eased));
       if (p < 1) raf = requestAnimationFrame(tick);
       else doneRef.current?.(true);
     };

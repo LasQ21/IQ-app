@@ -363,7 +363,7 @@ export const SERIES_TEMPLATES: SeriesTemplate[] = [
     shown: 4,
     pos: 3,
     distractors: ['-5', '+1', '+5', '-1'],
-    forms: { A: { type: 'add', start: 5, step: 5 }, B: { type: 'add', start: 7, step: 5 }, A2: { type: 'add', start: 4, step: 5 } },
+    forms: { A: { type: 'add', start: 6, step: 5 }, B: { type: 'add', start: 7, step: 5 }, A2: { type: 'add', start: 4, step: 5 } }, // none on multiples of 5 (easier)
     train: [6, 7].flatMap((step) => range(1, 9).map((start) => ({ type: 'add' as const, start, step }))),
   },
   {
@@ -560,7 +560,9 @@ function buildGoNoGo(rnd: () => number): GoNoGoItem[] {
         rnd,
       );
       const seq = [...out.map((o) => o.kind), ...kinds];
-      const firstOk = b > 0 || (kinds[0] === 'go' && kinds[1] === 'go' && kinds[6] === 'go' && kinds[7] === 'go');
+      // Block 2 also opens with two Go, so every form has exactly 2 No-Go in its first 10 stimuli (≈ a 10 s run).
+      const firstOk =
+        b > 1 || (b === 1 ? kinds[0] === 'go' && kinds[1] === 'go' : kinds[0] === 'go' && kinds[1] === 'go' && kinds[6] === 'go' && kinds[7] === 'go');
       const runOk = !seq.some((k, i) => k === 'nogo' && seq[i - 1] === 'nogo' && seq[i - 2] === 'nogo');
       if (firstOk && runOk) break;
     }

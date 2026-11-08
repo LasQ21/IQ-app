@@ -92,7 +92,7 @@ export function Series({ mode, form, seed, startLevel, onDone, durationMs, demoD
       }
     >
       <p className={s.prompt}>{t('games.series.prompt')}</p>
-      <div key={idx} className={s.seq} data-testid="series-seq" data-answer={item.answer}>
+      <div key={idx} className={s.seq} data-testid="series-seq" data-answer={item.answer} data-tier={item.tier}>
         {item.shown.map((v, i) => (
           <span key={i} className={s.term}>
             {v}

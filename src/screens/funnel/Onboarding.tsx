@@ -64,6 +64,7 @@ export function Onboarding() {
                       <AbilityIcon ability={def.ability} />
                     </span>
                     {t(`common.abilities.${def.ability}`)}
+                    {it.variant === 'second' && <span className={s.stepRound}>{t('progress.today.round2')}</span>}
                   </span>
                 </span>
                 <span className={s.stepTags}>

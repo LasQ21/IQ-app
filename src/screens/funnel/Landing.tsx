@@ -58,10 +58,10 @@ function HeroIllustration({ label }: { label: string }) {
           );
         })}
       </g>
-      {/* 10-minute badge */}
+      {/* 3 exercises a day badge */}
       <circle cx="298" cy="32" r="19" fill="var(--accent)" />
       <text x="298" y="33" textAnchor="middle" dominantBaseline="middle" fontSize="14" fontWeight="700" fill="var(--accent-ink)">
-        10′
+        3×
       </text>
     </svg>
   );
@@ -142,57 +142,59 @@ export function Landing() {
         ))}
       </ul>
 
-      {/* Sticky like Onboarding: the start button stays on screen at 390×664 (Safari with the jury strip) and 375×553. */}
+      {/* Only the primary action is sticky (like Onboarding), so it stays on screen at 390×664 and 375×553
+          without covering a quarter of the page; "Take the test again" and the note follow below. */}
       <div className={`${s.cta} ${s.sticky}`}>
         {returning ? (
-          <>
-            <Button block className={s.ctaBtn} onClick={resume} data-testid="landing-continue" data-stage={state.stage}>
-              {state.stage === 'home' ? t('funnel.landing.continue') : t('funnel.landing.resume')}
-            </Button>
-            {confirming ? (
-              <div
-                className={s.confirm}
-                role="alertdialog"
-                aria-labelledby={`${dialogId}-t`}
-                aria-describedby={`${dialogId}-d`}
-                data-testid="landing-restart-confirm"
-                onKeyDown={(e) => {
-                  if (e.key === 'Escape') setConfirming(false);
-                }}
-              >
-                <h2 id={`${dialogId}-t`} className={s.confirmTitle}>
-                  {t('funnel.landing.restartTitle')}
-                </h2>
-                <p id={`${dialogId}-d`} className={s.confirmBody}>
-                  {t('funnel.landing.restartBody')}
-                </p>
-                <div className={s.confirmRow}>
-                  <Button ref={cancelRef} variant="ghost" onClick={() => setConfirming(false)} data-testid="landing-restart-cancel">
-                    {t('funnel.landing.restartNo')}
-                  </Button>
-                  <Button className={s.dangerBtn} onClick={startQuiz} data-testid="landing-start">
-                    {t('funnel.landing.restartYes')}
-                  </Button>
-                </div>
-              </div>
-            ) : (
-              <Button
-                ref={restartRef}
-                block
-                variant="ghost"
-                onClick={() => setConfirming(true)}
-                aria-haspopup="dialog"
-                data-testid="landing-restart"
-              >
-                {t('funnel.landing.restart')}
-              </Button>
-            )}
-          </>
+          <Button block className={s.ctaBtn} onClick={resume} data-testid="landing-continue" data-stage={state.stage}>
+            {state.stage === 'home' ? t('funnel.landing.continue') : t('funnel.landing.resume')}
+          </Button>
         ) : (
           <Button block className={s.ctaBtn} onClick={startQuiz} data-testid="landing-start">
             {t('funnel.landing.start')}
           </Button>
         )}
+      </div>
+      <div className={s.cta}>
+        {returning &&
+          (confirming ? (
+            <div
+              className={s.confirm}
+              role="alertdialog"
+              aria-labelledby={`${dialogId}-t`}
+              aria-describedby={`${dialogId}-d`}
+              data-testid="landing-restart-confirm"
+              onKeyDown={(e) => {
+                if (e.key === 'Escape') setConfirming(false);
+              }}
+            >
+              <h2 id={`${dialogId}-t`} className={s.confirmTitle}>
+                {t('funnel.landing.restartTitle')}
+              </h2>
+              <p id={`${dialogId}-d`} className={s.confirmBody}>
+                {t('funnel.landing.restartBody')}
+              </p>
+              <div className={s.confirmRow}>
+                <Button ref={cancelRef} variant="ghost" onClick={() => setConfirming(false)} data-testid="landing-restart-cancel">
+                  {t('funnel.landing.restartNo')}
+                </Button>
+                <Button className={s.dangerBtn} onClick={startQuiz} data-testid="landing-start">
+                  {t('funnel.landing.restartYes')}
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <Button
+              ref={restartRef}
+              block
+              variant="ghost"
+              onClick={() => setConfirming(true)}
+              aria-haspopup="dialog"
+              data-testid="landing-restart"
+            >
+              {t('funnel.landing.restart')}
+            </Button>
+          ))}
         <p className={s.note}>{t('funnel.landing.note')}</p>
       </div>
 

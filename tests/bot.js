@@ -2,7 +2,7 @@
 // It reads the games' data-* attributes (stroop-word[data-ink], series-seq[data-answer],
 // gonogo-stage[data-stim], grid cells [data-lit]) and taps like a person would.
 // Inject with page.addInitScript(BOT); call window.__botTick() every ~50 ms of (fake) time;
-// tune with window.__bot.skill = { acc: 0–1, rt: ms }.
+// tune with window.__bot.skill = { acc: 0–1, rt: ms, logic?: θ (Series item model, default 0) }.
 export const BOT = `
 window.__bot = { skill: { acc: 0.8, rt: 650 }, seed: 146, q: [], seq: [], lastLit: null, handled: null, lastStim: 'none', answering: false };
 // deterministic PRNG (mulberry32) so runs are reproducible; reseed with window.__bot.seed = n
@@ -55,9 +55,15 @@ window.__botTick = function () {
     const key = seq.textContent;
     if (b.handled !== key) {
       b.handled = key;
-      const ok = rnd() < b.skill.acc;
+      // Same item model as the engine simulation (src/engine/sim.ts): P(correct) = .25 + .75·σ(1.3·(θ − b_tier)),
+      // answer time ≈ 2.4 s × tier factor (warm-up items fast, later items slower). θ = skill.logic (default 0).
+      const k = Math.max(0, Math.min(11, Number(seq.dataset.tier ?? 1) - 1));
+      const B = [-2.5, -2.2, -2.4, -1.6, -0.8, -0.6, -0.7, -0.2, 0.3, 0.5, 0.8, 1.0];
+      const RTF = [1, 1.05, 1, 1.25, 1.8, 1.8, 1.6, 2.0, 2.3, 2.5, 2.7, 3.0];
+      const theta = b.skill.logic ?? 0;
+      const ok = rnd() < 0.25 + 0.75 / (1 + Math.exp(-1.3 * (theta - B[k])));
       b.q.push({
-        at: now + b.skill.rt * 3.5,
+        at: now + 2400 * RTF[k] * (b.skill.rt / 650) * Math.exp(0.3 * (rnd() - 0.5)),
         fn: () => {
           const sq = document.querySelector('[data-testid="series-seq"]');
           if (!sq) return;

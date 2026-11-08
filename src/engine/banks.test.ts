@@ -233,3 +233,23 @@ describe('training never uses assessment items', () => {
     for (const seqs of Object.values(CORSI_BANK.T)) for (const s of seqs) expect(isAssessmentSeq('corsi', s)).toBe(false);
   });
 });
+
+describe('assessment forms are equated where a short run can tell', () => {
+  it('Go/No-Go: every form has exactly 2 No-Go in its first 10 stimuli (a 10 s run) and 8 in total', () => {
+    for (const f of ['A', 'B', 'A2'] as const) {
+      const items = GONOGO_BANK[f];
+      expect(items.slice(0, 10).filter((x) => x.kind === 'nogo').length, f).toBe(2);
+      expect(items.filter((x) => x.kind === 'nogo').length, f).toBe(8);
+    }
+  });
+  it('Series: forms share tiers; no additive item steps through multiples of 5 (those are much easier)', () => {
+    const tiers = (f: 'A' | 'B' | 'A2') => SERIES_BANK[f].map((x) => x.tier).join();
+    expect(tiers('B')).toBe(tiers('A'));
+    expect(tiers('A2')).toBe(tiers('A'));
+    for (const f of ['A', 'B', 'A2'] as const) {
+      for (const it of SERIES_BANK[f].filter((x) => x.rule.type === 'add')) {
+        expect(it.shown.every((n) => n % 5 === 0), `${f} tier ${it.tier}`).toBe(false);
+      }
+    }
+  });
+});

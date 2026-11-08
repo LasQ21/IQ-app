@@ -71,6 +71,13 @@ test.describe('layout-fit', () => {
     });
   });
 
+  test.describe('phone in landscape 844×390', () => {
+    test.use({ viewport: { width: 844, height: 390 } });
+    test('all game controls visible', async ({ page }) => {
+      await checkAllGames(page, '');
+    });
+  });
+
   test('no horizontal scroll on the funnel at 390×664 with jury', async ({ page }) => {
     await withBot(page);
     await page.goto('/?lang=uk&jury=1');

@@ -82,8 +82,6 @@ test.describe('retest-stability', () => {
     expect(runs).toHaveLength(SEEDS.length);
     expect(uiMismatch, 'Retest screen class ≠ engine class').toEqual([]);
     expect(stable / total, `share of "Stable" (${stable}/${total})`).toBeGreaterThanOrEqual(10 / 12);
-    // 15 s: the scripted bot answers Series at a flat 80 % on every item, which makes its logic score ≈ 1.4× noisier than
-    // the engine simulation (a single run can drop 61 → 0). Engine sim: weak zone kept ≈ 91 % (15 s) / 88 % (10 s).
-    expect(weakKept, 'runs with an unchanged weak zone').toBeGreaterThanOrEqual(fast ? 10 : 8);
+    expect(weakKept, 'runs with an unchanged weak zone').toBeGreaterThanOrEqual(10);
   });
 });

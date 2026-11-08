@@ -24,7 +24,11 @@ export function LineMock() {
     return () => window.clearTimeout(id);
   }, []);
 
-  const date = formatDay(state.lang, today(state), { month: 'long', day: 'numeric', weekday: 'long' });
+  // ja: 11月8日（日） — the lock-screen style a Japanese phone shows; others: "Sunday, 8 November".
+  const date =
+    state.lang === 'ja'
+      ? `${formatDay('ja', today(state), { month: 'long', day: 'numeric' })}（${formatDay('ja', today(state), { weekday: 'short' })}）`
+      : formatDay(state.lang, today(state), { month: 'long', day: 'numeric', weekday: 'long' });
   const body = state.streakDays > 0 ? t('progress.line.bodyStreak', { n: state.streakDays }) : t('progress.line.body');
 
   return (

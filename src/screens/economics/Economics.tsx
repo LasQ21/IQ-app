@@ -100,11 +100,11 @@ export function Economics() {
   const tone = (v: number) => (v > 0 ? 'pos' : v < 0 ? 'neg' : undefined);
 
   const tiles: { key: string; label: string; value: string; raw: number; note: string; tone?: string; wide?: boolean }[] = [
+    { key: 'ltvCac', label: t('economics.ltvCac'), value: f.times(e.ltvCac), raw: e.ltvCac, note: `CAC ${f.usd(ECON.cacUsd)}`, tone: tone(e.ltvCac - 1) },
+    { key: 'romi', label: t('economics.romi'), value: f.pctSigned(e.romi), raw: e.romi, note: '(LTV − CAC) / CAC', tone: tone(e.romi) },
     { key: 'charge1', label: t('economics.charge1'), value: f.pct1(e.charge1), raw: e.charge1, note: t('economics.ofTrials') },
     { key: 'charge2', label: t('economics.charge2'), value: f.pct1(e.charge2), raw: e.charge2, note: t('economics.ofTrials') },
     { key: 'netLtv', label: t('economics.netLtv'), value: f.usd(e.netLtv), raw: e.netLtv, note: t('economics.perTrial') },
-    { key: 'ltvCac', label: t('economics.ltvCac'), value: f.times(e.ltvCac), raw: e.ltvCac, note: `CAC ${f.usd(ECON.cacUsd)}`, tone: tone(e.ltvCac - 1) },
-    { key: 'romi', label: t('economics.romi'), value: f.pctSigned(e.romi), raw: e.romi, note: '(LTV − CAC) / CAC', tone: tone(e.romi) },
     { key: 'romiMonth', label: t('economics.romiMonth'), value: f.usdK(e.romiMonthUsd), raw: e.romiMonthUsd, note: t('economics.perCohort'), tone: tone(e.romiMonthUsd) },
   ];
 
@@ -142,6 +142,20 @@ export function Economics() {
               {p.opened}/{p.churn}
             </span>
           </button>
+        ))}
+      </div>
+
+      <p className="visually-hidden" aria-live="polite">
+        {t('economics.summary', { ltv: f.times(e.ltvCac), romi: f.pctSigned(e.romi) })}
+      </p>
+
+      <div className={s.grid} data-testid="econ-results">
+        {tiles.map((x) => (
+          <div key={x.key} className={s.tile} data-tone={x.tone} data-testid={`econ-${x.key}`} data-value={x.raw.toFixed(4)}>
+            <span className={s.tileLabel}>{x.label}</span>
+            <b>{x.value}</b>
+            <span className={s.tileNote}>{x.note}</span>
+          </div>
         ))}
       </div>
 
@@ -195,20 +209,6 @@ export function Economics() {
           </span>
         </div>
       </Card>
-
-      <p className="visually-hidden" aria-live="polite">
-        {t('economics.summary', { ltv: f.times(e.ltvCac), romi: f.pctSigned(e.romi) })}
-      </p>
-
-      <div className={s.grid} data-testid="econ-results">
-        {tiles.map((x) => (
-          <div key={x.key} className={s.tile} data-tone={x.tone} data-testid={`econ-${x.key}`} data-value={x.raw.toFixed(4)}>
-            <span className={s.tileLabel}>{x.label}</span>
-            <b>{x.value}</b>
-            <span className={s.tileNote}>{x.note}</span>
-          </div>
-        ))}
-      </div>
 
       <Card className="stack" style={{ gap: 8 }}>
         <h3>{t('economics.gates')}</h3>

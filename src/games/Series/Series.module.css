@@ -86,3 +86,19 @@
   border-color: var(--ok);
   color: var(--ok);
 }
+/* Phone in landscape (≈ 390 px tall): a shorter sequence card and the 4 options in one row. */
+@media (orientation: landscape) and (max-height: 500px) {
+  .seq {
+    padding: 8px 10px;
+  }
+  .term {
+    height: 44px;
+  }
+  .options {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+  }
+  .option {
+    min-height: 48px;
+  }
+}

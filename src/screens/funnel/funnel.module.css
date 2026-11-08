@@ -448,6 +448,12 @@
 .priceMain {
   display: flex;
   flex-direction: column;
+  flex: 0 0 auto;
+  white-space: nowrap; /* the trial label stays on one line; the right column wraps instead */
+}
+.stepRound::before {
+  content: '·';
+  margin: 0 6px;
 }
 .priceBig {
   font-size: 1.6rem;

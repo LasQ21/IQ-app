@@ -69,3 +69,18 @@
   flex-direction: column;
   gap: 14px;
 }
+/* Phone in landscape (≈ 390 px tall): FlashGrid №41 puts its level row and hint beside the 4×4 board. */
+@media (orientation: landscape) and (max-height: 500px) {
+  .frame[data-game='flash41'] .body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-rows: auto 1fr;
+    column-gap: 20px;
+    row-gap: 8px;
+    align-items: start;
+  }
+  .frame[data-game='flash41'] .body > :last-child {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+  }
+}

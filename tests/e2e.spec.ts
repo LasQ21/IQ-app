@@ -44,6 +44,13 @@ async function tapTargetsOk(page: Page) {
 /** FlashGrid №41 from its intro: play until the Index screen, the adaptive level must grow. */
 async function flashLevelGrows(page: Page) {
   await expect(page.locator('[data-screen="flash41"]')).toBeVisible();
+  // The mechanism under test is the staircase (2 correct → level up), not the bot's luck: a strong player here.
+  const acc = await page.evaluate(() => {
+    const b = window.__bot!;
+    const prev = b.skill.acc;
+    b.skill.acc = 0.95;
+    return prev;
+  });
   await page.getByTestId('game-start').click();
   const level = page.getByTestId('flash-level');
   const startLevel = Number(await level.getAttribute('data-level'));
@@ -54,6 +61,7 @@ async function flashLevelGrows(page: Page) {
     maxLevel = Math.max(maxLevel, l);
     return false;
   });
+  await page.evaluate((v) => (window.__bot!.skill.acc = v), acc);
   expect(maxLevel, 'FlashGrid level should grow').toBeGreaterThan(startLevel);
   await expect(page.locator('[data-screen="index"]')).toBeVisible();
 }
