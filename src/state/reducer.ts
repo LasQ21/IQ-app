@@ -1,5 +1,6 @@
-import { buildProfile, updateIndex, planForToday, dayKey, demoNow, addDays } from '../engine';
-import type { Action, AppState, GameId, Lang, PlanItem } from './types';
+import { TRAINING_PLAN_GAMES_PER_DAY } from '../config';
+import { buildProfile, updateIndex, planForToday, dayKey, demoNow, addDays, weakestStable } from '../engine';
+import type { Action, AppState, GameId, Lang, PlanItem, Profile } from './types';
 
 export function initialState(lang: Lang = 'ja'): AppState {
   return {
@@ -49,9 +50,33 @@ export function pushHistory(history: AppState['indexHistory'], day: string, inde
   return [...others, ...kept].sort((a, b) => (a.day < b.day ? -1 : a.day > b.day ? 1 : 0)); // stable within a day
 }
 
-/** Live profile = results since the latest assessment (baseline or re-test), so older tests don't drag it back. */
-function liveProfile(results: AppState['results'], from: number) {
-  return buildProfile(results.slice(from));
+/**
+ * Live profile = results since the latest assessment (baseline or re-test), so older tests don't drag it back.
+ * The weak zone is sticky: it only moves when the new evidence is outside the error band (`weakestStable`).
+ */
+function liveProfile(results: AppState['results'], from: number, prev?: Profile): Profile {
+  const p = buildProfile(results.slice(from));
+  return prev ? { ...p, weakest: weakestStable(prev, p) } : p;
+}
+
+/** Average plan game in the "+N days" demo jump (normalized score ≈ 50, 3 games/day). */
+export const SIM_SCORE = 50;
+
+/**
+ * Index gain of one simulated plan game — the iteration-2 Index formula:
+ * gain = (2 + 10·s/100) · clamp((1000 − prev)/600, 0.05, 1). ≈ +16/day near 540, slowing toward 1000.
+ * Kept in one place so it can be swapped for an engine helper.
+ */
+export function simulatedIndexGain(prev: number, score = SIM_SCORE): number {
+  const room = Math.max(0.05, Math.min(1, (1000 - prev) / 600));
+  return (2 + (10 * score) / 100) * room;
+}
+
+/** Index after one simulated demo day of TRAINING_PLAN_GAMES_PER_DAY average plan games. */
+export function simulateIndexDay(prev: number, score = SIM_SCORE): number {
+  let index = prev;
+  for (let g = 0; g < TRAINING_PLAN_GAMES_PER_DAY; g++) index = Math.min(1000, Math.round(index + simulatedIndexGain(index, score)));
+  return index;
 }
 
 export function reducer(state: AppState, action: Action): AppState {
@@ -80,14 +105,19 @@ export function reducer(state: AppState, action: Action): AppState {
           retest: undefined,
           lastRetestDay: undefined,
           plan: undefined,
+          indexGamesByDay: {},
           indexHistory: pushHistory([], today, profile.index),
         };
         return withFreshPlan(next);
       }
-      // Re-test: abilities come from the new form-B assessment; the index keeps its trained value.
-      const current = { ...profile, index: Math.max(state.current?.index ?? 0, profile.index) };
-      const next: AppState = { ...state, results, profileFrom: from, retest: profile, lastRetestDay: today, current };
-      // New weak zone → new plan for today, but exercises already done today stay ticked.
+      // Re-test: abilities come from the new form-B assessment (never adjusted); the index keeps its trained value.
+      // The weak zone moves only when the new candidate is weaker by more than the error band.
+      const prev = state.current ?? state.retest ?? state.baseline;
+      const weakest = prev ? weakestStable(prev, profile) : profile.weakest;
+      const retest: Profile = { ...profile, weakest };
+      const current: Profile = { ...retest, index: Math.max(state.current?.index ?? 0, profile.index) };
+      const next: AppState = { ...state, results, profileFrom: from, retest, lastRetestDay: today, current };
+      // Weak zone (possibly) changed → new plan for today, but exercises already done today stay ticked.
       const keep = state.plan?.day === today ? state.plan.items : [];
       return { ...next, plan: { day: today, items: freshItems(next, keep) } };
     }
@@ -96,9 +126,11 @@ export function reducer(state: AppState, action: Action): AppState {
       const s = withFreshPlan(state);
       const today = todayOf(s);
       const prevIndex = s.current?.index ?? 0;
-      const index = updateIndex(prevIndex, action.result);
+      // Only the first TRAINING_PLAN_GAMES_PER_DAY games of a day move the index (no farming).
+      const counted = s.indexGamesByDay?.[today] ?? 0;
+      const index = counted < TRAINING_PLAN_GAMES_PER_DAY ? updateIndex(prevIndex, action.result) : prevIndex;
       const results = [...s.results, action.result];
-      const current = { ...liveProfile(results, s.profileFrom ?? 0), index };
+      const current = { ...liveProfile(results, s.profileFrom ?? 0, s.current), index };
 
       let streakDays = s.streakDays;
       if (s.lastActiveDay !== today) {
@@ -126,15 +158,16 @@ export function reducer(state: AppState, action: Action): AppState {
         streakDays,
         lastActiveDay: today,
         lastIndexDelta: index - prevIndex,
+        indexGamesByDay: { ...s.indexGamesByDay, [today]: counted + 1 },
         indexHistory: pushHistory(s.indexHistory, today, index),
         minutesByDay: { ...s.minutesByDay, [today]: (s.minutesByDay[today] ?? 0) + minutes },
       };
     }
 
     case 'demoAdvance': {
-      // Simulated adherence: the user trained every day of the jump (~10 min/day).
-      // Index gets a gentle simulated drift so the progress line has a shape; abilities do NOT change
-      // here — the re-test measures them for real on form B.
+      // Simulated adherence: the user trained every day of the jump (~10 min/day, 3 average plan games).
+      // Only the index is simulated (real Index-formula pace); abilities do NOT change here —
+      // the re-test measures them for real on a new form.
       const startDay = todayOf(state);
       const active = state.lastActiveDay === startDay || (state.lastActiveDay && addDays(state.lastActiveDay, 1) === startDay);
       let index = state.current?.index ?? 0;
@@ -142,7 +175,7 @@ export function reducer(state: AppState, action: Action): AppState {
       const minutesByDay = { ...state.minutesByDay };
       for (let i = 1; i <= action.days; i++) {
         const day = addDays(startDay, i);
-        index = Math.min(1000, index + 2 + (i % 3));
+        index = simulateIndexDay(index);
         history = pushHistory(history.filter((p) => p.day !== day), day, index);
         minutesByDay[day] = 10;
       }
@@ -160,6 +193,6 @@ export function reducer(state: AppState, action: Action): AppState {
     }
 
     case 'reset':
-      return { ...initialState(state.lang), juryMode: state.juryMode };
+      return { ...initialState(state.lang), juryMode: state.juryMode, fastMode: state.fastMode };
   }
 }

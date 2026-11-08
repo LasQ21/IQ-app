@@ -12,11 +12,14 @@ export function Screen({
   children,
   className,
   padded = true,
+  hideJury = false,
 }: {
   juryKey: string;
   children: ReactNode;
   className?: string;
   padded?: boolean;
+  /** Hide the jury strip (e.g. while a timed task is being played). */
+  hideJury?: boolean;
 }) {
   const { state } = useStore();
   const t = useT();
@@ -30,7 +33,7 @@ export function Screen({
       data-reason={reason}
       data-metric={metric}
     >
-      {state.juryMode && [reason, metric, goal].some((x) => x !== '—') && (
+      {state.juryMode && !hideJury && [reason, metric, goal].some((x) => x !== '—') && (
         <aside className={s.jury} aria-label={t('common.jury')}>
           <span>
             <b>{t('common.juryReason')}:</b> {reason}
