@@ -122,4 +122,6 @@ export type Action =
   | { type: 'trainingDone'; result: GameResult; durationMs: number; variant?: PlanItem['variant'] }
   /** Jump the demo clock forward N days (simulated adherence). */
   | { type: 'demoAdvance'; days: number }
-  | { type: 'reset' };
+  | { type: 'reset' }
+  /** Replace the whole state with one saved by another tab (store.tsx `storage` listener). */
+  | { type: 'hydrate'; state: AppState };

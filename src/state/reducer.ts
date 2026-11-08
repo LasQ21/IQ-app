@@ -195,5 +195,7 @@ export function reducer(state: AppState, action: Action): AppState {
 
     case 'reset':
       return { ...initialState(state.lang), juryMode: state.juryMode, fastMode: state.fastMode };
+    case 'hydrate': // another tab saved a newer state (store.tsx `storage` listener)
+      return action.state;
   }
 }

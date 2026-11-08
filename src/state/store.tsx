@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useReducer, type ReactNode } from 'react';
-import { clearState, loadState, saveState } from './persist';
+import { STORAGE_KEY } from '../config';
+import { clearState, loadState, parseState, saveState } from './persist';
 import { initialState, reducer } from './reducer';
 import type { Action, AppState, Lang } from './types';
 import { LANGS } from './types';
@@ -32,10 +33,15 @@ function readUrlFlags(): { lang?: Lang; jury?: boolean; fast?: boolean } {
 // Read once at startup (StrictMode calls reducer initializers twice; the URL is cleaned on the first call).
 const URL_FLAGS = typeof window === 'undefined' ? {} : readUrlFlags();
 
+/** Saved state on top of the defaults, so keys added in a newer build get their initial values. */
+function withDefaults(saved: Partial<AppState> | undefined): AppState {
+  return { ...initialState(), ...(saved ?? {}) } as AppState;
+}
+
 function init(): AppState {
   const saved = loadState();
   const flags = URL_FLAGS;
-  const base = { ...initialState(), ...(saved ?? {}) } as AppState;
+  const base = withDefaults(saved);
   if (flags.lang) base.lang = flags.lang;
   if (flags.jury !== undefined) base.juryMode = flags.jury;
   if (flags.fast !== undefined) base.fastMode = flags.fast;
@@ -60,6 +66,23 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     saveState(state);
   }, [state]);
+
+  // Tab sync: another tab of the demo saved its state → adopt it, so the next save here doesn't overwrite it.
+  // (Its removeItem on "Reset demo" is followed by a write of the fresh state, so a removal alone is ignored.)
+  useEffect(() => {
+    const onStorage = (e: StorageEvent) => {
+      if (e.key !== STORAGE_KEY || e.newValue === null) return;
+      try {
+        if (e.storageArea !== window.localStorage) return;
+      } catch {
+        return;
+      }
+      const saved = parseState(e.newValue);
+      if (saved) dispatch({ type: 'hydrate', state: withDefaults(saved) });
+    };
+    window.addEventListener('storage', onStorage);
+    return () => window.removeEventListener('storage', onStorage);
+  }, []);
 
   useEffect(() => {
     document.documentElement.lang = state.lang;
