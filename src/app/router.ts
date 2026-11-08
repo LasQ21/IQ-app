@@ -56,7 +56,13 @@ export const PATHS = {
   paywall: '/paywall',
   onboarding: '/onboarding',
   today: '/today',
-  play: (gameId: string, from?: string) => `/play/${gameId}${from ? `?from=${from}` : ''}`,
+  play: (gameId: string, from?: string, variant?: string) => {
+    const q = new URLSearchParams();
+    if (from) q.set('from', from);
+    if (variant) q.set('variant', variant);
+    const qs = q.toString();
+    return `/play/${gameId}${qs ? `?${qs}` : ''}`;
+  },
   index: '/index',
   line: '/line',
   retest: '/retest',

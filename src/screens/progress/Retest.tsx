@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { AssessmentRunner, type AssessmentPhase } from '../../app/AssessmentRunner';
 import { navigate, PATHS } from '../../app/router';
 import { DEMO_JUMP_DAYS } from '../../config';
-import { classifyChange } from '../../engine';
+import { classifyChange, nextAssessmentForm } from '../../engine';
 import { joinSentences } from '../../i18n/typography';
 import { useT } from '../../i18n/useT';
 import { useStore } from '../../state/store';
@@ -42,7 +42,7 @@ export function Retest() {
           <h1>{t('progress.retest.runTitle')}</h1>
         </div>
         <AssessmentRunner
-          form="B"
+          form={nextAssessmentForm(state.results)}
           onPhaseChange={setPhase}
           onComplete={(results) => {
             dispatch({ type: 'assessmentDone', kind: 'retest', results });
@@ -85,7 +85,7 @@ export function Retest() {
   const prev = previousAssessment(state);
   if (!prev) return null;
   // Honest comparison: a change counts only outside the ability's error band.
-  const changes = classifyChange(prev.profile, retest);
+  const changes = classifyChange(prev.profile, retest, state.fastMode);
   const outcome = outcomeOf(changes);
   const gap = prev.isBaseline || !prev.day ? since : Math.max(0, diffDays(prev.day, today(state)));
   // demoDayOffset > 0 → the days were simulated by the demo jump (index only); the measurement just happened.
@@ -106,7 +106,7 @@ export function Retest() {
       </div>
 
       <Card className="stack">
-        <ChangeList changes={changes} testIdPrefix="retest-delta-" />
+        <ChangeList changes={changes} testIdPrefix="retest-delta-" fast={state.fastMode} />
         <Radar scores={retest.scores} compare={prev.profile.scores} highlight={retest.weakest} size={240} />
         <RadarLegend
           now={t('progress.retest.legendNow')}

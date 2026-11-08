@@ -249,7 +249,8 @@
       "retestIn": "再測定まであと{n}日",
       "retestDue": "再測定を受けられます",
       "retestText": "別の問題セット（B）で、実際の変化を確かめます。",
-      "lineLink": "LINEで毎日リマインド（イメージ）"
+      "lineLink": "LINEで毎日リマインド（イメージ）",
+      "round2": "2回目"
     },
     "index": {
       "name": "Wittio指数",

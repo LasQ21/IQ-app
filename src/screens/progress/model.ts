@@ -1,6 +1,6 @@
 // View-model helpers shared by the progress screens (read-only over AppState).
 import { DEMO_JUMP_DAYS } from '../../config';
-import { addDays, dayKey, demoNow, planForToday } from '../../engine';
+import { addDays, dayKey, demoNow, planItemsForToday, trainingSeedDayOf } from '../../engine';
 import { GAMES } from '../../games';
 import { todayOf } from '../../state/reducer';
 import type { Ability, AppState, GameResult, Lang, PlanItem } from '../../state/types';
@@ -55,7 +55,7 @@ export function nowMs(state: AppState): number {
 export function livePlan(state: AppState): PlanItem[] {
   if (state.plan && state.plan.day === todayOf(state)) return state.plan.items;
   const profile = state.current ?? state.baseline;
-  return profile ? planForToday(profile).map((gameId) => ({ gameId, done: false })) : [];
+  return profile ? planItemsForToday(profile, trainingSeedDayOf(todayOf(state))) : [];
 }
 
 export function weakest(state: AppState): Ability {
@@ -84,7 +84,7 @@ export function lastRetestDay(state: AppState): string | undefined {
   if (!state.retest) return undefined;
   if (state.lastRetestDay) return state.lastRetestDay;
   let ts = 0;
-  for (const r of state.results) if (r.form === 'B' && r.meta?.mode === 'assessment') ts = Math.max(ts, r.playedAt);
+  for (const r of state.results) if (r.form !== 'A' && r.meta?.mode === 'assessment') ts = Math.max(ts, r.playedAt);
   return ts ? dayKey(ts) : undefined;
 }
 

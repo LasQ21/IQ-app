@@ -86,7 +86,7 @@ export function TodayPlan() {
                   </span>
                   <span className={s.tags}>
                     <span className={[s.tag, isWeak ? s.tagWeak : ''].join(' ')}>
-                      {joinParts([t(`common.abilities.${ab}`), isWeak && t('progress.weakZone')])}
+                      {joinParts([t(`common.abilities.${ab}`), isWeak && t('progress.weakZone'), it.variant === 'second' && t('progress.today.round2')])}
                     </span>
                     <span>{t('progress.today.approx', { n: MIN_PER_ITEM })}</span>
                   </span>
@@ -96,7 +96,7 @@ export function TodayPlan() {
                   variant={it.done ? 'ghost' : 'primary'}
                   data-testid={`plan-play-${i}`}
                   aria-label={`${it.done ? t('progress.today.again') : t('progress.today.play')}: ${t(`games.${it.gameId}.name`)}`}
-                  onClick={() => navigate(PATHS.play(it.gameId, 'today'))}
+                  onClick={() => navigate(PATHS.play(it.gameId, 'today', it.variant))}
                 >
                   {it.done ? t('progress.today.again') : t('progress.today.play')}
                 </Button>

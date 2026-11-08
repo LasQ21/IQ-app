@@ -55,7 +55,7 @@ export function Play() {
       return;
     }
     const stamped = { ...result, meta: { ...result.meta, mode: 'training' as const } };
-    dispatch({ type: 'trainingDone', result: stamped, durationMs: Date.now() - startedAt.current });
+    dispatch({ type: 'trainingDone', result: stamped, durationMs: Date.now() - startedAt.current, variant: second ? 'second' : undefined });
     navigate(`${PATHS.index}?from=${from}`, { replace: true });
   };
 

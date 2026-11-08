@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import { initialState, pushHistory, reducer, simulatedIndexGain, simulateIndexDay, todayOf } from './reducer';
+import { initialState, pushHistory, reducer, todayOf } from './reducer';
 import type { Ability, AppState, GameId, GameResult } from './types';
 import { ABILITIES } from './types';
-import { addDays, buildProfile, errorBand, weakestStable } from '../engine';
+import { addDays, buildProfile, errorBand, indexGain, simulateDays, weakestStable } from '../engine';
 import { TRAINING_PLAN_GAMES_PER_DAY } from '../config';
 
 const ABILITY = { stroop: 'attention', corsi: 'memory', series: 'logic', gonogo: 'speed', flash41: 'memory' } as const;
@@ -174,10 +174,11 @@ describe('reducer · honest re-test', () => {
 
 describe('reducer · index pace', () => {
   it('simulated gain follows the iteration-2 formula', () => {
-    expect(simulatedIndexGain(400)).toBeCloseTo(7, 5); // room clamped to 1
-    expect(simulatedIndexGain(540)).toBeCloseTo(7 * (460 / 600), 5);
-    expect(simulatedIndexGain(999)).toBeCloseTo(7 * 0.05, 5);
-    const day = simulateIndexDay(540) - 540;
+    // integer gains, rounded up: ceil((2 + 10·s/100) · clamp((1000 − prev)/600, 0.05, 1))
+    expect(indexGain(400, 50)).toBe(7); // room clamped to 1
+    expect(indexGain(540, 50)).toBe(Math.ceil(7 * (460 / 600)));
+    expect(indexGain(999, 50)).toBe(1);
+    const day = simulateDays(540, 1)[0] - 540;
     expect(day).toBeGreaterThanOrEqual(10);
     expect(day).toBeLessThanOrEqual(18);
   });
@@ -186,8 +187,7 @@ describe('reducer · index pace', () => {
     const s0 = afterBaseline();
     const start = s0.current!.index;
     const s = reducer(s0, { type: 'demoAdvance', days: 30 });
-    let expected = start;
-    for (let i = 0; i < 30; i++) expected = simulateIndexDay(expected);
+    const expected = Math.round(simulateDays(start, 30)[29]);
     expect(s.current!.index).toBe(expected);
     expect(s.current!.index).toBeLessThan(1000);
     const pts = s.indexHistory.map((p) => p.index);

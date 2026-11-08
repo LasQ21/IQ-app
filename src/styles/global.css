@@ -65,6 +65,13 @@ body {
   word-break: auto-phrase;
   line-break: strict;
 }
+/* Safari/Firefox: no auto-phrase → headings break only at the zero-width spaces placed in ja.json */
+@supports not (word-break: auto-phrase) {
+  :root[lang='ja'] :is(h1, h2, h3) {
+    word-break: keep-all;
+    overflow-wrap: anywhere;
+  }
+}
 #root {
   min-height: 100dvh;
 }

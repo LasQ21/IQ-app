@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { demoNow } from '../../engine/days';
 import { useT } from '../../i18n/useT';
-import { GONOGO_BANK } from '../banks';
+import { gonogoBank } from '../banks';
 import { GameFrame } from '../shared/GameFrame';
 import { mean, press, useEnd, useSessionClock } from '../shared/hooks';
 import type { GameProps } from '../types';
@@ -25,9 +25,9 @@ type Outcome = 'hit' | 'miss' | 'fa' | 'cr';
  * and commission errors count (tapping everything → 0.5). meta.correct = hits + correct
  * rejections, meta.total = stimuli resolved, meta.meanRtMs = rawScore.
  */
-export function GoNoGo({ mode, form, onDone, durationMs, demoDayOffset = 0 }: GameProps) {
+export function GoNoGo({ mode, form, seed = 0, onDone, durationMs, demoDayOffset = 0 }: GameProps) {
   const t = useT();
-  const bank = GONOGO_BANK[form];
+  const bank = useMemo(() => gonogoBank(form, seed), [form, seed]);
   const [idx, setIdx] = useState(0);
   const [phase, setPhase] = useState<Phase>('isi');
   const [fb, setFb] = useState<{ o: Outcome; rt?: number } | null>(null);

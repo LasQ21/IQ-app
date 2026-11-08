@@ -1,6 +1,16 @@
 import { TRAINING_PLAN_GAMES_PER_DAY } from '../config';
-import { buildProfile, updateIndex, planForToday, dayKey, demoNow, addDays, weakestStable } from '../engine';
-import type { Action, AppState, GameId, Lang, PlanItem, Profile } from './types';
+import {
+  buildProfile,
+  updateIndex,
+  planItemsForToday,
+  trainingSeedDayOf,
+  simulateDays,
+  dayKey,
+  demoNow,
+  addDays,
+  weakestStable,
+} from '../engine';
+import type { Action, AppState, Lang, PlanItem, Profile } from './types';
 
 export function initialState(lang: Lang = 'ja'): AppState {
   return {
@@ -22,13 +32,16 @@ export function todayOf(state: Pick<AppState, 'demoDayOffset'>, now = Date.now()
   return dayKey(demoNow(state.demoDayOffset, now));
 }
 
+const sameCard = (a: PlanItem, b: PlanItem) => a.gameId === b.gameId && (a.variant ?? '') === (b.variant ?? '');
+
+/** Today's plan from the live profile; varies by day (rotation). Cards already done today stay ticked. */
 function freshItems(state: AppState, keepDone: PlanItem[] = []): PlanItem[] {
   if (!state.current) return [];
-  const done = keepDone.filter((it) => it.done).map((it) => it.gameId);
-  return planForToday(state.current).map((gameId: GameId) => {
-    const i = done.indexOf(gameId);
+  const done = keepDone.filter((it) => it.done);
+  return planItemsForToday(state.current, trainingSeedDayOf(todayOf(state))).map((it) => {
+    const i = done.findIndex((d) => sameCard(d, it));
     if (i >= 0) done.splice(i, 1);
-    return { gameId, done: i >= 0 };
+    return { ...it, done: i >= 0 };
   });
 }
 
@@ -54,30 +67,11 @@ export function pushHistory(history: AppState['indexHistory'], day: string, inde
  * Live profile = results since the latest assessment (baseline or re-test), so older tests don't drag it back.
  * The weak zone is sticky: it only moves when the new evidence is outside the error band (`weakestStable`).
  */
-function liveProfile(results: AppState['results'], from: number, prev?: Profile): Profile {
+function liveProfile(results: AppState['results'], from: number, prev?: Profile, fast = false): Profile {
   const p = buildProfile(results.slice(from));
-  return prev ? { ...p, weakest: weakestStable(prev, p) } : p;
+  return prev ? { ...p, weakest: weakestStable(prev, p, fast) } : p;
 }
 
-/** Average plan game in the "+N days" demo jump (normalized score ≈ 50, 3 games/day). */
-export const SIM_SCORE = 50;
-
-/**
- * Index gain of one simulated plan game — the iteration-2 Index formula:
- * gain = (2 + 10·s/100) · clamp((1000 − prev)/600, 0.05, 1). ≈ +16/day near 540, slowing toward 1000.
- * Kept in one place so it can be swapped for an engine helper.
- */
-export function simulatedIndexGain(prev: number, score = SIM_SCORE): number {
-  const room = Math.max(0.05, Math.min(1, (1000 - prev) / 600));
-  return (2 + (10 * score) / 100) * room;
-}
-
-/** Index after one simulated demo day of TRAINING_PLAN_GAMES_PER_DAY average plan games. */
-export function simulateIndexDay(prev: number, score = SIM_SCORE): number {
-  let index = prev;
-  for (let g = 0; g < TRAINING_PLAN_GAMES_PER_DAY; g++) index = Math.min(1000, Math.round(index + simulatedIndexGain(index, score)));
-  return index;
-}
 
 export function reducer(state: AppState, action: Action): AppState {
   switch (action.type) {
@@ -113,7 +107,7 @@ export function reducer(state: AppState, action: Action): AppState {
       // Re-test: abilities come from the new form-B assessment (never adjusted); the index keeps its trained value.
       // The weak zone moves only when the new candidate is weaker by more than the error band.
       const prev = state.current ?? state.retest ?? state.baseline;
-      const weakest = prev ? weakestStable(prev, profile) : profile.weakest;
+      const weakest = prev ? weakestStable(prev, profile, state.fastMode) : profile.weakest;
       const retest: Profile = { ...profile, weakest };
       const current: Profile = { ...retest, index: Math.max(state.current?.index ?? 0, profile.index) };
       const next: AppState = { ...state, results, profileFrom: from, retest, lastRetestDay: today, current };
@@ -130,7 +124,7 @@ export function reducer(state: AppState, action: Action): AppState {
       const counted = s.indexGamesByDay?.[today] ?? 0;
       const index = counted < TRAINING_PLAN_GAMES_PER_DAY ? updateIndex(prevIndex, action.result) : prevIndex;
       const results = [...s.results, action.result];
-      const current = { ...liveProfile(results, s.profileFrom ?? 0, s.current), index };
+      const current = { ...liveProfile(results, s.profileFrom ?? 0, s.current, s.fastMode), index };
 
       let streakDays = s.streakDays;
       if (s.lastActiveDay !== today) {
@@ -138,10 +132,16 @@ export function reducer(state: AppState, action: Action): AppState {
       }
 
       let marked = false;
+      // Mark the exact card played (gameId + variant); fall back to any open card of the same game.
+      const gameId = action.result.gameId;
+      let variant = action.variant;
+      if (s.plan && !s.plan.items.some((it) => !it.done && sameCard(it, { gameId, done: false, variant }))) {
+        variant = s.plan.items.find((it) => !it.done && it.gameId === gameId)?.variant;
+      }
       const plan = s.plan && {
         ...s.plan,
         items: s.plan.items.map((it) => {
-          if (!marked && !it.done && it.gameId === action.result.gameId) {
+          if (!marked && !it.done && sameCard(it, { gameId, done: false, variant })) {
             marked = true;
             return { ...it, done: true };
           }
@@ -173,9 +173,10 @@ export function reducer(state: AppState, action: Action): AppState {
       let index = state.current?.index ?? 0;
       let history = state.indexHistory;
       const minutesByDay = { ...state.minutesByDay };
+      const simulated = simulateDays(index, action.days);
       for (let i = 1; i <= action.days; i++) {
         const day = addDays(startDay, i);
-        index = simulateIndexDay(index);
+        index = Math.round(simulated[i - 1] ?? index);
         history = pushHistory(history.filter((p) => p.day !== day), day, index);
         minutesByDay[day] = 10;
       }

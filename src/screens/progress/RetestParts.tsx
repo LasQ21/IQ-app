@@ -44,12 +44,12 @@ function ClsIcon({ cls }: { cls: AbilityChange['cls'] }) {
 }
 
 /** One row per ability: "Memory · was 52 · now 61 (41–81)" + "Stable (within ±20)" / "Noticeably better" / "Lower". */
-export function ChangeList({ changes, testIdPrefix }: { changes: AbilityChange[]; testIdPrefix?: string }) {
+export function ChangeList({ changes, testIdPrefix, fast = false }: { changes: AbilityChange[]; testIdPrefix?: string; fast?: boolean }) {
   const t = useT();
   return (
     <ul className={r.changes}>
       {changes.map((c) => {
-        const [lo, hi] = scoreRange(c.ability, c.after);
+        const [lo, hi] = scoreRange(c.ability, c.after, fast);
         const label =
           c.cls === 'better'
             ? t('progress.retest.clsBetter')

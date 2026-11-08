@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { demoNow } from '../../engine/days';
 import { useT, type T } from '../../i18n/useT';
-import { STROOP_BANK, STROOP_COLORS, STROOP_INK, type StroopColor } from '../banks';
+import { stroopBank, STROOP_COLORS, STROOP_INK, type StroopColor } from '../banks';
 import { GameFrame } from '../shared/GameFrame';
 import { mean, press, useEnd, useSessionClock, useTimeouts } from '../shared/hooks';
 import type { GameProps } from '../types';
@@ -28,9 +28,9 @@ function colorName(t: T, c: StroopColor): string {
  * Stroop (attention). A colour word is shown in a mismatched ink; tap the INK colour.
  * rawScore = correct answers. meta: correct, total, accuracy, meanRtMs (correct answers).
  */
-export function Stroop({ mode, form, onDone, durationMs, demoDayOffset = 0 }: GameProps) {
+export function Stroop({ mode, form, seed = 0, onDone, durationMs, demoDayOffset = 0 }: GameProps) {
   const t = useT();
-  const bank = STROOP_BANK[form];
+  const bank = useMemo(() => stroopBank(form, seed), [form, seed]);
   const [idx, setIdx] = useState(0);
   const [fb, setFb] = useState<{ choice: StroopColor; ok: boolean } | null>(null);
   const [score, setScore] = useState(0);

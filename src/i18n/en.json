@@ -248,7 +248,8 @@
       "retestIn": "Days to re-test: {n}",
       "retestDue": "Your re-test is ready",
       "retestText": "A new parallel form shows what has really changed.",
-      "lineLink": "Daily reminder in LINE (demo)"
+      "lineLink": "Daily reminder in LINE (demo)",
+      "round2": "Round 2"
     },
     "index": {
       "name": "Wittio Index",
