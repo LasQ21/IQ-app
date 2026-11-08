@@ -18,8 +18,8 @@ function res(gameId: GameId, rawScore: number, meta: GameResult['meta'] = {}, ex
 /** Typical adult results for a 15 s assessment (and a training FlashGrid). */
 const TYPICAL: GameResult[] = [
   res('stroop', 10, { correct: 10, total: 11, accuracy: 10 / 11, meanRtMs: 1100, mode: 'assessment' }),
-  res('corsi', 5, { correct: 3, total: 4, accuracy: 0.75, meanRtMs: 600, mode: 'assessment' }),
-  res('series', 3, { correct: 3, total: 4, accuracy: 0.75, meanRtMs: 3800, mode: 'assessment' }),
+  res('corsi', 4, { correct: 2, total: 3, accuracy: 2 / 3, meanRtMs: 500, recalled: 10, durationMs: 15_000, mode: 'assessment' }),
+  res('series', 4, { correct: 4, total: 4, accuracy: 1, meanRtMs: 2700, durationMs: 15_000, mode: 'assessment' }),
   res('gonogo', 420, { correct: 14, total: 15, accuracy: 0.9, meanRtMs: 420, mode: 'assessment' }),
   res('flash41', 6, { correct: 6, total: 9, accuracy: 0.67, maxLevel: 6, meanRtMs: 500, mode: 'training' }, { level: 5 }),
 ];
@@ -164,24 +164,59 @@ describe('buildProfile', () => {
 });
 
 describe('corsi partial credit (meta.recalled)', () => {
-  const corsi = (span: number, recalled: number, total = 4): GameResult => ({
+  const corsi = (span: number, recalled: number, total = 4, extra: GameResult['meta'] = {}): GameResult => ({
     gameId: 'corsi',
     ability: 'memory',
     rawScore: span,
     form: 'A',
     playedAt: 0,
-    meta: { correct: 2, total, accuracy: 0.5, recalled, mode: 'assessment' },
+    meta: { correct: 2, total, accuracy: 0.5, recalled, mode: 'assessment', ...extra },
   });
-  it('a perfect 15 s run (4+5+6) scores 80', () => {
-    expect(normalize(corsi(6, 15, 3))).toBe(80);
+  it('score = 0.5·lin(span, 2, 6) + 0.5·lin(recalled, 3, 12): no ceiling at ≈ 50', () => {
+    expect(normalize(corsi(6, 15, 3))).toBe(100); // perfect 4 + 5 + 6
+    expect(normalize(corsi(5, 9, 2))).toBe(Math.round(100 * (0.5 * 0.75 + 0.5 * (6 / 9)))); // 4 + 5 → 71
+    expect(normalize(corsi(4, 4 + 2 + 3, 3))).toBe(Math.round(100 * (0.25 + 0.5 * (6 / 9)))); // slips → 58
   });
   it('one slip costs points, not half the score', () => {
-    const perfect = normalize(corsi(6, 15, 3));
-    const slip = normalize(corsi(5, 4 + 3 + 5, 3));
+    const perfect = normalize(corsi(5, 9, 2));
+    const slip = normalize(corsi(4, 4 + 2 + 4, 3));
     expect(slip).toBeGreaterThan(perfect * 0.65);
     expect(slip).toBeLessThan(perfect);
   });
   it('more recalled cells → higher score', () => {
     expect(normalize(corsi(4, 12))).toBeGreaterThan(normalize(corsi(4, 8)));
+  });
+  it('a 10 s fast-mode run is scaled to 15 s; a 10-trial training run to 3 trials', () => {
+    expect(normalize(corsi(5, 6, 2, { durationMs: 10_000 }))).toBe(normalize(corsi(5, 9, 2)));
+    expect(normalize(corsi(6, 30, 10, { mode: 'training' }))).toBe(normalize(corsi(6, 9, 3)));
+  });
+});
+
+describe('series rate score', () => {
+  const series = (correct: number, total: number, meta: GameResult['meta'] = {}): GameResult =>
+    res('series', correct, { correct, total, accuracy: correct / total, meanRtMs: 2800, durationMs: 15_000, mode: 'assessment', ...meta });
+  it('more correct answers in the same time → higher; random tapping → ≈ 0', () => {
+    expect(normalize(series(5, 5))).toBeGreaterThan(normalize(series(4, 4)));
+    expect(normalize(series(4, 5))).toBeLessThan(normalize(series(4, 4)));
+    expect(normalize(series(2, 8))).toBe(0); // chance level (net 0)
+  });
+  it('10 s fast mode is on the same per-15 s scale', () => {
+    expect(normalize(series(3, 3, { durationMs: 10_000 }))).toBe(normalize(series(4.5, 4.5)));
+  });
+  it('one quick answer and "Finish" is not a high score', () => {
+    expect(normalize(series(1, 1, { durationMs: 2_000 }))).toBeLessThan(15);
+  });
+});
+
+describe('profile = assessment instruments only', () => {
+  it('ignores training games and FlashGrid (no "Memory +13" after one game)', () => {
+    const baseline = TYPICAL.slice(0, 4);
+    const p0 = buildProfile(baseline);
+    const strongFlash = res('flash41', 9, { correct: 9, total: 10, accuracy: 0.9, maxLevel: 8, mode: 'training' }, { level: 8 });
+    const strongStroop = res('stroop', 24, { correct: 24, total: 24, accuracy: 1, meanRtMs: 600, mode: 'training' });
+    const strongCorsi = res('corsi', 7, { correct: 9, total: 10, accuracy: 0.9, recalled: 50, mode: 'training' });
+    const p1 = buildProfile([...baseline, strongFlash, strongStroop, strongCorsi]);
+    expect(p1.scores).toEqual(p0.scores);
+    expect(p1.weakest).toBe(p0.weakest);
   });
 });

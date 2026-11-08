@@ -13,6 +13,13 @@ export function dayKey(ts: number): string {
   return `${d.getFullYear()}-${m}-${day}`;
 }
 
+/** Whole days since 1970-01-01 for a 'YYYY-MM-DD' key (timezone-free; 0 for garbage). */
+export function dayNumber(day: string): number {
+  const [y, m, d] = String(day).split('-').map(Number);
+  if (![y, m, d].every(Number.isFinite)) return 0;
+  return Math.max(0, Math.round(Date.UTC(y, m - 1, d) / DAY_MS));
+}
+
 export function addDays(day: string, n: number): string {
   const [y, m, d] = day.split('-').map(Number);
   return dayKey(new Date(y, m - 1, d + n).getTime());

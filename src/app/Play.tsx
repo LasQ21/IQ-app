@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { TRAINING_MAX_MS } from '../config';
-import { pickForm } from '../engine';
+import { dayKey, demoNow, SECOND_ROUND_SERIES_TIER, TRAINING_FORM, trainingSeedDayOf, trainingSlot } from '../engine';
+import { FLASH_FIRST_LEVEL } from '../engine/timing';
+import { trainingSeed } from '../games/banks';
 import { GAMES } from '../games';
 import { useT } from '../i18n/useT';
 import { useStore } from '../state/store';
@@ -27,9 +29,22 @@ export function Play() {
   }, [def]);
 
   if (!def) return null;
-  const form = pickForm(state.results, def.ability);
-  const lastLevel = [...state.results].reverse().find((r) => r.gameId === gameId)?.meta?.maxLevel;
-  const startLevel = def.adaptive ? Math.max(2, (lastLevel ?? 3) - 1) : undefined;
+  // Training never sees assessment items: generated items ('T'), seeded per demo-day and slot of the day.
+  const today = dayKey(demoNow(state.demoDayOffset));
+  const seed = trainingSeed(trainingSeedDayOf(today), trainingSlot(state.results, today));
+  // ?variant=second → second weak-zone round today (Series starts after the warm-up); ?start=N overrides.
+  const startParam = Number(route.query.get('start'));
+  const second = route.query.get('variant') === 'second';
+  let startLevel: number | undefined;
+  if (def.adaptive) {
+    // FlashGrid №41: first session at level 3, then one below the FINAL level of the last session.
+    const last = [...state.results].reverse().find((r) => r.gameId === gameId);
+    const lastFinal = last ? (last.level ?? last.meta?.maxLevel) : undefined;
+    startLevel = Number.isFinite(lastFinal) ? Math.max(2, (lastFinal as number) - 1) : FLASH_FIRST_LEVEL;
+  } else if (gameId === 'series' && second) {
+    startLevel = SECOND_ROUND_SERIES_TIER;
+  }
+  if (Number.isFinite(startParam) && startParam > 0) startLevel = startParam;
   const Game = def.component;
 
   const onDone = (result: GameResult) => {
@@ -66,7 +81,8 @@ export function Play() {
         <div className={s.gameArea}>
           <Game
             mode="training"
-            form={form}
+            form={TRAINING_FORM}
+            seed={seed}
             durationMs={TRAINING_MAX_MS}
             startLevel={startLevel}
             demoDayOffset={state.demoDayOffset}
