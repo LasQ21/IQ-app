@@ -361,7 +361,7 @@ function clientScript() {
           var c = null;
           try { c = JSON.parse(store.get(KEY_CACHE) || 'null'); } catch (e) { c = null; }
           if (c && c.data && c.since === w.since) render(c.data, false);
-          else { root.setAttribute('data-state', 'offline'); $('lv-status').innerHTML = '<b>Case Challenge 3.0 · CC-146</b> · Немає зв’язку з прототипом — перевірте інтернет'; }
+          else { root.setAttribute('data-state', 'offline'); $('lv-status').innerHTML = '<b>Case Challenge 3.0 · CC-146</b> · Немає зв’язку з прототипом — відкрийте колоду за адресою <b>cc146-wittio.vercel.app/deck</b>'; }
         })
         .then(function () { clearTimeout(to); busy = false; });
     }

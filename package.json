@@ -11,7 +11,8 @@
     "e2e": "playwright test",
     "i18n:check": "node scripts/i18n-check.mjs",
     "icons": "node scripts/gen-icons.mjs",
-    "typecheck": "tsc -b"
+    "typecheck": "tsc -b",
+    "deck": "node scripts/deck-live-slide.mjs docs/deck/CC-146-Wittio-deck.source.html docs/deck/CC-146-Wittio-deck.html --notes docs/deck/speaker-notes.json && cp docs/deck/CC-146-Wittio-deck.html public/deck.html"
   },
   "dependencies": {
     "@fontsource/onest": "5.3.1",

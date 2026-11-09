@@ -135,7 +135,10 @@ It replaces the old appendix slide "given in the case vs our estimates".
 - **Rehearsals don't pollute it.** Dev, previews, Playwright and the screenshot script send nothing. To rehearse with real
   phones, open the prototype once with `?livetest=1` (the record is marked `test`) and the deck as `CC-146-Wittio-deck.html?livetest=1#13`
   → the slide includes test records and says "з репетиціями".
-- **Rebuild the slide** after editing the deck export: `node scripts/deck-live-slide.mjs docs/deck/CC-146-Wittio-deck.source.html docs/deck/CC-146-Wittio-deck.html --notes docs/deck/speaker-notes.json`.
+- **Where to open the deck:** https://cc146-wittio.vercel.app/deck — the same site as the data, so the live slide works in any
+  browser. The file opened locally works in Chrome; the claude.ai artifact copy and file previews (Safari, Telegram) cannot
+  reach the API, and slide 13 then says "Немає зв'язку". `deck.html` is not precached on phones and not indexed.
+- **Rebuild the slide** after editing the deck export: `npm run deck` (also copies it to `public/deck.html`).
 - **Speaker notes** of all 13 slides come from `docs/deck/speaker-notes.json` = the team's speech doc (9 Nov version: slide 7 has 35 s for the prototype, slide 13 is 40 s, total 10:00).
 - Preview: `docs/deck/slide13-live-preview.png` (mock data).
 

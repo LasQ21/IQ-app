@@ -3,7 +3,10 @@
   "framework": "vite",
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
-  "rewrites": [{ "source": "/((?!assets/|api/|.*\\..*).*)", "destination": "/index.html" }],
+  "rewrites": [
+    { "source": "/deck", "destination": "/deck.html" },
+    { "source": "/((?!assets/|api/|deck$|.*\\..*).*)", "destination": "/index.html" }
+  ],
   "headers": [
     {
       "source": "/assets/(.*)",
@@ -12,6 +15,13 @@
     {
       "source": "/sw.js",
       "headers": [{ "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }]
+    },
+    {
+      "source": "/deck(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" },
+        { "key": "X-Robots-Tag", "value": "noindex" }
+      ]
     },
     {
       "source": "/api/(.*)",
