@@ -129,7 +129,7 @@ It replaces the old appendix slide "given in the case vs our estimates".
 - **Window.** Buttons in the footer: `3 год` (default), `сьогодні`, `з нуля` (counts only results from this second — press it
   right before the pitch). Remembered in the presenter's browser.
 - **Rehearsals don't pollute it.** Dev, previews, Playwright and the screenshot script send nothing. To rehearse with real
-  phones, open the prototype once with `?livetest=1` (the record is marked `test`) and the deck with `#13?livetest=1`
+  phones, open the prototype once with `?livetest=1` (the record is marked `test`) and the deck as `CC-146-Wittio-deck.html?livetest=1#13`
   → the slide includes test records and says "з репетиціями".
 - **Rebuild the slide** after editing the deck export: `node scripts/deck-live-slide.mjs docs/deck/CC-146-Wittio-deck.source.html docs/deck/CC-146-Wittio-deck.html`.
 - Preview: `docs/deck/slide13-live-preview.png` (mock data).
