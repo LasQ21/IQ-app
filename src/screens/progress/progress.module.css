@@ -582,3 +582,38 @@ a.chip {
   padding-top: 4px;
   border-top: 1px solid var(--border);
 }
+
+/* Live jury dashboard: "would you come back tomorrow?" */
+.vote {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+  display: grid;
+  gap: 12px;
+}
+.voteTitle {
+  padding: 0;
+  font-weight: 600;
+  line-height: 1.35;
+}
+.voteRow {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+.voteRow > button {
+  min-width: 0;
+  padding-inline: 8px;
+}
+.voteDone {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.voteDone p {
+  margin: 0;
+  flex: 1 1 180px;
+}

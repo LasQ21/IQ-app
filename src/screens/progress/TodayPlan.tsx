@@ -9,6 +9,7 @@ import { joinParts } from '../../ui/text';
 import { ArrowIcon, CheckIcon } from './icons';
 import { abilityOf, daysSinceBaseline, daysUntilRetest, formatDay, livePlan, nowMs, today, weakest } from './model';
 import { StreakChip } from './parts';
+import { VoteCard } from './VoteCard';
 import s from './progress.module.css';
 
 /** Training sessions last ≤ 45 s (TRAINING_MAX_MS): ~1 min per card, ~3 min for the plan. */
@@ -105,6 +106,8 @@ export function TodayPlan() {
           })}
         </ol>
       </Card>
+
+      <VoteCard />
 
       <Card tone="accent">
         <a className={s.linkCard} href={'#' + PATHS.retest} data-testid="today-retest">

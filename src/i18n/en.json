@@ -126,7 +126,8 @@
       "restartTitle": "Start over?",
       "restartBody": "Progress on this device will be reset.",
       "restartYes": "Reset and start",
-      "restartNo": "Cancel"
+      "restartNo": "Cancel",
+      "liveNote": "Anonymous scores (no name, no contacts) appear on the live dashboard for the jury."
     },
     "quiz": {
       "title": "60-second test",
@@ -250,7 +251,15 @@
       "retestDue": "Your re-test is ready",
       "retestText": "A new parallel form shows what has really changed.",
       "lineLink": "Daily reminder in LINE (demo)",
-      "round2": "Round 2"
+      "round2": "Round 2",
+      "vote": {
+        "title": "Quick question: would you come back to the plan tomorrow?",
+        "yes": "Yes",
+        "maybe": "Maybe",
+        "no": "No",
+        "thanks": "Thank you! The answer is anonymous and appears on the jury dashboard.",
+        "change": "Change answer"
+      }
     },
     "index": {
       "name": "Wittio Index",
@@ -276,7 +285,7 @@
       "bodyStreak": "Time for today’s 3 exercises. Keep your streak going ({n} days)!",
       "tapHint": "Tap the notification",
       "timeLabel": "Reminder time",
-      "caption": "Reminders arrive at the time you choose via LINE, the messenger most people use in Japan. This is a demo: no messages are sent and no data is collected.",
+      "caption": "Reminders arrive at the time you choose via LINE, the messenger most people use in Japan. This is a demo: no messages are sent and nothing is shared with LINE.",
       "cta": "Go to today’s plan"
     },
     "retest": {

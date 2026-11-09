@@ -1,4 +1,4 @@
-import { ECON } from '../config';
+import { ECON } from '../config.js';
 import type { Economics } from '../state/types';
 
 /**

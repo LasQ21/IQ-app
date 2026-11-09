@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useReducer, type ReactNode } from 'react';
 import { STORAGE_KEY } from '../config';
+import { liveNewRun } from '../live/client';
 import { clearState, loadState, parseState, saveState } from './persist';
 import { initialState, reducer } from './reducer';
 import type { Action, AppState, Lang } from './types';
@@ -92,7 +93,10 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     () => ({
       state,
       dispatch: (a: Action) => {
-        if (a.type === 'reset') clearState();
+        if (a.type === 'reset') {
+          clearState();
+          liveNewRun(state);
+        }
         dispatch(a);
       },
     }),

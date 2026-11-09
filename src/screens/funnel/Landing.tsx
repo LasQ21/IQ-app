@@ -196,6 +196,9 @@ export function Landing() {
             </Button>
           ))}
         <p className={s.note}>{t('funnel.landing.note')}</p>
+        <p className={s.note} data-testid="landing-live-note">
+          {t('funnel.landing.liveNote')}
+        </p>
       </div>
 
       <ol className={s.loop} aria-label={t('funnel.landing.loopLabel')}>

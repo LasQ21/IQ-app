@@ -3,6 +3,7 @@ import { useStore } from '../state/store';
 import { Landing, Quiz, ResultTeaser, Paywall, Onboarding } from '../screens/funnel';
 import { TodayPlan, IndexStreak, LineMock, Retest, WeeklyReport, Profile } from '../screens/progress';
 import { Economics } from '../screens/economics';
+import { useLiveReporter } from '../live/useLiveReporter';
 import { Play } from './Play';
 import { Shell } from './Shell';
 import { navigate, PATHS, useRoute } from './router';
@@ -39,6 +40,7 @@ function takeEconFlag(): boolean {
 export function App() {
   const route = useRoute();
   const { state } = useStore();
+  useLiveReporter(route, state);
 
   useEffect(() => {
     if (takeEconFlag() || route.query.get('econ') === '1') navigate(PATHS.economics, { replace: true });

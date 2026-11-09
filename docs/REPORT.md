@@ -91,7 +91,7 @@ estimates; the rest is the brief.
 - **LINE** — a mock lock-screen notification; nothing is sent, no real LINE logo.
 - **30 days** — "Demo: +30 days" shifts the demo clock and assumes 3 plan games a day (index, minutes, streak) at the
   real Index pace. Abilities are *not* simulated — the re-test measures them.
-- **No backend, no personal data** — state lives only in `localStorage`; "Reset demo" (Profile) clears it; "Take the test
+- **No personal data** — app state lives only in `localStorage`; the only thing sent is the anonymous record for the live jury dashboard (below); "Reset demo" (Profile) clears it; "Take the test
   again" on Landing asks for confirmation first. Two tabs stay in sync.
 - **Fonts** — Onest (Cyrillic/Latin, `unicode-range`) is self-hosted and preloaded for uk/en; Japanese uses the system font.
 - **Service worker** — a new deploy is applied on the next Landing/Today, never during a quiz or a game.
@@ -105,6 +105,31 @@ estimates; the rest is the brief.
 | Lighthouse mobile (`/`, `/?lang=uk`) | Performance 99 / 97 · Accessibility 100 · Best practices 100 · CLS 0 |
 | `npm run i18n:check` — key parity, banned JA words (診断/効果/改善/脳年齢, 予防 outside the disclaimer), numbers in every jury metric, no "—" | OK (293 keys × 3) |
 | Network | only the app's own origin |
+
+## Live jury dashboard (deck slide 13)
+The last slide of `docs/deck/CC-146-Wittio-deck.html` is a live dashboard of what the jury did in the prototype.
+It replaces the old appendix slide "given in the case vs our estimates".
+
+- **Phone → server.** Every phone on the production host keeps one anonymous record per demo run
+  (`src/live/client.ts`): a random id, language, jury/fast mode, the first time each loop step was reached
+  (landing → quiz → profile → paywall → «Почати» → first exercise → Today → economics → re-test), the four 0–100 scores,
+  the weak zone, the Index, the Loop-economics sliders (only if moved) and the one-tap answer
+  "Would you come back to the plan tomorrow?" (new card on Today). No name, no contacts. Landing says so in one line.
+  It is POSTed (debounced, `keepalive`) to `/api/jury` on the app's own origin; failures and offline are ignored.
+- **Server.** `api/jury.ts` (Vercel Function) validates the record (`src/live/schema.ts`: whitelist + clamps) and stores it
+  as `jury/<id>.json` in the private Blob store `cc146-wittio-live`. `GET /api/jury?since=<ms>` returns the records and the
+  statistics (`src/live/aggregate.ts`), CDN-cached for 3 s, CORS open for reading.
+- **Slide.** Polls every 5 s while it is on screen: 5 KPI tiles (tested, median test time, test → first exercise,
+  «Почати» → first exercise vs 45 % today, "would come back"), the loop funnel, weak zones, the vote and a 3-point
+  conclusion computed from the numbers, with the caveat "n is small, the jury is not the target audience". Offline it shows
+  the last data it saw. The deck's CSP now allows `connect-src https://cc146-wittio.vercel.app` only.
+- **Window.** Buttons in the footer: `3 год` (default), `сьогодні`, `з нуля` (counts only results from this second — press it
+  right before the pitch). Remembered in the presenter's browser.
+- **Rehearsals don't pollute it.** Dev, previews, Playwright and the screenshot script send nothing. To rehearse with real
+  phones, open the prototype once with `?livetest=1` (the record is marked `test`) and the deck with `#13?livetest=1`
+  → the slide includes test records and says "з репетиціями".
+- **Rebuild the slide** after editing the deck export: `node scripts/deck-live-slide.mjs docs/deck/CC-146-Wittio-deck.source.html docs/deck/CC-146-Wittio-deck.html`.
+- Preview: `docs/deck/slide13-live-preview.png` (mock data).
 
 ## Stage operations
 - Freeze deploys one hour before the pitch. Open the presenter's phone **twice** (the second open picks up the new SW).

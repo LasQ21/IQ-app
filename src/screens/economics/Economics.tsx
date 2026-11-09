@@ -1,4 +1,5 @@
-import { useId, useMemo, useState } from 'react';
+import { useEffect, useId, useMemo, useRef, useState } from 'react';
+import { liveEcon } from '../../live/client';
 import { navigate, PATHS, useRoute } from '../../app/router';
 import { ECON } from '../../config';
 import { economics } from '../../engine';
@@ -86,6 +87,15 @@ export function Economics() {
   const [churn, setChurn] = useState(() => clampInt(route.query.get('c'), CHURN_MIN, CHURN_MAX, 0));
   const f = useMemo(() => econFormat(state.lang), [state.lang]);
   const e = economics(opened / 100, churn / 100);
+  // Live jury dashboard: the scenario this person left on the sliders (only once they moved something).
+  const touched = useRef(false);
+  useEffect(() => {
+    if (!touched.current) {
+      touched.current = true;
+      return;
+    }
+    liveEcon(opened, churn);
+  }, [opened, churn]);
 
   const passOpened = opened >= ECON.gateOpened * 100;
   const passCharge1 = e.charge1 >= ECON.gateCharge1 - 1e-9;

@@ -7,7 +7,9 @@ Prototype by team **CC-146** for the Case Challenge 3.0 final (SKELAR × Horizon
 
 - UI languages: **Japanese** (default), **Ukrainian**, **English** — header switch `JA / UK / EN`, or `?lang=uk`, `?lang=en`.
 - Jury mode: header toggle or `?jury=1` — each screen shows *churn reason · metric · goal*.
-- Installable PWA, works offline after the first open. State lives only in `localStorage` on the device.
+- Installable PWA, works offline after the first open. State lives only in `localStorage` on the device;
+  an anonymous record (scores, loop steps, one vote — no name or contacts) goes to `/api/jury` for the live jury dashboard
+  on the last slide of the deck (`docs/REPORT.md` → "Live jury dashboard").
 
 ## Run
 
