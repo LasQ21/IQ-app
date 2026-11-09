@@ -32,7 +32,7 @@ Plan and council findings: `docs/ITERATION-2-PLAN.md`; acceptance review: `docs/
 Made by `scripts/screenshots.mjs`: a seeded scripted player plays every game for real on a fake clock.
 **The re-test is played with the same skills as the baseline** — nothing is faked: every ability shows
 "Stable (within ±N)". In jury mode a separate card labelled *"Illustration, not your result"* shows a typical
-30-day picture (+3…+12, most on the weak zone). `5-economics` is the 60 % / 10 % gate scenario (LTV/CAC 1.47×, ROMI +47 %).
+30-day picture (+3…+12, most on the weak zone). `5-economics` is the cautious 55 % / 10 % scenario (LTV/CAC 1.39×, ROMI +39 %, both gates green).
 
 ## Demo script (Sasha, slide 7) — fast jury mode
 1. Jury scans the QR (`?lang=uk&jury=1`) → Landing with the strip "Business today: ROMI +9 % · LTV/CAC 1.09× → +39–75 %".
@@ -41,7 +41,7 @@ Made by `scripts/screenshots.mjs`: a seeded scripted player plays every game for
    "Was: Get my IQ report → Now: plan · A/B on 20 %" → «Почати».
 4. Onboarding → 10 s warm-up starts right away → **Wittio Index "586 → 593, +7"**, "Streak started".
 5. LINE-style reminder mock → Today (3 cards, 2 on the weak zone, the middle one rotates daily).
-6. **Loop economics:** drag "Opened the product after paying" 45 → 60 % → LTV/CAC 1.09 → 1.47×, ROMI +9 → +47 %,
+6. **Loop economics:** tap "Обережно" (55 % / 10 %) → LTV/CAC 1.09 → 1.39×, ROMI +9 → +39 %,
    both gates turn green.
 7. Re-test — only if time is left: "+30 days" (index only is simulated) → re-test on a new form → honest classification.
 
@@ -82,8 +82,12 @@ with churn cut by *r*; net LTV = 0.9 · ($1 + $35 · Σ); CAC $33.3 (9 000 trial
 |---|---|---|---|
 | 45 % / 0 (today) | 1.09× | +9 % | +$28k |
 | 55 % / 10 % (cautious) | 1.39× | +39 % | +$117k |
-| 60 % / 10 % (gate) | 1.47× | +47 % | +$141k |
+| 60 % / 10 % | 1.47× | +47 % | +$141k |
 | 65 % / 20 % (target) | 1.75× | +75 % | +$226k |
+
+**Gate 1 (month 6, deck slide 12):** opened ≥ 50 %, D30 ≥ 10 %, charge 1 ≥ 42 % — the app's economics screen uses the
+same thresholds (it said ≥ 60 % before 9 Nov; aligned with the deck). Charge 1 ≥ 42 % needs ≈ 53 % opened, so the
+cautious scenario passes both and today's 45 % fails both.
 
 "Opened" = finished ≥ 1 exercise within 7 days of paying (**team definition**, shown on the screen). 66 % / 15 % are team
 estimates; the rest is the brief.
@@ -131,7 +135,8 @@ It replaces the old appendix slide "given in the case vs our estimates".
 - **Rehearsals don't pollute it.** Dev, previews, Playwright and the screenshot script send nothing. To rehearse with real
   phones, open the prototype once with `?livetest=1` (the record is marked `test`) and the deck as `CC-146-Wittio-deck.html?livetest=1#13`
   → the slide includes test records and says "з репетиціями".
-- **Rebuild the slide** after editing the deck export: `node scripts/deck-live-slide.mjs docs/deck/CC-146-Wittio-deck.source.html docs/deck/CC-146-Wittio-deck.html`.
+- **Rebuild the slide** after editing the deck export: `node scripts/deck-live-slide.mjs docs/deck/CC-146-Wittio-deck.source.html docs/deck/CC-146-Wittio-deck.html --notes docs/deck/speaker-notes.json`.
+- **Speaker notes** of all 13 slides come from `docs/deck/speaker-notes.json` = the team's speech doc (9 Nov version: slide 7 has 35 s for the prototype, slide 13 is 40 s, total 10:00).
 - Preview: `docs/deck/slide13-live-preview.png` (mock data).
 
 ## Stage operations

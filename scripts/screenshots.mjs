@@ -73,7 +73,7 @@ for (const lang of langs) {
   await page.screenshot({ path: `${out}/${lang}-4b-retest-illustration.png` });
   console.log('wrote', `${out}/${lang}-4b-retest-illustration.png`);
   await page.evaluate(() => (window.location.hash = '#/economics'));
-  await page.getByTestId('econ-presetGate').click();
+  await page.getByTestId('econ-presetCautious').click();
   await shot('5-economics');
   await ctx.close();
 }

@@ -36,8 +36,11 @@ export const ECON = {
   /** Renewal at charge 1: opened the product after paying vs not (team estimate; 0.45·66%+0.55·15% = 38%). */
   renewOpened: 0.66,
   renewNotOpened: 0.15,
-  /** Gates (slide 11): opened ≥ 60%, charge 1 ≥ 42%. */
-  gateOpened: 0.6,
+  /**
+   * Gate 1, month 6 (deck slide 12): opened ≥ 50%, D30 ≥ 10%, charge 1 ≥ 42%. With 66% / 15% renewal,
+   * charge 1 ≥ 42% needs ≈ 53% opened, so the cautious scenario (55%) passes both and 45% (today) fails both.
+   */
+  gateOpened: 0.5,
   gateCharge1: 0.42,
 } as const;
 /** Upper bound for one training session in the demo (ms). */

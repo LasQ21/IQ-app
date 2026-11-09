@@ -41,7 +41,7 @@
     "quiz": {
       "reason": "55% of payers never opened the product",
       "metric": "Test time ≤ 60 s",
-      "goal": "Opened after purchase ≥ 60%"
+      "goal": "Opened after purchase ≥ 50%"
     },
     "teaser": {
       "reason": "30% “got what I wanted”",
@@ -59,7 +59,7 @@
     "onboarding": {
       "reason": "25% “didn’t use it”",
       "metric": "Opened the product after purchase: 45% → 55–65%",
-      "goal": "Gate ≥ 60%"
+      "goal": "Gate ≥ 50%"
     },
     "today": {
       "reason": "Sessions fall 3.0 → 0.5 per week · 15% “it’s repetitive”",
@@ -356,10 +356,9 @@
     "presets": "Scenarios",
     "presetToday": "Today",
     "presetCautious": "Cautious",
-    "presetGate": "Gate",
     "presetTarget": "Target",
     "opened": "Opened the product after paying",
-    "openedHint": "today 45% · gate ≥ 60% · “opened” = finished ≥ 1 exercise within 7 days of paying (team definition)",
+    "openedHint": "today 45% · gate ≥ 50% · “opened” = finished ≥ 1 exercise within 7 days of paying (team definition)",
     "churn": "Lower churn between charges",
     "churnHint": "today 0% · every charge after the first",
     "charge1": "Charge 1",
@@ -372,7 +371,7 @@
     "romiMonth": "ROMI per month",
     "perCohort": "per monthly cohort",
     "gates": "Decision gates",
-    "gateOpened": "≥ 60% opened the product",
+    "gateOpened": "≥ 50% opened the product",
     "gateCharge1": "≥ 42% pay charge 1",
     "gatePass": "passed",
     "gateFail": "not yet",

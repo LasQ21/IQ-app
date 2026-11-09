@@ -17,11 +17,10 @@ export const OPENED_MAX = 65;
 export const CHURN_MIN = 0;
 export const CHURN_MAX = 20;
 
-/** Deck scenarios: [opened %, churn cut %]. */
+/** Deck scenarios (slide 9): [opened %, churn cut %]. */
 export const PRESETS = [
   { key: 'presetToday', opened: 45, churn: 0 },
   { key: 'presetCautious', opened: 55, churn: 10 },
-  { key: 'presetGate', opened: 60, churn: 10 },
   { key: 'presetTarget', opened: 65, churn: 20 },
 ] as const;
 

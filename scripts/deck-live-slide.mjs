@@ -2,7 +2,9 @@
 /**
  * Replaces the last slide of the exported deck with the live jury dashboard.
  *
- *   node scripts/deck-live-slide.mjs <deck-in.html> <deck-out.html> [--api https://…/api/jury]
+ *   node scripts/deck-live-slide.mjs <deck-in.html> <deck-out.html> [--api https://…/api/jury] [--notes docs/deck/speaker-notes.json]
+ *
+ * --notes: {"1": "БОГДАН · 0:55. …", …} replaces every slide's speaker notes (kept in sync with the team's speech doc).
  *
  * The slide polls GET /api/jury (api/jury.ts) every 5 s while it is on screen, renders the funnel, weak zones,
  * the "come back tomorrow?" vote and a short conclusion computed from the numbers. Offline it shows the last
@@ -17,6 +19,9 @@ if (!inPath || !outPath) {
 }
 const apiIdx = rest.indexOf('--api');
 const API = apiIdx >= 0 ? rest[apiIdx + 1] : 'https://cc146-wittio.vercel.app/api/jury';
+const notesIdx = rest.indexOf('--notes');
+const NOTES = notesIdx >= 0 ? JSON.parse(readFileSync(rest[notesIdx + 1], 'utf8')) : null;
+const attr = (t) => String(t).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 const API_ORIGIN = new URL(API).origin;
 
 let html = readFileSync(inPath, 'utf8');
@@ -178,8 +183,15 @@ html = html.replace(/(<script type="application\/json" id="deck-motion">)([\s\S]
   return a + JSON.stringify(m) + c;
 });
 
-// ---- slide 12 notes: lead into the dashboard instead of closing -------------------------------------------------
-html = html.replace('Дякуємо! Радо відповімо на ваші питання.">', 'А тепер подивімося, що вийшло у вас.">');
+// ---- speaker notes ----------------------------------------------------------------------------------------------
+if (NOTES) {
+  html = html.replace(/(<section class="deck-slide" id="(\d+)"[^>]*?data-speaker-notes=")([^"]*)(")/g, (m, a, id, _old, z) =>
+    NOTES[id] ? a + attr(NOTES[id]) + z : m,
+  );
+} else {
+  // Slide 12 leads into the dashboard instead of closing.
+  html = html.replace('Дякуємо! Радо відповімо на ваші питання.">', 'А тепер подивімося, що вийшло у вас.">');
+}
 
 writeFileSync(outPath, html);
 console.log(`slide ${total} → live dashboard (${API}); wrote ${outPath}`);
@@ -277,9 +289,8 @@ function clientScript() {
         out.push('<b>' + s.vote.yes + ' з ' + s.vote.total + '</b> ' + plural(s.vote.yes, 'повернувся', 'повернулися', 'повернулися') + ' б до плану завтра' + (s.vote.maybe ? ', ще ' + s.vote.maybe + ' — «можливо»' : '') + ': саме цю звичку міряють ворота (D30 ≥ 10%).');
       }
       if (s.loopSecMedian != null && out.length < 3) {
-        out.push(s.loopSecMedian <= 90
-          ? 'Від першого завдання до першої вправи — <b>' + sec(s.loopSecMedian) + '</b> (медіана): петля займає близько хвилини.'
-          : 'Від першого завдання до першої вправи — <b>' + sec(s.loopSecMedian) + '</b> (медіана): довше за обіцяну хвилину.');
+        out.push('Від першого завдання до першої вправи — <b>' + sec(s.loopSecMedian) + '</b> (медіана): ' +
+          (s.loopSecMedian <= 90 ? 'петля займає близько хвилини.' : s.loopSecMedian <= 180 ? 'тест, план і перша вправа — за кілька хвилин, без реєстрації.' : 'довше, ніж ми хотіли: скорочуємо кроки до першої вправи.'));
       }
       if (s.econ && out.length < 3) {
         out.push('На слайдері економіки ви залишили в середньому <b>' + s.econ.opened + '% «відкрили»</b> → LTV/CAC ' + String(s.econ.ltvCac.toFixed(2)).replace('.', ',') + '×, ROMI ' + (s.econ.romi >= 0 ? '+' : '') + Math.round(s.econ.romi * 100) + '%.');
@@ -299,8 +310,8 @@ function clientScript() {
       $('lv-title').textContent = t;
       // Tiles
       setTile('tested', String(s.tested), s.opened ? 'з ' + s.opened + ' ' + plural(s.opened, 'відкрив', 'відкрили', 'відкрили') + ' прототип' : 'чекаємо на перших');
-      setTile('quiz', sec(s.quizSecMedian), '4 завдання · дві форми тесту');
-      setTile('loop', sec(s.loopSecMedian), 'медіана · обіцяли ≈ 1 хв');
+      setTile('quiz', sec(s.quizSecMedian), '4 завдання · з інструкціями');
+      setTile('loop', sec(s.loopSecMedian), 'медіана · з тестом і оплатою');
       var a = s.startToTrained;
       setTile('act', a.rate == null ? '—' : pct(a.rate), a.start ? a.trained + ' з ' + a.start + ' · Wittio сьогодні: ' + TODAY_GATE + '%' : 'Wittio сьогодні: ' + TODAY_GATE + '%');
       setTile('vote', s.vote.yesShare == null ? '—' : pct(s.vote.yesShare), s.vote.total ? s.vote.yes + ' так · ' + s.vote.maybe + ' можливо · ' + s.vote.no + ' ні' : 'питання на екрані «План»');

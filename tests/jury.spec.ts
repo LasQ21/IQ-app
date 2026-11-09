@@ -13,7 +13,7 @@ const DECK: Record<string, string[]> = {
   quiz: ['55', '60'], // 55% never opened · test ≤ 60 s
   teaser: ['30'], // 30% "got what I wanted"
   paywall: ['25', '38', '43', '48', '42', '20'], // 25% too expensive · charge 1 38% → 43–48% (gate ≥ 42%) · A/B 20%
-  onboarding: ['25', '45', '55', '65', '60'], // opened after purchase 45% → 55–65% (gate ≥ 60%)
+  onboarding: ['25', '45', '55', '65', '50'], // opened after purchase 45% → 55–65% (gate ≥ 50%, deck slide 12)
   flash41: ['15', '60', '3', '40'], // 15% repetitive; 60% of sessions in 3 of 40 games
   index: ['7', '20', '30', '5', '10'], // D7 20% · D30 5% → ≥ 10%
   line: ['7', '20', '30', '5', '10'],
