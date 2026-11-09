@@ -39,8 +39,12 @@ export async function POST(request: Request): Promise<Response> {
   } catch {
     return json({ error: 'bad json' }, 400);
   }
-  const rec = sanitize(raw, Date.now());
+  const now = Date.now();
+  const rec = sanitize(raw, now);
   if (!rec) return json({ error: 'bad record' }, 400);
+  // "Last update" is the server's receipt time, not the phone's clock: the dashboard window ("з нуля") is in
+  // server time too, so a phone or laptop whose clock is a few minutes off can't fall out of it.
+  rec.t = now;
   await put(`${PREFIX}${rec.id}.json`, JSON.stringify(rec), {
     access: 'private',
     addRandomSuffix: false,

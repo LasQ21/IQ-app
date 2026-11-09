@@ -202,6 +202,7 @@ function clientScript() {
     var API = root.getAttribute('data-api');
     var KEY_SINCE = 'cc146-dash-since';
     var KEY_CACHE = 'cc146-dash-cache';
+    var KEY_SKEW = 'cc146-dash-skew';
     var POLL_MS = 5000;
     var TODAY_GATE = 45; // % of payers who open the product today (brief)
     var GATE_6M = 50; // deck slide 12: gate 1 at month 6
@@ -233,9 +234,12 @@ function clientScript() {
     }
     function pct(x) { return Math.round(x * 100) + '%'; }
     function sec(x) { return x == null ? '—' : (x >= 100 ? Math.round(x) : Math.round(x * 10) / 10).toString().replace('.', ',') + ' с'; }
+    // Offset of the server clock from this laptop's (from each response): every window is in server time.
+    var skew = Number(store.get(KEY_SKEW)) || 0;
+    function serverNow() { return Date.now() + skew; }
     function windowSince() {
       var mode = store.get(KEY_SINCE) || '3h';
-      var now = Date.now();
+      var now = serverNow();
       if (mode === 'today') { var d = new Date(); d.setHours(0, 0, 0, 0); return { mode: mode, since: d.getTime() }; }
       if (/^\d+$/.test(mode)) return { mode: 'now', since: Number(mode) };
       return { mode: '3h', since: Math.floor((now - 3 * 3600e3) / 60e3) * 60e3 };
@@ -354,6 +358,7 @@ function clientScript() {
       fetch(url, { cache: 'no-store', signal: ctl ? ctl.signal : undefined })
         .then(function (r) { if (!r.ok) throw new Error(String(r.status)); return r.json(); })
         .then(function (data) {
+          if (typeof data.now === 'number') { skew = data.now - Date.now(); store.set(KEY_SKEW, String(skew)); }
           store.set(KEY_CACHE, JSON.stringify({ w: w.mode, since: w.since, data: data }));
           render(data, true);
         })
@@ -370,7 +375,7 @@ function clientScript() {
         ev.preventDefault();
         ev.stopPropagation();
         var m = a.getAttribute('data-since');
-        store.set(KEY_SINCE, m === 'now' ? String(Date.now()) : m);
+        store.set(KEY_SINCE, m === 'now' ? String(serverNow()) : m);
         markCtl();
         poll();
       };
