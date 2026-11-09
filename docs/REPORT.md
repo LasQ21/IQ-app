@@ -13,9 +13,9 @@ Plan and council findings: `docs/ITERATION-2-PLAN.md`; acceptance review: `docs/
   (preview deployments) and, after the council's acceptance, deployed to production from commit `708af96`
   (deployment `dpl_5DCpSUgsD9SXzqPZxvbdeMwgSq7U`; the bundle hash matches the locally tested build). The URL — and
   therefore the QR codes — did not change.
-- **9 Nov 2026:** all branches merged into `main`; production now runs `main` @ `d920930` (live jury dashboard,
-  deployment `dpl_GmoYNL3k1SkQbVYC7pA8xooWN5n1`, bundle `index-gKqoDuUO.js` = the locally tested build with
-  `APP_BUILD=d920930`). **Note:** the Vercel project's production branch is still `claude/wittio-retention-loop-4en8i2`
+- **9 Nov 2026:** all branches merged into `main`; production now runs `main` @ `deb60a6` (live jury dashboard + gate ≥ 50 %,
+  deployment `dpl_2CZYvJ7KW6G7PqQapT3W63BpPaRA`, bundle `index-ZwkYMkfK.js` = the locally tested build with
+  `APP_BUILD=deb60a6`). **Note:** the Vercel project's production branch is still `claude/wittio-retention-loop-4en8i2`
   — set it to `main` (Settings → Git) so that a push there cannot replace production with the old iteration. Roll back via
   Vercel → Deployments → the previous production deployment (`708af96`, `dpl_5DCpSUgsD9SXzqPZxvbdeMwgSq7U`) → "Promote".
 
