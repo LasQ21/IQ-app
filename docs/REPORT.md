@@ -135,6 +135,9 @@ It replaces the old appendix slide "given in the case vs our estimates".
 - **Rehearsals don't pollute it.** Dev, previews, Playwright and the screenshot script send nothing. To rehearse with real
   phones, open the prototype once with `?livetest=1` (the record is marked `test`) and the deck as `CC-146-Wittio-deck.html?livetest=1#13`
   → the slide includes test records and says "з репетиціями".
+- **Dashboard only:** https://cc146-wittio.vercel.app/live — slide 13 alone, scales to any window, counts the last
+  30 minutes (`?window=<min>` to change), no buttons. For PowerPoint: Insert → Add-ins → Microsoft "Web Viewer" →
+  this URL, stretched over slide 13 of `docs/deck/CC-146-Wittio-deck.pptx` (built by `scripts/deck-pptx/`).
 - **Where to open the deck:** https://cc146-wittio.vercel.app/deck — the same site as the data, so the live slide works in any
   browser. The file opened locally works in Chrome; the claude.ai artifact copy and file previews (Safari, Telegram) cannot
   reach the API, and slide 13 then says "Немає зв'язку". `deck.html` is not precached on phones and not indexed.

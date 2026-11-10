@@ -92,14 +92,14 @@ export default defineConfig({
         globPatterns: ['**/*.{js,css,html,svg,png,woff2}'],
         // Vietnamese / Latin-ext / Cyrillic-ext glyphs never appear in the UI; Latin, Cyrillic and math/symbols (→ ≥) are precached.
         // deck.html (1.3 MB, the pitch deck with the live jury dashboard) is for the presenter's laptop, never cached on phones.
-        globIgnores: ['**/og-image.png', '**/onest-vietnamese-*', '**/onest-latin-ext-*', '**/onest-cyrillic-ext-*', '**/deck.html'],
+        globIgnores: ['**/og-image.png', '**/onest-vietnamese-*', '**/onest-latin-ext-*', '**/onest-cyrillic-ext-*', '**/deck.html', '**/live.html'],
         // Take control on the very first open, so the app works offline without a second visit.
         // An *update* does not skip waiting: src/pwa.ts sends SKIP_WAITING when the screen is safe.
         clientsClaim: true,
         skipWaiting: false,
         cleanupOutdatedCaches: true,
         navigateFallback: '/index.html',
-        navigateFallbackDenylist: [/^\/deck/, /^\/api\//],
+        navigateFallbackDenylist: [/^\/deck/, /^\/live/, /^\/api\//],
       },
     }),
   ],

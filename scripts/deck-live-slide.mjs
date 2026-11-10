@@ -4,6 +4,8 @@
  *
  *   node scripts/deck-live-slide.mjs <deck-in.html> <deck-out.html> [--api https://…/api/jury] [--notes docs/deck/speaker-notes.json]
  *
+ * --live <live.html>: also writes a page with only the dashboard (for PowerPoint's Web Viewer add-in or a second
+ *   screen). It counts a rolling window (?window=<minutes>, default 30) and has no window buttons.
  * --notes: {"1": "БОГДАН · 0:55. …", …} replaces every slide's speaker notes (kept in sync with the team's speech doc).
  *
  * The slide polls GET /api/jury (api/jury.ts) every 5 s while it is on screen, renders the funnel, weak zones,
@@ -19,6 +21,8 @@ if (!inPath || !outPath) {
 }
 const apiIdx = rest.indexOf('--api');
 const API = apiIdx >= 0 ? rest[apiIdx + 1] : 'https://cc146-wittio.vercel.app/api/jury';
+const liveIdx = rest.indexOf('--live');
+const LIVE_OUT = liveIdx >= 0 ? rest[liveIdx + 1] : null;
 const notesIdx = rest.indexOf('--notes');
 const NOTES = notesIdx >= 0 ? JSON.parse(readFileSync(rest[notesIdx + 1], 'utf8')) : null;
 const attr = (t) => String(t).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -196,6 +200,27 @@ if (NOTES) {
 writeFileSync(outPath, html);
 console.log(`slide ${total} → live dashboard (${API}); wrote ${outPath}`);
 
+if (LIVE_OUT) {
+  // The same page with only the dashboard slide: no other slides, no paging, rolling 30-minute window.
+  const first = html.indexOf('<section class="deck-slide"');
+  const lastStartNow = html.lastIndexOf('<section class="deck-slide"');
+  let live = html.slice(0, first) + html.slice(lastStartNow);
+  live = live
+    .replace(/<section class="deck-slide" id="\d+"([^>]*?)aria-label="Slide \d+ of \d+"/, '<section class="deck-slide" id="1"$1aria-label="Живий дашборд журі"')
+    .replace(/data-speaker-notes="[^"]*"/, '')
+    .replace('class="lv" id="lv"', 'class="lv" id="lv" data-window="30"')
+    .replace(`>${total} / ${total}</div>`, '></div>')
+    .replace('<title>CC-146 — Wittio: інвестиційне рішення</title>', '<title>CC-146 · Живий дашборд журі</title>')
+    .replace(/(<script type="application\/json" id="deck-motion">)([\s\S]*?)(<\/script>)/, (_, a, json, c) => {
+      const m = JSON.parse(json);
+      m.slides = [m.slides[total - 1]];
+      return a + JSON.stringify(m) + c;
+    });
+  if (!live.includes('data-window="30"')) throw new Error('live page: dashboard root not found');
+  writeFileSync(LIVE_OUT, live);
+  console.log(`wrote ${LIVE_OUT} (dashboard only, rolling 30 min)`);
+}
+
 // =================================================================================================================
 function clientScript() {
   const src = String(function liveDashboard(root) {
@@ -237,9 +262,12 @@ function clientScript() {
     // Offset of the server clock from this laptop's (from each response): every window is in server time.
     var skew = Number(store.get(KEY_SKEW)) || 0;
     function serverNow() { return Date.now() + skew; }
+    // Rolling window from the URL (?window=30 → the last 30 minutes): the dashboard-only page uses it, no buttons needed.
+    var rollMin = Number((/[?&]window=(\d+)/.exec(location.search) || [])[1]) || (root.hasAttribute('data-window') ? Number(root.getAttribute('data-window')) : 0);
     function windowSince() {
-      var mode = store.get(KEY_SINCE) || '3h';
       var now = serverNow();
+      if (rollMin > 0) return { mode: 'roll', since: Math.floor((now - rollMin * 60e3) / 10e3) * 10e3 };
+      var mode = store.get(KEY_SINCE) || '3h';
       if (mode === 'today') { var d = new Date(); d.setHours(0, 0, 0, 0); return { mode: mode, since: d.getTime() }; }
       if (/^\d+$/.test(mode)) return { mode: 'now', since: Number(mode) };
       return { mode: '3h', since: Math.floor((now - 3 * 3600e3) / 60e3) * 60e3 };
@@ -341,7 +369,7 @@ function clientScript() {
       // Status
       if (live === null) return;
       var at = new Date(data.now).toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-      $('lv-status').innerHTML = '<b>Case Challenge 3.0 · CC-146</b> · ' + (live ? 'Наживо, оновлено о ' + at : 'Немає зв’язку — дані на ' + at) + ' · cc146-wittio.vercel.app' + (includeTest ? ' · з репетиціями' : '');
+      $('lv-status').innerHTML = '<b>Case Challenge 3.0 · CC-146</b> · ' + (live ? 'Наживо, оновлено о ' + at : 'Немає зв’язку — дані на ' + at) + (rollMin > 0 ? ' · за останні ' + rollMin + ' хв' : '') + ' · cc146-wittio.vercel.app' + (includeTest ? ' · з репетиціями' : '');
     }
     function markCtl() {
       var mode = windowSince().mode;
@@ -383,6 +411,7 @@ function clientScript() {
       a.addEventListener('keydown', function (ev) { if (ev.key === 'Enter') act(ev); else if (ev.key === ' ') { ev.stopPropagation(); act(ev); } });
     });
     markCtl();
+    if (rollMin > 0) $('lv-ctl').style.display = 'none';
     var Z = { memory: 0, attention: 0, logic: 0, speed: 0 };
     render({ now: Date.now(), stats: { opened: 0, tested: 0, funnel: {}, quizSecMedian: null, loopSecMedian: null, startToTrained: { start: 0, trained: 0, rate: null }, weak: Z, weakKinds: 0, vote: { yes: 0, maybe: 0, no: 0, total: 0, yesShare: null }, econ: null, juryMode: 0 } }, null);
     // Poll only while the slide is on screen (and the tab is visible); render cached data at once.
