@@ -138,6 +138,9 @@ It replaces the old appendix slide "given in the case vs our estimates".
 - **Dashboard only:** https://cc146-wittio.vercel.app/live — slide 13 alone, scales to any window, counts the last
   30 minutes (`?window=<min>` to change), no buttons. For PowerPoint: Insert → Add-ins → Microsoft "Web Viewer" →
   this URL, stretched over slide 13 of `docs/deck/CC-146-Wittio-deck.pptx` (built by `scripts/deck-pptx/`).
+- **Animated deck for Google Slides:** `docs/deck/CC-146-Wittio-deck-animated.pptx` — the editable deck plus builds and
+  transitions (`python3 scripts/deck-pptx/animate.py <editable.pptx> <out.pptx>`). Only effects Google Slides has (Fade in,
+  Fly in, Zoom in; Fade / Slide from right), every build starts by itself, so one click is still one slide.
 - **Where to open the deck:** https://cc146-wittio.vercel.app/deck — the same site as the data, so the live slide works in any
   browser. The file opened locally works in Chrome; the claude.ai artifact copy and file previews (Safari, Telegram) cannot
   reach the API, and slide 13 then says "Немає зв'язку". `deck.html` is not precached on phones and not indexed.
