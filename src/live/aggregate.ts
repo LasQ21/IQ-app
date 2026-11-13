@@ -13,9 +13,9 @@ export interface LiveStats {
   tested: number;
   /** How many phones reached each step (first visit). */
   funnel: Record<Step, number>;
-  /** Median seconds: start of the test → profile (teaser). */
+  /** Median seconds: start of the test → profile (teaser), runs done in one sitting (≤ MAX_SITTING_SEC). */
   quizSecMedian: number | null;
-  /** Median seconds: start of the test → first exercise of the plan finished ("opened the product"). */
+  /** Median seconds: start of the test → first exercise finished ("opened the product"), in one sitting. */
   loopSecMedian: number | null;
   /** Of those who tapped "Start" on the paywall, how many finished the first exercise (0–1). */
   startToTrained: { start: number; trained: number; rate: number | null };
@@ -44,6 +44,19 @@ const median = (xs: number[]): number | null => {
 };
 const mean = (xs: number[]): number | null => (xs.length ? xs.reduce((a, b) => a + b, 0) / xs.length : null);
 const round1 = (x: number | null) => (x === null ? null : Math.round(x * 10) / 10);
+
+/**
+ * Longest gap (s) still counted as one sitting in the time medians. A phone keeps its record in localStorage until
+ * "Reset demo", so `reach.quiz` can be from yesterday's rehearsal and `reach.trained` from today: that run says
+ * nothing about how long the loop takes and would pull the median to ~1 day. The demo loop itself is minutes.
+ */
+export const MAX_SITTING_SEC = 30 * 60;
+/** Seconds from `from` to `to`, or null if a step is missing, out of order or not in one sitting. */
+const sitting = (from: number | undefined, to: number | undefined): number | null => {
+  if (from === undefined || to === undefined || to < from) return null;
+  const sec = (to - from) / 1000;
+  return sec <= MAX_SITTING_SEC ? sec : null;
+};
 
 /** Records in the window: updated at or after `since`, rehearsals (`test`) left out unless asked for. */
 export function selectRecords(records: LiveRecord[], since: number, includeTest = false): LiveRecord[] {
@@ -81,8 +94,10 @@ export function aggregate(records: LiveRecord[]): LiveStats {
       if (r.weakest) weak[r.weakest]++;
     }
     const { quiz, teaser, trained } = r.reach;
-    if (quiz !== undefined && teaser !== undefined && teaser >= quiz) quizSec.push((teaser - quiz) / 1000);
-    if (quiz !== undefined && trained !== undefined && trained >= quiz) loopSec.push((trained - quiz) / 1000);
+    const q = sitting(quiz, teaser);
+    if (q !== null) quizSec.push(q);
+    const l = sitting(quiz, trained);
+    if (l !== null) loopSec.push(l);
     if (r.reach.start !== undefined) {
       start++;
       if (trained !== undefined) startTrained++;

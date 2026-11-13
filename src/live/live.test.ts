@@ -107,6 +107,22 @@ describe('aggregate (dashboard numbers)', () => {
     expect(st.juryMode).toBe(1);
   });
 
+  it('leaves runs spread over days out of the time medians', () => {
+    // Test opened yesterday (rehearsal), first exercise today: ~30 h, not the loop length.
+    const stale = rec({
+      id: 'f6ffffffff',
+      reach: { quiz: NOW - 110_000_000, teaser: NOW - 109_950_000, start: NOW - 60_000, trained: NOW - 30_000 },
+    });
+    const s2 = aggregate([...sel, stale]);
+    expect(s2.loopSecMedian).toBe(75);
+    expect(s2.quizSecMedian).toBe(50);
+    // The run still counts in the funnel and in "Start" → first exercise.
+    expect(s2.funnel.trained).toBe(2);
+    expect(s2.startToTrained).toEqual({ start: 3, trained: 2, rate: 2 / 3 });
+    // Only stale runs: no median rather than a misleading one.
+    expect(aggregate([stale]).loopSecMedian).toBeNull();
+  });
+
   it('is empty-safe', () => {
     const e = aggregate([]);
     expect(e.opened).toBe(0);
